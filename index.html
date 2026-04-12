@@ -7,26 +7,60 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,sans-serif;background:#f5f5f3;color:#1a1a18;font-size:14px}
-.app{max-width:860px;margin:0 auto;padding:10px}
-.header{color:#fff;border-radius:10px;padding:12px 16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.header h1{font-size:16px;font-weight:500}
-.nav{display:flex;gap:6px;flex-wrap:wrap}
-.nb{padding:6px 14px;border-radius:7px;border:1px solid rgba(255,255,255,0.4);background:transparent;color:#fff;cursor:pointer;font-size:13px}
-.nb.on{background:#fff;color:#1a1a18}
-.panel{display:none}.panel.on{display:block}
-.card{background:#fff;border-radius:10px;border:1px solid #e0e0de;padding:14px;margin-bottom:10px}
+body{font-family:system-ui,sans-serif;background:#f5f5f3;color:#1a1a18;font-size:14px;min-height:100vh}
+.auth-screen{position:fixed;inset:0;background:linear-gradient(160deg,#1a1a18 60%,#2d2d2a);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;z-index:9999}
+.auth-screen.h{display:none}
+.auth-logo{width:72px;height:72px;background:#fff;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:16px}
+.auth-title{color:#fff;font-size:22px;font-weight:500;margin-bottom:4px}
+.auth-sub{color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:32px;text-align:center}
+.auth-card{background:#fff;border-radius:16px;padding:24px;width:100%;max-width:360px}
+.auth-tabs{display:flex;margin-bottom:20px;border-radius:8px;overflow:hidden;border:1px solid #eee}
+.auth-tab{flex:1;padding:10px;text-align:center;cursor:pointer;font-size:13px;font-weight:500;background:#f5f5f3;color:#888;border:none}
+.auth-tab.on{background:#1a1a18;color:#fff}
+.auth-panel{display:none}.auth-panel.on{display:block}
+.auth-input{width:100%;padding:11px 14px;border-radius:9px;border:1px solid #ddd;font-size:14px;color:#1a1a18;margin-bottom:10px;background:#fff}
+.auth-btn{width:100%;padding:13px;border-radius:9px;border:none;background:#1a1a18;color:#fff;font-size:15px;font-weight:500;cursor:pointer;margin-top:4px}
+.auth-err{font-size:12px;color:#c00;margin-top:6px;display:none}
+.auth-ok{font-size:12px;color:#2a6;margin-top:6px;display:none}
+.auth-footer{color:rgba(255,255,255,0.3);font-size:11px;margin-top:24px;text-align:center}
+.app{display:none;max-width:860px;margin:0 auto;padding:10px}
+.app.on{display:block}
+.header{color:#fff;border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.header-top{display:flex;align-items:center;justify-content:space-between}
+.header-brand{display:flex;align-items:center;gap:10px}
+.header-logo-img{width:38px;height:38px;object-fit:contain;border-radius:8px;display:none}
+.header-nome{font-size:15px;font-weight:500}
+.header-slogan{font-size:11px;opacity:0.6;margin-top:1px}
+.header-user{display:flex;align-items:center;gap:8px}
+.user-avatar{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:#fff}
+.logout-btn{font-size:11px;color:rgba(255,255,255,0.5);cursor:pointer;border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:4px 8px;background:transparent}
+.screen{display:none;animation:fadeIn .15s ease}
+.screen.on{display:block}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.app-menu{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.menu-item{background:#fff;border-radius:14px;border:1px solid #e0e0de;padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:6px;position:relative;overflow:hidden;transition:border-color .15s}
+.menu-item:hover{border-color:#1a1a18}
+.menu-icon{font-size:26px;line-height:1}
+.menu-label{font-size:14px;font-weight:500;color:#1a1a18}
+.menu-desc{font-size:11px;color:#888}
+.menu-badge{position:absolute;top:10px;right:10px;background:#1a1a18;color:#fff;font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px}
+.menu-badge.vd{background:#2a6}
+.menu-badge.or{background:#e67e00}
+.panel-hdr{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.back-btn{width:36px;height:36px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.panel-title{font-size:16px;font-weight:500}
+.card{background:#fff;border-radius:12px;border:1px solid #e0e0de;padding:14px;margin-bottom:10px}
 label{font-size:12px;color:#666;display:block;margin-bottom:3px}
-input[type=text],input[type=date],input[type=color],input[type=email],select,textarea{width:100%;padding:8px 10px;border-radius:7px;border:1px solid #ccc;font-size:13px;color:#1a1a18;background:#fff;margin-bottom:8px}
+input[type=text],input[type=date],input[type=time],input[type=email],input[type=password],input[type=color],input[type=tel],select,textarea{width:100%;padding:9px 11px;border-radius:8px;border:1px solid #ccc;font-size:13px;color:#1a1a18;background:#fff;margin-bottom:8px}
 input[type=color]{height:38px;padding:2px 4px;cursor:pointer}
 textarea{resize:vertical;min-height:44px}
 .row{display:flex;gap:8px;flex-wrap:wrap}.fg{flex:1;min-width:120px}
-.btn{padding:7px 14px;border-radius:7px;border:1px solid #ccc;background:#fff;cursor:pointer;font-size:13px;font-weight:500;display:inline-block}
+.btn{padding:7px 14px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;font-size:13px;font-weight:500;display:inline-block}
 .btn:hover{background:#f0f0ee}
-.btn.p{background:#1a1a18;color:#fff;border-color:#1a1a18}.btn.p:hover{background:#333}
-.btn.d{border-color:#c00;color:#c00}.btn.g{border-color:#2a6;color:#2a6}
+.btn.p{background:#1a1a18;color:#fff;border-color:#1a1a18}
+.btn.d{border-color:#c00;color:#c00}
+.btn.g{border-color:#2a6;color:#2a6}
 .sec{font-size:13px;font-weight:500;padding-bottom:6px;border-bottom:1px solid #eee;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
-.item-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f5f5f3;font-size:13px}
 .badge{font-size:11px;padding:2px 8px;border-radius:5px;font-weight:500;display:inline-block;margin-right:4px}
 .b-tipo{background:#e6f1fb;color:#185fa5}.b-setor{background:#e1f5ee;color:#0f6e56}.b-tema{background:#faeeda;color:#854f0b}
 .cl-card{background:#fafaf8;border:1px solid #e5e5e2;border-radius:8px;padding:12px;margin-bottom:8px}
@@ -48,136 +82,101 @@ textarea{resize:vertical;min-height:44px}
 .bar-fill{height:100%;background:#2a6;border-radius:4px}
 .send-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .tip{font-size:11px;color:#999;margin-top:6px}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:999;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9998;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px}
 .overlay.on{display:flex}
 .ocard{background:#fff;border-radius:12px;padding:20px;width:100%;max-width:340px;display:flex;flex-direction:column;gap:10px}
-.logo-preview{width:80px;height:80px;object-fit:contain;border-radius:8px;border:1px solid #eee;background:#f9f9f7}
-.logo-placeholder{width:80px;height:80px;border-radius:8px;border:2px dashed #ccc;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;background:#f9f9f7}
-.base-cl-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid #e5e5e2;border-radius:8px;margin-bottom:6px;background:#fafaf8;font-size:13px}
+.logo-ph{width:80px;height:80px;border-radius:8px;border:2px dashed #ccc;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;background:#f9f9f7}
+.logo-pv{width:80px;height:80px;object-fit:contain;border-radius:8px;border:1px solid #eee;display:none}
+.base-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid #e5e5e2;border-radius:8px;margin-bottom:6px;background:#fafaf8;font-size:13px}
+.cli-card{background:#fff;border:1px solid #e0e0de;border-radius:10px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.cli-av{width:42px;height:42px;border-radius:50%;background:#e6f1fb;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:500;color:#185fa5;flex-shrink:0}
+.srch{width:100%;padding:9px 11px;border-radius:8px;border:1px solid #ccc;font-size:13px;margin-bottom:10px;background:#fff;color:#1a1a18}
+/* CALENDÁRIO */
+.cal-day{padding:6px 2px;text-align:center;border-radius:8px;cursor:pointer;font-size:13px}
+.cal-day:hover{background:#f0f0ee}
+.cal-dot{width:6px;height:6px;border-radius:50%;margin:2px auto 0}
 </style>
 </head>
 <body>
-<div class="app">
+
+<!-- AUTH -->
+<div class="auth-screen" id="auth-screen">
+  <div class="auth-logo">✓</div>
+  <div class="auth-title">Checklist de Consultoria</div>
+  <div class="auth-sub">Sua ferramenta profissional de auditorias</div>
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button class="auth-tab on" onclick="authTab('login')">Entrar</button>
+      <button class="auth-tab" onclick="authTab('cadastro')">Criar conta</button>
+    </div>
+    <div class="auth-panel on" id="ap-login">
+      <input class="auth-input" type="email" id="l-email" placeholder="Seu e-mail">
+      <input class="auth-input" type="password" id="l-senha" placeholder="Sua senha" onkeydown="if(event.key==='Enter')fazerLogin()">
+      <div class="auth-err" id="l-err"></div>
+      <button class="auth-btn" onclick="fazerLogin()">Entrar</button>
+    </div>
+    <div class="auth-panel" id="ap-cadastro">
+      <input class="auth-input" type="text" id="c-nome" placeholder="Seu nome completo">
+      <input class="auth-input" type="email" id="c-email" placeholder="Seu e-mail">
+      <input class="auth-input" type="text" id="c-empresa" placeholder="Nome da empresa / consultoria">
+      <input class="auth-input" type="text" id="c-fone" placeholder="WhatsApp (opcional)">
+      <input class="auth-input" type="password" id="c-senha" placeholder="Crie uma senha (mín. 6 caracteres)">
+      <input class="auth-input" type="password" id="c-senha2" placeholder="Confirme a senha">
+      <div class="auth-err" id="c-err"></div>
+      <div class="auth-ok" id="c-ok"></div>
+      <button class="auth-btn" onclick="fazerCadastro()">Criar conta</button>
+    </div>
+  </div>
+  <div class="auth-footer">Seus dados ficam salvos com segurança no seu dispositivo</div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app-main">
   <div class="header" id="app-header" style="background:#1a1a18">
-    <div style="display:flex;align-items:center;gap:10px">
-      <img id="header-logo" src="" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:none">
-      <div>
-        <div id="header-empresa" style="font-size:15px;font-weight:500;color:#fff">Checklist de Consultoria</div>
-        <div id="header-slogan" style="font-size:11px;color:rgba(255,255,255,0.6);display:none"></div>
+    <div class="header-top">
+      <div class="header-brand">
+        <img id="header-logo" class="header-logo-img" src="" alt="">
+        <div>
+          <div class="header-nome" id="header-nome">Checklist de Consultoria</div>
+          <div class="header-slogan" id="header-slogan" style="display:none"></div>
+        </div>
       </div>
-    </div>
-    <div class="nav">
-      <button class="nb on" id="nb-cfg" onclick="go('cfg')">Configurar</button>
-      <button class="nb" id="nb-vis" onclick="go('vis')">Nova visita</button>
-      <button class="nb" id="nb-his" onclick="go('his')">Histórico</button>
-      <button class="nb" id="nb-marc" onclick="go('marc')">Minha marca</button>
+      <div class="header-user">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <button class="logout-btn" onclick="fazerLogout()">Sair</button>
+      </div>
     </div>
   </div>
 
-  <!-- MINHA MARCA -->
-  <div id="p-marc" class="panel">
-    <div class="card">
-      <div class="sec">Personalização da marca</div>
-      <div class="row">
-        <div class="fg">
-          <label>Nome da empresa / consultor</label>
-          <input type="text" id="m-nome" placeholder="Ex: Consultoria Silva" oninput="previewMarca()">
-        </div>
-        <div class="fg">
-          <label>Slogan ou especialidade</label>
-          <input type="text" id="m-slogan" placeholder="Ex: Especialista em Vigilância Sanitária" oninput="previewMarca()">
-        </div>
-      </div>
-      <div class="row">
-        <div class="fg">
-          <label>E-mail profissional</label>
-          <input type="email" id="m-email" placeholder="contato@empresa.com.br">
-        </div>
-        <div class="fg">
-          <label>WhatsApp / Telefone</label>
-          <input type="text" id="m-fone" placeholder="(54) 99999-9999">
-        </div>
-      </div>
-      <div class="row">
-        <div class="fg">
-          <label>Cor principal da marca</label>
-          <input type="color" id="m-cor" value="#1a1a18" oninput="previewMarca()">
-        </div>
-        <div class="fg">
-          <label>Logo da empresa</label>
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-            <div id="logo-placeholder" class="logo-placeholder" onclick="document.getElementById('inp-logo').click()">+</div>
-            <img id="logo-preview" class="logo-preview" src="" style="display:none">
-            <input type="file" id="inp-logo" accept="image/*" style="display:none" onchange="carregarLogo(this)">
-            <div>
-              <div style="font-size:12px;color:#666">Toque para adicionar</div>
-              <div style="font-size:11px;color:#aaa">PNG com fundo transparente recomendado</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <button class="btn p" onclick="salvarMarca()">✓ Salvar personalização</button>
-    </div>
-  </div>
-
-  <!-- CONFIGURAR -->
-  <div id="p-cfg" class="panel on">
-    <div class="card">
-      <div class="sec">Checklists base prontos para usar</div>
-      <div id="lista-base"></div>
+  <!-- MENU -->
+  <div id="s-menu" class="screen">
+    <div class="app-menu">
+      <div class="menu-item" onclick="ir('visita')"><div class="menu-icon">📋</div><div class="menu-label">Nova visita</div><div class="menu-desc">Iniciar auditoria</div></div>
+      <div class="menu-item" onclick="ir('clientes')"><div class="menu-icon">👥</div><div class="menu-label">Clientes</div><div class="menu-desc">Estabelecimentos</div><div class="menu-badge vd" id="b-clientes">0</div></div>
+      <div class="menu-item" onclick="ir('agenda')"><div class="menu-icon">📅</div><div class="menu-label">Agenda</div><div class="menu-desc">Visitas agendadas</div><div class="menu-badge or" id="b-agenda">0</div></div>
+      <div class="menu-item" onclick="ir('pendentes')"><div class="menu-icon">⏳</div><div class="menu-label">Pendentes</div><div class="menu-desc">Em andamento</div><div class="menu-badge or" id="b-pendentes">0</div></div>
+      <div class="menu-item" onclick="ir('historico')"><div class="menu-icon">📁</div><div class="menu-label">Histórico</div><div class="menu-desc">Visitas realizadas</div><div class="menu-badge vd" id="b-visitas">0</div></div>
+      <div class="menu-item" onclick="ir('checklists')"><div class="menu-icon">⚙️</div><div class="menu-label">Checklists</div><div class="menu-desc">Gerenciar</div><div class="menu-badge" id="b-cls">0</div></div>
+      <div class="menu-item" onclick="ir('dashboard')"><div class="menu-icon">📊</div><div class="menu-label">Dashboard</div><div class="menu-desc">Resumo</div></div>
+      <div class="menu-item" onclick="ir('marca')"><div class="menu-icon">🎨</div><div class="menu-label">Minha marca</div><div class="menu-desc">Logo e cores</div></div>
     </div>
     <div class="card">
-      <div class="sec">Criar novo checklist <button class="btn p" onclick="salvarCL()">+ Salvar</button></div>
-      <div class="row">
-        <div class="fg"><label>Tipo de estabelecimento</label><input type="text" id="cl-tipo" placeholder="Ex: Restaurante, Padaria, Farmácia..."></div>
-        <div class="fg"><label>Setor</label><input type="text" id="cl-setor" placeholder="Ex: Higiene, Documentação..."></div>
-        <div class="fg"><label>Tema da visita</label><input type="text" id="cl-tema" placeholder="Ex: Auditoria RDC 216"></div>
-      </div>
-      <div class="sec" style="margin-top:4px">Itens do checklist</div>
-      <div id="items-cfg"><div class="empty">Nenhum item ainda</div></div>
-      <div style="display:flex;gap:6px;margin-top:8px">
-        <input type="text" id="novo-item" placeholder="Digite um item e pressione Enter..." style="margin:0;flex:1" onkeydown="if(event.key==='Enter'){addItem();event.preventDefault()}">
-        <button class="btn" onclick="addItem()">+ Add</button>
-      </div>
-      <div style="margin-top:10px">
-        <label>Ou cole várias perguntas de uma vez (uma por linha):</label>
-        <textarea id="bulk-txt" placeholder="Pergunta 1&#10;Pergunta 2&#10;Pergunta 3..." style="margin-top:4px;min-height:80px"></textarea>
-        <button class="btn" onclick="addBulk()">+ Importar todas as linhas</button>
-      </div>
-    </div>
-    <div class="card">
-      <div class="sec">Meus checklists salvos</div>
-      <div id="lista-cls"><div class="empty">Nenhum checklist salvo</div></div>
-      <div style="margin-top:14px;border-top:1px solid #eee;padding-top:12px">
-        <div style="font-size:13px;font-weight:500;margin-bottom:10px">Transferir para outro dispositivo</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn p" onclick="exportarCls()">⬆ Exportar</button>
-          <button class="btn" onclick="showImport()">⬇ Importar</button>
-        </div>
-        <div id="exp-area" style="display:none;margin-top:10px">
-          <label>Copie este código:</label>
-          <textarea id="exp-txt" style="min-height:70px;font-family:monospace;font-size:11px;margin-top:4px" readonly></textarea>
-          <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
-            <button class="btn g" onclick="copiarExp()">📋 Copiar</button>
-            <span id="copy-ok" style="font-size:12px;color:#2a6;display:none">✓ Copiado!</span>
-          </div>
-        </div>
-        <div id="imp-area" style="display:none;margin-top:10px">
-          <label>Cole o código exportado aqui:</label>
-          <textarea id="imp-txt" style="min-height:70px;font-family:monospace;font-size:11px;margin-top:4px" placeholder="Cole aqui..."></textarea>
-          <button class="btn g" style="margin-top:6px" onclick="importarCls()">✓ Importar</button>
-        </div>
-      </div>
+      <div style="font-size:14px;font-weight:500;margin-bottom:6px" id="bv-titulo">Bem-vindo! 👋</div>
+      <div style="font-size:13px;color:#666;line-height:1.6;white-space:pre-line" id="bv-texto">Configure sua marca e comece a usar.</div>
     </div>
   </div>
 
   <!-- VISITA -->
-  <div id="p-vis" class="panel">
+  <div id="s-visita" class="screen">
+    <div class="panel-hdr"><button class="back-btn" onclick="ir('menu')">←</button><div class="panel-title">Nova visita</div></div>
     <div class="card">
+      <div class="sec">Selecionar cliente</div>
+      <select id="v-cli-sel" onchange="preencherCliente()" style="margin-bottom:10px"><option value="">-- selecione um cliente ou preencha manualmente --</option></select>
+      <div id="v-cli-box" style="display:none;background:#f5f5f3;border-radius:8px;padding:10px;margin-bottom:10px;font-size:13px"></div>
       <div class="sec">Dados da visita</div>
       <div class="row">
         <div class="fg"><label>Cliente / Estabelecimento</label><input type="text" id="v-cli" placeholder="Nome do cliente"></div>
-        <div class="fg"><label>Responsável no local</label><input type="text" id="v-resp" placeholder="Nome"></div>
+        <div class="fg"><label>Responsável</label><input type="text" id="v-resp" placeholder="Nome"></div>
         <div class="fg"><label>Data</label><input type="date" id="v-data"></div>
       </div>
       <label>Checklist</label>
@@ -186,7 +185,7 @@ textarea{resize:vertical;min-height:44px}
     <div id="exec-area"></div>
     <div id="resumo-area" style="display:none">
       <div class="card">
-        <div class="sec">Resumo da visita</div>
+        <div class="sec">Resumo</div>
         <div class="metrics">
           <div class="met" style="color:#2a6"><div class="mv" id="r-sim">0</div><div class="ml">Sim</div></div>
           <div class="met" style="color:#c00"><div class="mv" id="r-nao">0</div><div class="ml">Não</div></div>
@@ -201,34 +200,205 @@ textarea{resize:vertical;min-height:44px}
           <button class="btn g" onclick="enviarWA()">💬 WhatsApp</button>
           <button class="btn" onclick="enviarEmail()">✉ E-mail</button>
         </div>
-        <div class="tip">Gere o PDF primeiro e depois envie como anexo pelo WhatsApp ou e-mail.</div>
+        <div class="tip">Gere o PDF primeiro e depois envie como anexo.</div>
       </div>
     </div>
   </div>
 
-  <!-- HISTÓRICO -->
-  <div id="p-his" class="panel">
+  <!-- CLIENTES -->
+  <div id="s-clientes" class="screen">
+    <div class="panel-hdr"><button class="back-btn" onclick="ir('menu')">←</button><div class="panel-title">Clientes</div></div>
     <div class="card">
-      <div class="sec">Visitas realizadas</div>
+      <div class="sec">Novo cliente <button class="btn p" onclick="salvarCliente()">+ Salvar</button></div>
+      <div class="row">
+        <div class="fg"><label>Nome do estabelecimento *</label><input type="text" id="ci-nome" placeholder="Ex: Restaurante Bom Sabor"></div>
+        <div class="fg"><label>Tipo</label><input type="text" id="ci-tipo" placeholder="Ex: Restaurante, Padaria..."></div>
+      </div>
+      <div class="row">
+        <div class="fg"><label>Responsável</label><input type="text" id="ci-resp" placeholder="Nome do responsável"></div>
+        <div class="fg"><label>Cargo</label><input type="text" id="ci-cargo" placeholder="Ex: Gerente, Proprietário..."></div>
+      </div>
+      <div class="row">
+        <div class="fg"><label>WhatsApp</label><input type="tel" id="ci-fone" placeholder="(00) 00000-0000"></div>
+        <div class="fg"><label>E-mail</label><input type="email" id="ci-email" placeholder="email@local.com"></div>
+      </div>
+      <div class="row">
+        <div class="fg"><label>Endereço</label><input type="text" id="ci-end" placeholder="Rua, número, bairro"></div>
+        <div class="fg"><label>Cidade / UF</label><input type="text" id="ci-cidade" placeholder="Ex: São Paulo / SP"></div>
+      </div>
+      <label>Observações</label>
+      <textarea id="ci-obs" placeholder="Notas sobre o cliente..."></textarea>
+    </div>
+    <div class="card">
+      <div class="sec">Clientes cadastrados</div>
+      <input class="srch" type="text" placeholder="🔍 Buscar..." oninput="renderClientes(this.value)">
+      <div id="lista-clientes"></div>
+    </div>
+  </div>
+
+  <!-- AGENDA -->
+  <div id="s-agenda" class="screen">
+    <div class="panel-hdr"><button class="back-btn" onclick="ir('menu')">←</button><div class="panel-title">Agenda</div></div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <button class="btn" onclick="mudarMes(-1)">‹</button>
+        <div style="font-size:15px;font-weight:500" id="cal-titulo"></div>
+        <button class="btn" onclick="mudarMes(1)">›</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;margin-bottom:6px">
+        <div style="font-size:11px;color:#888;padding:4px">Dom</div><div style="font-size:11px;color:#888;padding:4px">Seg</div>
+        <div style="font-size:11px;color:#888;padding:4px">Ter</div><div style="font-size:11px;color:#888;padding:4px">Qua</div>
+        <div style="font-size:11px;color:#888;padding:4px">Qui</div><div style="font-size:11px;color:#888;padding:4px">Sex</div>
+        <div style="font-size:11px;color:#888;padding:4px">Sáb</div>
+      </div>
+      <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px"></div>
+      <div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#666"><div style="width:8px;height:8px;border-radius:50%;background:#e67e00"></div>Pendente</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#666"><div style="width:8px;height:8px;border-radius:50%;background:#2a6"></div>Realizado</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#666"><div style="width:8px;height:8px;border-radius:50%;background:#c00"></div>Atrasado</div>
+      </div>
+    </div>
+    <div class="card" id="card-dia" style="display:none">
+      <div class="sec" id="titulo-dia">Visitas do dia</div>
+      <div id="lista-dia"></div>
+    </div>
+    <div class="card">
+      <div class="sec">Novo agendamento <button class="btn p" onclick="salvarAg()">+ Agendar</button></div>
+      <div class="row">
+        <div class="fg"><label>Cliente *</label><select id="ag-cli" style="margin-bottom:8px"><option value="">-- selecione --</option></select></div>
+        <div class="fg"><label>Checklist</label><select id="ag-cl" style="margin-bottom:8px"><option value="">-- selecione --</option></select></div>
+      </div>
+      <div class="row">
+        <div class="fg"><label>Data *</label><input type="date" id="ag-data"></div>
+        <div class="fg"><label>Horário</label><input type="time" id="ag-hora"></div>
+      </div>
+      <label>Observação</label>
+      <textarea id="ag-obs" placeholder="Ex: Levar documentação..." style="min-height:50px"></textarea>
+    </div>
+    <div class="card">
+      <div class="sec">Próximas visitas</div>
+      <div id="lista-ag"></div>
+    </div>
+  </div>
+
+  <!-- PENDENTES -->
+  <div id="s-pendentes" class="screen">
+    <div class="panel-hdr"><button class="back-btn" onclick="ir('menu')">←</button><div class="panel-title">Visitas pendentes</div></div>
+    <div class="card"><div id="lista-pendentes"></div></div>
+  </div>
+
+  <!-- HISTÓRICO -->
+  <div id="s-historico" class="screen">
+    <div class="panel-hdr"><button class="back-btn" onclick="ir('menu')">←</button><div class="panel-title">Histórico</div></div>
+    <div class="card">
+      <input class="srch" type="text" placeholder="🔍 Buscar por cliente..." oninput="renderHis(this.value)">
       <div id="lista-his"></div>
+    </div>
+  </div>
+
+  <!-- DETALHE -->
+  <div id="s-detalhe" class="screen">
+    <div class="panel-hdr"><button class="back-btn" onclick="ir('historico')">←</button><div class="panel-title">Detalhes da visita</div></div>
+    <div id="detalhe-content"></div>
+  </div>
+
+  <!-- CHECKLISTS -->
+  <div id="s-checklists" class="screen">
+    <div class="panel-hdr"><button class="back-btn" onclick="ir('menu')">←</button><div class="panel-title">Checklists</div></div>
+    <div class="card">
+      <div class="sec">Checklists base prontos</div>
+      <div id="lista-base"></div>
+    </div>
+    <div class="card">
+      <div class="sec">Criar novo checklist <button class="btn p" onclick="salvarCL()">+ Salvar</button></div>
+      <div class="row">
+        <div class="fg"><label>Tipo de estabelecimento</label><input type="text" id="cl-tipo" placeholder="Ex: Restaurante..."></div>
+        <div class="fg"><label>Setor</label><input type="text" id="cl-setor" placeholder="Ex: Higiene..."></div>
+        <div class="fg"><label>Tema</label><input type="text" id="cl-tema" placeholder="Ex: Auditoria RDC 216"></div>
+      </div>
+      <div class="sec" style="margin-top:4px">Itens</div>
+      <div id="items-cfg"><div class="empty">Nenhum item ainda</div></div>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <input type="text" id="novo-item" placeholder="Digite um item e pressione Enter..." style="margin:0;flex:1" onkeydown="if(event.key==='Enter'){addItem();event.preventDefault()}">
+        <button class="btn" onclick="addItem()">+ Add</button>
+      </div>
+      <div style="margin-top:10px">
+        <label>Ou cole várias perguntas (uma por linha):</label>
+        <textarea id="bulk-txt" placeholder="Pergunta 1&#10;Pergunta 2..." style="margin-top:4px;min-height:80px"></textarea>
+        <button class="btn" onclick="addBulk()">+ Importar linhas</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sec">Meus checklists</div>
+      <div id="lista-cls"><div class="empty">Nenhum checklist salvo</div></div>
+      <div style="margin-top:12px;border-top:1px solid #eee;padding-top:12px">
+        <div style="font-size:13px;font-weight:500;margin-bottom:8px">Transferir para outro dispositivo</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn p" onclick="exportarCls()">⬆ Exportar</button>
+          <button class="btn" onclick="showImport()">⬇ Importar</button>
+        </div>
+        <div id="exp-area" style="display:none;margin-top:10px">
+          <label>Copie este código:</label>
+          <textarea id="exp-txt" style="min-height:60px;font-family:monospace;font-size:11px;margin-top:4px" readonly></textarea>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+            <button class="btn g" onclick="copiarExp()">📋 Copiar</button>
+            <span id="copy-ok" style="font-size:12px;color:#2a6;display:none">✓ Copiado!</span>
+          </div>
+        </div>
+        <div id="imp-area" style="display:none;margin-top:10px">
+          <label>Cole o código aqui:</label>
+          <textarea id="imp-txt" style="min-height:60px;font-family:monospace;font-size:11px;margin-top:4px" placeholder="Cole aqui..."></textarea>
+          <button class="btn g" style="margin-top:6px" onclick="importarCls()">✓ Importar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="s-dashboard" class="screen">
+    <div class="panel-hdr"><button class="back-btn" onclick="ir('menu')">←</button><div class="panel-title">Dashboard</div></div>
+    <div id="dash-content"></div>
+  </div>
+
+  <!-- MARCA -->
+  <div id="s-marca" class="screen">
+    <div class="panel-hdr"><button class="back-btn" onclick="ir('menu')">←</button><div class="panel-title">Minha marca</div></div>
+    <div class="card">
+      <div class="sec">Personalização</div>
+      <div class="row">
+        <div class="fg"><label>Nome da empresa</label><input type="text" id="m-nome" placeholder="Ex: Consultoria Silva" oninput="pvMarca()"></div>
+        <div class="fg"><label>Slogan</label><input type="text" id="m-slogan" placeholder="Ex: Especialista em Vigilância" oninput="pvMarca()"></div>
+      </div>
+      <div class="row">
+        <div class="fg"><label>E-mail profissional</label><input type="email" id="m-email" placeholder="contato@empresa.com.br"></div>
+        <div class="fg"><label>WhatsApp / Telefone</label><input type="text" id="m-fone" placeholder="(00) 00000-0000"></div>
+      </div>
+      <div class="row">
+        <div class="fg"><label>Cor principal</label><input type="color" id="m-cor" value="#1a1a18" oninput="pvMarca()"></div>
+        <div class="fg">
+          <label>Logo</label>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <div id="logo-ph" class="logo-ph" onclick="document.getElementById('inp-logo').click()">+</div>
+            <img id="logo-pv" class="logo-pv" src="" alt="">
+            <input type="file" id="inp-logo" accept="image/*" style="display:none" onchange="carregarLogo(this)">
+            <div style="font-size:12px;color:#888">Toque para adicionar<br><span style="font-size:11px;color:#bbb">PNG transparente ideal</span></div>
+          </div>
+        </div>
+      </div>
+      <button class="btn p" onclick="salvarMarca()">✓ Salvar marca</button>
     </div>
   </div>
 </div>
 
-<!-- OVERLAY FOTO -->
+<!-- OVERLAYS -->
 <div id="ov-foto" class="overlay">
   <div class="ocard">
     <div style="font-size:15px;font-weight:500;text-align:center">Adicionar foto</div>
     <button class="btn p" style="padding:12px;font-size:15px" onclick="abrirCamera()">📷 Usar câmera</button>
-    <label class="btn" style="padding:12px;font-size:15px;text-align:center;cursor:pointer">
-      🖼 Escolher da galeria
-      <input type="file" id="inp-galeria" accept="image/*" multiple style="display:none" onchange="fotosDaGaleria(this)">
-    </label>
+    <label class="btn" style="padding:12px;font-size:15px;text-align:center;cursor:pointer">🖼 Galeria<input type="file" id="inp-galeria" accept="image/*" multiple style="display:none" onchange="fotosGaleria(this)"></label>
     <button class="btn d" onclick="fecharOvFoto()">✕ Cancelar</button>
   </div>
 </div>
-
-<!-- OVERLAY CÂMERA -->
 <div id="ov-camera" class="overlay">
   <video id="cam-video" style="width:100%;max-width:480px;border-radius:10px;background:#000" playsinline autoplay></video>
   <div style="display:flex;gap:12px">
@@ -236,362 +406,260 @@ textarea{resize:vertical;min-height:44px}
     <button class="btn d" style="padding:14px 20px" onclick="fecharCamera()">✕</button>
   </div>
 </div>
-
-<!-- OVERLAY VER FOTO -->
 <div id="ov-img" class="overlay" onclick="fecharOvImg()">
   <img id="ov-img-src" src="" style="max-width:95vw;max-height:85vh;border-radius:10px" alt="">
   <button class="btn" onclick="fecharOvImg()">✕ Fechar</button>
 </div>
 
 <script>
-var cls = JSON.parse(localStorage.getItem('c_cls')||'[]');
-var vis = JSON.parse(localStorage.getItem('c_vis')||'[]');
-var marca = JSON.parse(localStorage.getItem('c_marca')||'{}');
-var tmpItems = [];
-var ans = {}, fotos = {}, coments = {};
-var fotoIdx = -1;
+// ─── ESTADO ──────────────────────────────────────────────
+var U=null,cls=[],vis=[],clientes=[],pendentes=[],agenda=[],marca={};
+var tmpItems=[],ans={},fotos={},coments={},fotoIdx=-1,visitaId=null,editCliId=null;
+var calMes=new Date().getMonth(),calAno=new Date().getFullYear(),diaSel=null;
 
-var CHECKLISTS_BASE = [
-  {
-    id:'base_rdc216', tipo:'Serviço de Alimentação', setor:'Higiene', tema:'RDC 216 — Boas Práticas',
-    itens:[
-      {id:'b1',texto:'Edificação, instalações, equipamentos e utensílios estão em condições higiênico-sanitárias adequadas?'},
-      {id:'b2',texto:'Existe controle de saúde dos manipuladores (atestados, exames)?'},
-      {id:'b3',texto:'Os manipuladores usam uniformes limpos, cabelos cobertos e sem adornos?'},
-      {id:'b4',texto:'Higienização das mãos é realizada corretamente nos momentos adequados?'},
-      {id:'b5',texto:'Matérias-primas e ingredientes estão identificados, dentro do prazo e armazenados corretamente?'},
-      {id:'b6',texto:'Temperatura dos equipamentos de refrigeração e congelamento está correta?'},
-      {id:'b7',texto:'Alimentos preparados estão protegidos de contaminação e com temperatura controlada?'},
-      {id:'b8',texto:'Existe separação física entre alimentos crus e cozidos?'},
-      {id:'b9',texto:'Água utilizada é potável e tem controle de qualidade?'},
-      {id:'b10',texto:'Existe Manual de Boas Práticas e POPs implantados e atualizados?'},
-      {id:'b11',texto:'POPs de higienização de instalações estão disponíveis e sendo seguidos?'},
-      {id:'b12',texto:'POPs de controle de pragas estão disponíveis e sendo seguidos?'},
-      {id:'b13',texto:'POPs de higienização do reservatório de água estão disponíveis?'},
-      {id:'b14',texto:'Registros de controle de temperatura são realizados e arquivados?'},
-      {id:'b15',texto:'Responsável Técnico está identificado e presente durante o funcionamento?'}
-    ]
-  },
-  {
-    id:'base_higiene', tipo:'Serviço de Alimentação', setor:'Higiene', tema:'Higienização Geral',
-    itens:[
-      {id:'h1',texto:'Pisos limpos, sem resíduos, gordura ou umidade?'},
-      {id:'h2',texto:'Paredes e tetos sem sujidade, mofo ou descascamento?'},
-      {id:'h3',texto:'Ralos e canaletas limpos e funcionando corretamente?'},
-      {id:'h4',texto:'Bancadas e superfícies de manipulação higienizadas?'},
-      {id:'h5',texto:'Equipamentos (fogões, fornos, fritadeiras) limpos externamente e internamente?'},
-      {id:'h6',texto:'Utensílios (facas, tábuas, panelas) higienizados corretamente?'},
-      {id:'h7',texto:'Tábuas de corte separadas por tipo de alimento (carne, legumes, etc.)?'},
-      {id:'h8',texto:'Pias de higienização com sabonete líquido, papel toalha e álcool gel?'},
-      {id:'h9',texto:'Lixeiras com tampa e pedal, em número e localização adequados?'},
-      {id:'h10',texto:'Câmaras e geladeiras limpas, sem odor, sem excesso de gelo?'},
-      {id:'h11',texto:'Produtos de limpeza identificados e armazenados separados dos alimentos?'},
-      {id:'h12',texto:'Panos de limpeza são descartáveis ou higienizados corretamente?'}
-    ]
-  },
-  {
-    id:'base_estrutural', tipo:'Serviço de Alimentação', setor:'Estrutura', tema:'Checklist Estrutural',
-    itens:[
-      {id:'e1',texto:'Piso de material liso, resistente, impermeável e antiderrapante?'},
-      {id:'e2',texto:'Paredes e divisórias de material liso, impermeável, lavável?'},
-      {id:'e3',texto:'Forro ou teto sem goteiras, trincas ou descascamento?'},
-      {id:'e4',texto:'Janelas e aberturas com telas milimétricas em bom estado?'},
-      {id:'e5',texto:'Portas de acesso com fechamento automático e sem folgas?'},
-      {id:'e6',texto:'Iluminação adequada em todas as áreas de manipulação?'},
-      {id:'e7',texto:'Ventilação adequada sem causar contaminação cruzada?'},
-      {id:'e8',texto:'Instalações elétricas protegidas e em bom estado?'},
-      {id:'e9',texto:'Banheiros e vestiários sem comunicação direta com a área de produção?'},
-      {id:'e10',texto:'Reservatório de água limpo, vedado e higienizado dentro do prazo?'},
-      {id:'e11',texto:'Área de recebimento de mercadorias adequada e separada da produção?'},
-      {id:'e12',texto:'Estoque organizado, com prateleiras sem contato com o piso, limpo e seco?'}
-    ]
-  },
-  {
-    id:'base_documentacao', tipo:'Serviço de Alimentação', setor:'Documentação', tema:'Documentação Vigilância Sanitária',
-    itens:[
-      {id:'d1',texto:'Alvará Sanitário válido e afixado em local visível?'},
-      {id:'d2',texto:'Alvará de Funcionamento da Prefeitura válido?'},
-      {id:'d3',texto:'Manual de Boas Práticas elaborado e atualizado?'},
-      {id:'d4',texto:'POPs (Procedimentos Operacionais Padronizados) disponíveis e atualizados?'},
-      {id:'d5',texto:'Registro de treinamentos dos manipuladores arquivados?'},
-      {id:'d6',texto:'Atestados de saúde dos manipuladores válidos e arquivados?'},
-      {id:'d7',texto:'Laudos de potabilidade da água dentro do prazo?'},
-      {id:'d8',texto:'Comprovante de higienização do reservatório de água (semestral)?'},
-      {id:'d9',texto:'Contrato e laudos de empresa de controle de pragas válidos?'},
-      {id:'d10',texto:'Notas fiscais de compras de matérias-primas arquivadas?'},
-      {id:'d11',texto:'Registros de temperatura de equipamentos arquivados?'},
-      {id:'d12',texto:'Responsável Técnico com habilitação comprovada?'}
-    ]
-  },
-  {
-    id:'base_pragas', tipo:'Serviço de Alimentação', setor:'Controle de Pragas', tema:'Controle Integrado de Pragas',
-    itens:[
-      {id:'p1',texto:'Existe contrato vigente com empresa especializada em controle de pragas?'},
-      {id:'p2',texto:'Laudos e relatórios de desinsetização/desratização dentro do prazo?'},
-      {id:'p3',texto:'Certificado da empresa de controle de pragas válido (cadastro na ANVISA)?'},
-      {id:'p4',texto:'Ausência de sinais de presença de insetos (baratas, moscas, formigas)?'},
-      {id:'p5',texto:'Ausência de sinais de presença de roedores (fezes, roeduras, ninhos)?'},
-      {id:'p6',texto:'Todas as aberturas (ralos, janelas, portas) com barreiras físicas adequadas?'},
-      {id:'p7',texto:'Ausência de acúmulo de materiais que possam servir de abrigo para pragas?'},
-      {id:'p8',texto:'Lixo é retirado diariamente e armazenado em área separada com tampa?'},
-      {id:'p9',texto:'Não há alimentos ou embalagens com sinais de ataque de pragas?'},
-      {id:'p10',texto:'Área externa sem mato alto, entulho ou materiais que atraiam pragas?'}
-    ]
-  },
-  {
-    id:'base_treinamento', tipo:'Serviço de Alimentação', setor:'Treinamento', tema:'Treinamento de Manipuladores',
-    itens:[
-      {id:'t1',texto:'Todos os manipuladores receberam treinamento de boas práticas?'},
-      {id:'t2',texto:'Registros de treinamento com assinaturas estão arquivados?'},
-      {id:'t3',texto:'Manipuladores conhecem os POPs e sabem aplicá-los?'},
-      {id:'t4',texto:'Higienização das mãos é realizada nos momentos corretos?'},
-      {id:'t5',texto:'Manipuladores conhecem os perigos de contaminação cruzada?'},
-      {id:'t6',texto:'Uso correto de EPI (luvas, máscara, touca) é observado?'},
-      {id:'t7',texto:'Manipuladores com sintomas de doenças estão afastados da produção?'},
-      {id:'t8',texto:'Está previsto treinamento periódico (mínimo anual)?'},
-      {id:'t9',texto:'Há responsável pelo monitoramento das boas práticas no estabelecimento?'},
-      {id:'t10',texto:'Manipuladores conhecem as temperaturas seguras para alimentos?'}
-    ]
-  },
-  {
-    id:'base_livre', tipo:'Qualquer estabelecimento', setor:'Geral', tema:'Visita Livre (fotos e comentários)',
-    itens:[
-      {id:'l1',texto:'Observação 1 — descreva no campo de comentário e/ou adicione foto'},
-      {id:'l2',texto:'Observação 2 — descreva no campo de comentário e/ou adicione foto'},
-      {id:'l3',texto:'Observação 3 — descreva no campo de comentário e/ou adicione foto'},
-      {id:'l4',texto:'Observação 4 — descreva no campo de comentário e/ou adicione foto'},
-      {id:'l5',texto:'Observação 5 — descreva no campo de comentário e/ou adicione foto'},
-      {id:'l6',texto:'Observação 6 — descreva no campo de comentário e/ou adicione foto'},
-      {id:'l7',texto:'Observação 7 — descreva no campo de comentário e/ou adicione foto'},
-      {id:'l8',texto:'Observação 8 — descreva no campo de comentário e/ou adicione foto'},
-      {id:'l9',texto:'Observação 9 — descreva no campo de comentário e/ou adicione foto'},
-      {id:'l10',texto:'Observação 10 — descreva no campo de comentário e/ou adicione foto'}
-    ]
-  }
-];
-
-function salvar() {
-  localStorage.setItem('c_cls', JSON.stringify(cls));
-  localStorage.setItem('c_vis', JSON.stringify(vis));
-  localStorage.setItem('c_marca', JSON.stringify(marca));
+// ─── UTILS ───────────────────────────────────────────────
+function getUs(){return JSON.parse(localStorage.getItem('c_us')||'{}');}
+function setUs(u){localStorage.setItem('c_us',JSON.stringify(u));}
+function getSessao(){return localStorage.getItem('c_sessao')||null;}
+function setSessao(e){localStorage.setItem('c_sessao',e);}
+function limparSessao(){localStorage.removeItem('c_sessao');}
+function fmtData(d){return d?new Date(d+'T12:00:00').toLocaleDateString('pt-BR'):'—';}
+function calcScore(a){
+  var v=Object.values(a),s=v.filter(function(x){return x==='sim';}).length,
+  n=v.filter(function(x){return x==='nao';}).length,p=v.filter(function(x){return x==='parc';}).length,
+  na=v.filter(function(x){return x==='na';}).length,t=s+n+p;
+  return{sim:s,nao:n,parc:p,na:na,pct:t?Math.round((s+p*0.5)/t*100):0};
+}
+function salvar(){
+  var us=getUs();
+  if(!U||!us[U])return;
+  us[U].cls=cls;us[U].vis=vis;us[U].clientes=clientes;
+  us[U].pendentes=pendentes;us[U].agenda=agenda;us[U].marca=marca;
+  setUs(us);
 }
 
-function go(p) {
-  ['cfg','vis','his','marc'].forEach(function(x) {
-    document.getElementById('p-'+x).classList.remove('on');
-    document.getElementById('nb-'+x).classList.remove('on');
+// ─── NAVEGAÇÃO ───────────────────────────────────────────
+function ir(s){
+  document.querySelectorAll('.screen').forEach(function(el){el.classList.remove('on');});
+  var dest=document.getElementById('s-'+s);
+  if(dest)dest.classList.add('on');
+  if(s==='visita')initVis();
+  if(s==='clientes'){editCliId=null;limparFormCli();renderClientes('');}
+  if(s==='agenda')initAgenda();
+  if(s==='pendentes')renderPendentes();
+  if(s==='historico')renderHis('');
+  if(s==='checklists'){renderBase();renderCls();}
+  if(s==='dashboard')renderDash();
+  if(s==='marca')carregarFormMarca();
+  window.scrollTo(0,0);
+}
+
+// ─── AUTH ────────────────────────────────────────────────
+function authTab(tab){
+  document.querySelectorAll('.auth-tab').forEach(function(t){t.classList.remove('on');});
+  document.querySelectorAll('.auth-panel').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.auth-tab').forEach(function(t){
+    if(t.textContent.toLowerCase().includes(tab==='login'?'entrar':'criar'))t.classList.add('on');
   });
-  document.getElementById('p-'+p).classList.add('on');
-  document.getElementById('nb-'+p).classList.add('on');
-  if (p==='vis') initVis();
-  if (p==='his') renderHis();
-  if (p==='marc') carregarFormMarca();
-  if (p==='cfg') renderBase();
+  document.getElementById('ap-'+tab).classList.add('on');
 }
 
-function carregarFormMarca() {
-  if (marca.nome) document.getElementById('m-nome').value = marca.nome;
-  if (marca.slogan) document.getElementById('m-slogan').value = marca.slogan;
-  if (marca.email) document.getElementById('m-email').value = marca.email;
-  if (marca.fone) document.getElementById('m-fone').value = marca.fone;
-  if (marca.cor) document.getElementById('m-cor').value = marca.cor;
-  if (marca.logo) {
-    document.getElementById('logo-preview').src = marca.logo;
-    document.getElementById('logo-preview').style.display = 'block';
-    document.getElementById('logo-placeholder').style.display = 'none';
+function fazerCadastro(){
+  var nome=document.getElementById('c-nome').value.trim();
+  var email=document.getElementById('c-email').value.trim().toLowerCase();
+  var empresa=document.getElementById('c-empresa').value.trim();
+  var fone=document.getElementById('c-fone').value.trim();
+  var senha=document.getElementById('c-senha').value;
+  var senha2=document.getElementById('c-senha2').value;
+  var err=document.getElementById('c-err'),ok=document.getElementById('c-ok');
+  err.style.display='none';ok.style.display='none';
+  if(!nome){err.textContent='Informe seu nome.';err.style.display='block';return;}
+  if(!email||!email.includes('@')){err.textContent='E-mail inválido.';err.style.display='block';return;}
+  if(senha.length<6){err.textContent='Senha deve ter ao menos 6 caracteres.';err.style.display='block';return;}
+  if(senha!==senha2){err.textContent='As senhas não coincidem.';err.style.display='block';return;}
+  var us=getUs();
+  if(us[email]){err.textContent='E-mail já cadastrado.';err.style.display='block';return;}
+  us[email]={nome:nome,email:email,empresa:empresa,fone:fone,senha:btoa(senha),cls:[],vis:[],clientes:[],pendentes:[],agenda:[],marca:{}};
+  setUs(us);
+  ok.textContent='Conta criada! Faça login acima.';ok.style.display='block';
+  document.getElementById('l-email').value=email;
+  authTab('login');
+}
+
+function fazerLogin(){
+  var email=document.getElementById('l-email').value.trim().toLowerCase();
+  var senha=document.getElementById('l-senha').value;
+  var err=document.getElementById('l-err');err.style.display='none';
+  var us=getUs();
+  if(!us[email]){err.textContent='E-mail não encontrado.';err.style.display='block';return;}
+  if(atob(us[email].senha)!==senha){err.textContent='Senha incorreta.';err.style.display='block';return;}
+  setSessao(email);iniciarApp(email);
+}
+
+function fazerLogout(){
+  if(!confirm('Deseja sair?'))return;
+  limparSessao();U=null;
+  document.getElementById('auth-screen').classList.remove('h');
+  document.getElementById('app-main').classList.remove('on');
+  document.getElementById('l-senha').value='';
+}
+
+function iniciarApp(email){
+  var us=getUs();U=email;var u=us[email];
+  cls=u.cls||[];vis=u.vis||[];clientes=u.clientes||[];
+  pendentes=u.pendentes||[];agenda=u.agenda||[];marca=u.marca||{};
+  document.getElementById('auth-screen').classList.add('h');
+  document.getElementById('app-main').classList.add('on');
+  document.getElementById('user-avatar').textContent=u.nome.charAt(0).toUpperCase();
+  aplicarMarca();badges();boasVindas(u);
+  ir('menu');
+}
+
+function badges(){
+  document.getElementById('b-visitas').textContent=vis.length;
+  document.getElementById('b-cls').textContent=cls.length;
+  document.getElementById('b-clientes').textContent=clientes.length;
+  document.getElementById('b-pendentes').textContent=pendentes.length;
+  var hoje=new Date().toISOString().split('T')[0];
+  var agP=agenda.filter(function(a){return a.status==='pendente';}).length;
+  document.getElementById('b-agenda').textContent=agP;
+}
+
+function boasVindas(u){
+  var h=new Date().getHours(),s;
+  if(h<12)s='Bom dia';else if(h<18)s='Boa tarde';else s='Boa noite';
+  document.getElementById('bv-titulo').textContent=s+', '+u.nome.split(' ')[0]+'! 👋';
+  var hoje=new Date().toISOString().split('T')[0];
+  var agHoje=agenda.filter(function(a){return a.data===hoje&&a.status==='pendente';});
+  var txt='';
+  if(agHoje.length){
+    txt='📅 Você tem '+agHoje.length+' visita'+(agHoje.length>1?'s':'')+' agendada'+(agHoje.length>1?'s':'')+' para hoje!\n';
+    agHoje.forEach(function(a){txt+='• '+(a.hora?a.hora+' — ':'')+a.clienteNome+'\n';});
+  } else if(vis.length){
+    txt='Você já realizou '+vis.length+' visita'+(vis.length>1?'s':'')+' com '+clientes.length+' cliente'+(clientes.length>1?'s':'')+' cadastrado'+(clientes.length>1?'s':'')+'.';
+  } else {
+    txt='Configure sua marca, cadastre clientes e adicione checklists para começar.';
   }
+  document.getElementById('bv-texto').textContent=txt;
 }
 
-function carregarLogo(input) {
-  if (!input.files[0]) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    document.getElementById('logo-preview').src = e.target.result;
-    document.getElementById('logo-preview').style.display = 'block';
-    document.getElementById('logo-placeholder').style.display = 'none';
-    marca.logo = e.target.result;
-  };
-  reader.readAsDataURL(input.files[0]);
+// ─── MARCA ───────────────────────────────────────────────
+function carregarFormMarca(){
+  if(marca.nome)document.getElementById('m-nome').value=marca.nome;
+  if(marca.slogan)document.getElementById('m-slogan').value=marca.slogan;
+  if(marca.email)document.getElementById('m-email').value=marca.email;
+  if(marca.fone)document.getElementById('m-fone').value=marca.fone;
+  if(marca.cor)document.getElementById('m-cor').value=marca.cor;
+  if(marca.logo){document.getElementById('logo-pv').src=marca.logo;document.getElementById('logo-pv').style.display='block';document.getElementById('logo-ph').style.display='none';}
+}
+function carregarLogo(input){
+  if(!input.files[0])return;
+  var r=new FileReader();r.onload=function(e){
+    document.getElementById('logo-pv').src=e.target.result;document.getElementById('logo-pv').style.display='block';
+    document.getElementById('logo-ph').style.display='none';marca.logo=e.target.result;
+  };r.readAsDataURL(input.files[0]);
+}
+function pvMarca(){
+  document.getElementById('app-header').style.background=document.getElementById('m-cor').value;
+  document.getElementById('header-nome').textContent=document.getElementById('m-nome').value||'Checklist de Consultoria';
+  var sl=document.getElementById('m-slogan').value,el=document.getElementById('header-slogan');
+  if(sl){el.textContent=sl;el.style.display='block';}else el.style.display='none';
+}
+function salvarMarca(){
+  marca.nome=document.getElementById('m-nome').value;marca.slogan=document.getElementById('m-slogan').value;
+  marca.email=document.getElementById('m-email').value;marca.fone=document.getElementById('m-fone').value;
+  marca.cor=document.getElementById('m-cor').value;salvar();aplicarMarca();alert('Marca salva!');
+}
+function aplicarMarca(){
+  if(marca.cor)document.getElementById('app-header').style.background=marca.cor;
+  if(marca.nome)document.getElementById('header-nome').textContent=marca.nome;
+  if(marca.slogan){document.getElementById('header-slogan').textContent=marca.slogan;document.getElementById('header-slogan').style.display='block';}
+  if(marca.logo){var img=document.getElementById('header-logo');img.src=marca.logo;img.style.display='block';}
 }
 
-function previewMarca() {
-  var cor = document.getElementById('m-cor').value;
-  document.getElementById('app-header').style.background = cor;
-  var nome = document.getElementById('m-nome').value||'Checklist de Consultoria';
-  document.getElementById('header-empresa').textContent = nome;
-  var slogan = document.getElementById('m-slogan').value;
-  var sel = document.getElementById('header-slogan');
-  if (slogan) { sel.textContent = slogan; sel.style.display='block'; } else sel.style.display='none';
+// ─── CLIENTES ────────────────────────────────────────────
+function limparFormCli(){
+  ['ci-nome','ci-tipo','ci-resp','ci-cargo','ci-fone','ci-email','ci-end','ci-cidade','ci-obs'].forEach(function(id){document.getElementById(id).value='';});
 }
-
-function salvarMarca() {
-  marca.nome = document.getElementById('m-nome').value;
-  marca.slogan = document.getElementById('m-slogan').value;
-  marca.email = document.getElementById('m-email').value;
-  marca.fone = document.getElementById('m-fone').value;
-  marca.cor = document.getElementById('m-cor').value;
-  salvar(); aplicarMarca();
-  alert('Marca salva!');
+function salvarCliente(){
+  var nome=document.getElementById('ci-nome').value.trim();
+  if(!nome){alert('Informe o nome.');return;}
+  var c={id:editCliId||Date.now()+'',nome:nome,tipo:document.getElementById('ci-tipo').value.trim(),
+    responsavel:document.getElementById('ci-resp').value.trim(),cargo:document.getElementById('ci-cargo').value.trim(),
+    fone:document.getElementById('ci-fone').value.trim(),email:document.getElementById('ci-email').value.trim(),
+    endereco:document.getElementById('ci-end').value.trim(),cidade:document.getElementById('ci-cidade').value.trim(),
+    obs:document.getElementById('ci-obs').value.trim()};
+  if(editCliId){var idx=clientes.findIndex(function(x){return x.id===editCliId;});if(idx>=0)clientes[idx]=c;}
+  else clientes.push(c);
+  editCliId=null;salvar();limparFormCli();renderClientes('');badges();
+  alert('Cliente salvo!');
 }
-
-function aplicarMarca() {
-  if (marca.cor) document.getElementById('app-header').style.background = marca.cor;
-  if (marca.nome) document.getElementById('header-empresa').textContent = marca.nome;
-  if (marca.slogan) { document.getElementById('header-slogan').textContent = marca.slogan; document.getElementById('header-slogan').style.display='block'; }
-  if (marca.logo) {
-    var img = document.getElementById('header-logo');
-    img.src = marca.logo; img.style.display='block';
-  }
+function editarCli(id){
+  var c=clientes.find(function(x){return x.id===id;});if(!c)return;
+  editCliId=id;
+  document.getElementById('ci-nome').value=c.nome||'';document.getElementById('ci-tipo').value=c.tipo||'';
+  document.getElementById('ci-resp').value=c.responsavel||'';document.getElementById('ci-cargo').value=c.cargo||'';
+  document.getElementById('ci-fone').value=c.fone||'';document.getElementById('ci-email').value=c.email||'';
+  document.getElementById('ci-end').value=c.endereco||'';document.getElementById('ci-cidade').value=c.cidade||'';
+  document.getElementById('ci-obs').value=c.obs||'';window.scrollTo(0,0);
 }
-
-function renderBase() {
-  var el = document.getElementById('lista-base');
-  el.innerHTML = CHECKLISTS_BASE.map(function(cl) {
-    var jatem = cls.some(function(c){ return c.id===cl.id; });
-    return '<div class="base-cl-item">'
-      +'<div>'
-      +'<div style="font-weight:500;font-size:13px">'+cl.tema+'</div>'
-      +'<div style="font-size:11px;color:#777">'+cl.tipo+' — '+cl.itens.length+' itens</div>'
-      +'</div>'
-      +(jatem
-        ? '<span style="font-size:12px;color:#2a6;font-weight:500">✓ Adicionado</span>'
-        : '<button class="btn p" style="font-size:11px;padding:5px 12px" onclick="adicionarBase(\''+cl.id+'\')">+ Usar</button>')
-      +'</div>';
-  }).join('');
+function excluirCli(id){
+  if(!confirm('Excluir este cliente?'))return;
+  clientes=clientes.filter(function(x){return x.id!==id;});salvar();renderClientes('');badges();
 }
-
-function adicionarBase(id) {
-  var cl = CHECKLISTS_BASE.find(function(c){ return c.id===id; });
-  if (!cl) return;
-  if (cls.some(function(c){ return c.id===id; })) { alert('Já adicionado!'); return; }
-  cls.push(JSON.parse(JSON.stringify(cl)));
-  salvar(); renderBase(); renderCls();
-  alert('"'+cl.tema+'" adicionado aos seus checklists!');
-}
-
-function addItem() {
-  var txt = document.getElementById('novo-item').value.trim();
-  if (!txt) return;
-  tmpItems.push({id:Date.now()+'r'+Math.random(), texto:txt});
-  document.getElementById('novo-item').value='';
-  renderItemsCfg();
-}
-
-function addBulk() {
-  var txt = document.getElementById('bulk-txt').value.trim();
-  if (!txt) return;
-  txt.split('\n').forEach(function(l){ l=l.trim(); if(l) tmpItems.push({id:Date.now()+'r'+Math.random(),texto:l}); });
-  document.getElementById('bulk-txt').value='';
-  renderItemsCfg();
-}
-
-function renderItemsCfg() {
-  var el = document.getElementById('items-cfg');
-  if (!tmpItems.length) { el.innerHTML='<div class="empty">Nenhum item ainda</div>'; return; }
-  el.innerHTML = tmpItems.map(function(it,i){
-    return '<div class="item-row"><span style="flex:1">'+(i+1)+'. '+it.texto+'</span>'
-      +'<button class="btn d" style="padding:3px 8px;font-size:11px" onclick="remItem('+i+')">✕</button></div>';
-  }).join('');
-}
-
-function remItem(i) { tmpItems.splice(i,1); renderItemsCfg(); }
-
-function salvarCL() {
-  var tipo = document.getElementById('cl-tipo').value.trim();
-  if (!tipo) { alert('Informe o tipo de estabelecimento.'); return; }
-  if (!tmpItems.length) { alert('Adicione ao menos 1 item.'); return; }
-  cls.push({id:Date.now()+'', tipo:tipo, setor:document.getElementById('cl-setor').value.trim(), tema:document.getElementById('cl-tema').value.trim(), itens:tmpItems.slice()});
-  salvar(); tmpItems=[];
-  document.getElementById('cl-tipo').value='';
-  document.getElementById('cl-setor').value='';
-  document.getElementById('cl-tema').value='';
-  renderItemsCfg(); renderCls(); renderBase();
-  alert('Checklist salvo!');
-}
-
-function renderCls() {
-  var el = document.getElementById('lista-cls');
-  if (!cls.length) { el.innerHTML='<div class="empty">Nenhum checklist salvo</div>'; return; }
-  el.innerHTML = cls.map(function(cl,i){
-    return '<div class="cl-card">'
-      +'<span class="badge b-tipo">'+cl.tipo+'</span>'
-      +(cl.setor?'<span class="badge b-setor">'+cl.setor+'</span>':'')
-      +(cl.tema?'<span class="badge b-tema">'+cl.tema+'</span>':'')
-      +'<div style="font-size:12px;color:#777;margin-top:4px">'+cl.itens.length+' itens</div>'
-      +'<div style="display:flex;gap:6px;margin-top:8px">'
-      +'<button class="btn" style="font-size:11px;padding:4px 10px" onclick="editCL('+i+')">✏ Editar</button>'
-      +'<button class="btn d" style="font-size:11px;padding:4px 10px" onclick="delCL('+i+')">✕ Excluir</button>'
+function renderClientes(f){
+  var el=document.getElementById('lista-clientes');
+  var lista=clientes.filter(function(c){return!f||c.nome.toLowerCase().includes(f.toLowerCase())||(c.tipo&&c.tipo.toLowerCase().includes(f.toLowerCase()));});
+  if(!lista.length){el.innerHTML='<div class="empty">'+(f?'Nenhum resultado':'Nenhum cliente cadastrado')+'</div>';return;}
+  el.innerHTML=lista.map(function(c){
+    var nv=vis.filter(function(v){return v.clienteId===c.id;}).length;
+    return '<div class="cli-card"><div class="cli-av">'+c.nome.charAt(0).toUpperCase()+'</div>'
+      +'<div style="flex:1"><div style="font-size:14px;font-weight:500">'+c.nome+'</div>'
+      +'<div style="font-size:12px;color:#888">'+(c.tipo||'')+(c.cidade?' · '+c.cidade:'')+(c.responsavel?' · '+c.responsavel:'')+'</div>'
+      +(nv>0?'<div style="font-size:11px;color:#2a6;margin-top:2px">'+nv+' visita'+(nv>1?'s':'')+' realizada'+(nv>1?'s':'')+'</div>':'')
+      +'</div><div style="display:flex;gap:6px">'
+      +'<button class="btn" style="font-size:11px;padding:4px 8px" onclick="editarCli(\''+c.id+'\')">✏</button>'
+      +'<button class="btn d" style="font-size:11px;padding:4px 8px" onclick="excluirCli(\''+c.id+'\')">✕</button>'
       +'</div></div>';
   }).join('');
 }
 
-function editCL(i) {
-  var cl=cls[i];
-  document.getElementById('cl-tipo').value=cl.tipo;
-  document.getElementById('cl-setor').value=cl.setor||'';
-  document.getElementById('cl-tema').value=cl.tema||'';
-  tmpItems=cl.itens.slice();
-  cls.splice(i,1); salvar(); renderItemsCfg(); renderCls(); window.scrollTo(0,0);
-}
-
-function delCL(i) {
-  if (!confirm('Excluir este checklist?')) return;
-  cls.splice(i,1); salvar(); renderCls(); renderBase();
-}
-
-function exportarCls() {
-  if (!cls.length) { alert('Nenhum checklist para exportar.'); return; }
-  var cod = btoa(unescape(encodeURIComponent(JSON.stringify(cls))));
-  document.getElementById('exp-txt').value=cod;
-  document.getElementById('exp-area').style.display='block';
-  document.getElementById('imp-area').style.display='none';
-}
-
-function copiarExp() {
-  var el=document.getElementById('exp-txt');
-  el.select(); el.setSelectionRange(0,99999);
-  try{document.execCommand('copy');}catch(e){navigator.clipboard&&navigator.clipboard.writeText(el.value);}
-  var ok=document.getElementById('copy-ok');
-  ok.style.display='inline';
-  setTimeout(function(){ok.style.display='none';},2500);
-}
-
-function showImport() {
-  document.getElementById('imp-area').style.display='block';
-  document.getElementById('exp-area').style.display='none';
-}
-
-function importarCls() {
-  var txt=document.getElementById('imp-txt').value.trim();
-  if (!txt){alert('Cole o código antes de importar.');return;}
-  try {
-    var imp=JSON.parse(decodeURIComponent(escape(atob(txt))));
-    if (!Array.isArray(imp)) throw new Error();
-    var n=0;
-    imp.forEach(function(cl){ if(!cls.some(function(c){return c.id===cl.id;})){cls.push(cl);n++;} });
-    salvar(); renderCls(); renderBase();
-    document.getElementById('imp-area').style.display='none';
-    document.getElementById('imp-txt').value='';
-    alert(n+' checklist(s) importado(s)!');
-  } catch(e) { alert('Código inválido.'); }
-}
-
-function initVis() {
+// ─── VISITA ──────────────────────────────────────────────
+function initVis(){
+  visitaId=Date.now()+'v';
   document.getElementById('v-data').value=new Date().toISOString().split('T')[0];
-  var sel=document.getElementById('v-cl');
-  sel.innerHTML='<option value="">-- selecione --</option>';
-  cls.forEach(function(cl,i){
-    sel.innerHTML+='<option value="'+i+'">'+cl.tipo+(cl.setor?' | '+cl.setor:'')+(cl.tema?' | '+cl.tema:'')+'</option>';
-  });
+  var sc=document.getElementById('v-cli-sel');
+  sc.innerHTML='<option value="">-- selecione um cliente ou preencha manualmente --</option>';
+  clientes.forEach(function(c){sc.innerHTML+='<option value="'+c.id+'">'+c.nome+(c.tipo?' — '+c.tipo:'')+'</option>';});
+  var scl=document.getElementById('v-cl');
+  scl.innerHTML='<option value="">-- selecione --</option>';
+  cls.forEach(function(cl,i){scl.innerHTML+='<option value="'+i+'">'+cl.tipo+(cl.setor?' | '+cl.setor:'')+(cl.tema?' | '+cl.tema:'')+'</option>';});
   document.getElementById('exec-area').innerHTML='';
   document.getElementById('resumo-area').style.display='none';
-  ans={}; fotos={}; coments={};
+  document.getElementById('v-cli-box').style.display='none';
+  document.getElementById('v-cli').value='';document.getElementById('v-resp').value='';
+  ans={};fotos={};coments={};
+  if(window._ast)clearInterval(window._ast);
+  window._ast=setInterval(function(){salvarPendente();},30000);
 }
-
-function carregarCL() {
+function preencherCliente(){
+  var id=document.getElementById('v-cli-sel').value;
+  var box=document.getElementById('v-cli-box');
+  if(!id){box.style.display='none';document.getElementById('v-cli').value='';document.getElementById('v-resp').value='';return;}
+  var c=clientes.find(function(x){return x.id===id;});if(!c)return;
+  document.getElementById('v-cli').value=c.nome;
+  document.getElementById('v-resp').value=c.responsavel||'';
+  var info='';
+  if(c.tipo)info+='<span style="font-weight:500">'+c.tipo+'</span>';
+  if(c.endereco)info+=(info?' · ':'')+c.endereco;if(c.cidade)info+=(info?' · ':'')+c.cidade;
+  if(c.fone)info+='<br>📱 '+c.fone;if(c.email)info+=' · ✉ '+c.email;
+  if(c.obs)info+='<br><span style="color:#888">'+c.obs+'</span>';
+  box.innerHTML=info;box.style.display='block';
+}
+function carregarCL(){
   var idx=document.getElementById('v-cl').value;
-  if (idx===''){document.getElementById('exec-area').innerHTML='';document.getElementById('resumo-area').style.display='none';return;}
-  ans={}; fotos={}; coments={};
+  if(idx===''){document.getElementById('exec-area').innerHTML='';document.getElementById('resumo-area').style.display='none';return;}
+  ans={};fotos={};coments={};
   var cl=cls[parseInt(idx)];
   document.getElementById('exec-area').innerHTML=cl.itens.map(function(it,i){
     return '<div class="exec-card" id="ec-'+i+'">'
@@ -604,215 +672,604 @@ function carregarCL() {
       +'</div>'
       +'<textarea placeholder="Comentário..." style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid #ddd;font-size:13px;resize:vertical;min-height:40px;margin-top:4px;color:#1a1a18" onchange="coments['+i+']=this.value"></textarea>'
       +'<div class="photo-area">'
-      +'<div class="photo-btn" onclick="abrirOvFoto('+i+')" title="Adicionar foto">📷</div>'
+      +'<div class="photo-btn" onclick="abrirOvFoto('+i+')">📷</div>'
       +'<div id="ft-'+i+'" style="display:flex;gap:6px;flex-wrap:wrap"></div>'
-      +'</div>'
-      +'</div>';
+      +'</div></div>';
   }).join('');
   document.getElementById('resumo-area').style.display='block';
   atualizarScore();
 }
-
-function setAns(i,val,btn) {
+function setAns(i,val,btn){
   document.getElementById('ec-'+i).querySelectorAll('.rb').forEach(function(b){b.classList.remove('on');});
-  btn.classList.add('on'); ans[i]=val; atualizarScore();
+  btn.classList.add('on');ans[i]=val;atualizarScore();salvarPendente();
+}
+function atualizarScore(){
+  var sc=calcScore(ans);
+  document.getElementById('r-sim').textContent=sc.sim;document.getElementById('r-nao').textContent=sc.nao;
+  document.getElementById('r-parc').textContent=sc.parc;document.getElementById('r-na').textContent=sc.na;
+  document.getElementById('bar-fill').style.width=sc.pct+'%';document.getElementById('pct-txt').textContent=sc.pct+'%';
 }
 
-function atualizarScore() {
-  var vals=Object.values(ans);
-  var sim=vals.filter(function(v){return v==='sim';}).length;
-  var nao=vals.filter(function(v){return v==='nao';}).length;
-  var parc=vals.filter(function(v){return v==='parc';}).length;
-  var na=vals.filter(function(v){return v==='na';}).length;
-  document.getElementById('r-sim').textContent=sim;
-  document.getElementById('r-nao').textContent=nao;
-  document.getElementById('r-parc').textContent=parc;
-  document.getElementById('r-na').textContent=na;
-  var total=sim+nao+parc;
-  var pct=total?Math.round((sim+parc*0.5)/total*100):0;
-  document.getElementById('bar-fill').style.width=pct+'%';
-  document.getElementById('pct-txt').textContent=pct+'%';
+// ─── PENDENTES ───────────────────────────────────────────
+function salvarPendente(){
+  if(!visitaId)return;
+  var idx=document.getElementById('v-cl').value;if(idx==='')return;
+  var sc=calcScore(ans);
+  var p={id:visitaId,clienteId:document.getElementById('v-cli-sel').value,
+    cliente:document.getElementById('v-cli').value||'—',responsavel:document.getElementById('v-resp').value||'—',
+    data:document.getElementById('v-data').value,clIdx:parseInt(idx),
+    clNome:cls[parseInt(idx)].tema||cls[parseInt(idx)].tipo,tipo:cls[parseInt(idx)].tipo,setor:cls[parseInt(idx)].setor,
+    ans:Object.assign({},ans),fotos:JSON.parse(JSON.stringify(fotos)),coments:Object.assign({},coments),
+    pct:sc.pct,sim:sc.sim,nao:sc.nao,parc:sc.parc,na:sc.na,salvoEm:new Date().toLocaleString('pt-BR')};
+  var ei=pendentes.findIndex(function(x){return x.id===visitaId;});
+  if(ei>=0)pendentes[ei]=p;else pendentes.push(p);
+  salvar();badges();
+}
+function renderPendentes(){
+  var el=document.getElementById('lista-pendentes');
+  if(!pendentes.length){el.innerHTML='<div class="empty">Nenhuma visita pendente</div>';return;}
+  el.innerHTML=pendentes.map(function(p){
+    var cor=p.pct>=70?'#2a6':p.pct>=40?'#854f0b':'#c00';
+    return '<div class="cl-card" style="margin-bottom:8px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">'
+      +'<div><div style="font-size:14px;font-weight:500">'+p.cliente+'</div>'
+      +'<div style="font-size:12px;color:#777">'+fmtData(p.data)+' — '+p.clNome+'</div>'
+      +'<div style="font-size:11px;color:#aaa">Salvo: '+p.salvoEm+'</div></div>'
+      +'<div style="text-align:right"><div style="font-size:18px;font-weight:500;color:'+cor+'">'+p.pct+'%</div></div></div>'
+      +'<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">'
+      +'<button class="btn p" style="font-size:12px" onclick="retornarPendente(\''+p.id+'\')">▶ Continuar</button>'
+      +'<button class="btn g" style="font-size:12px" onclick="finalizarPendente(\''+p.id+'\')">✓ Finalizar PDF</button>'
+      +'<button class="btn d" style="font-size:12px" onclick="excluirPendente(\''+p.id+'\')">✕ Descartar</button>'
+      +'</div></div>';
+  }).join('');
+}
+function retornarPendente(id){
+  var p=pendentes.find(function(x){return x.id===id;});if(!p)return;
+  ir('visita');
+  setTimeout(function(){
+    if(p.clienteId){document.getElementById('v-cli-sel').value=p.clienteId;preencherCliente();}
+    document.getElementById('v-cli').value=p.cliente;document.getElementById('v-resp').value=p.responsavel;
+    document.getElementById('v-data').value=p.data;
+    document.getElementById('v-cl').value=p.clIdx;carregarCL();
+    visitaId=p.id;ans=p.ans||{};fotos=p.fotos||{};coments=p.coments||{};
+    Object.keys(ans).forEach(function(i){
+      var c=document.getElementById('ec-'+i);if(!c)return;
+      c.querySelectorAll('.rb').forEach(function(b){b.classList.remove('on');});
+      var b=c.querySelector('.rb.'+ans[i]);if(b)b.classList.add('on');
+    });
+    Object.keys(coments).forEach(function(i){var ta=document.querySelector('#ec-'+i+' textarea');if(ta)ta.value=coments[i];});
+    Object.keys(fotos).forEach(function(i){
+      var ct=document.getElementById('ft-'+i);if(!ct)return;
+      fotos[i].forEach(function(d){var img=document.createElement('img');img.src=d;img.className='thumb';img.onclick=function(){document.getElementById('ov-img-src').src=d;document.getElementById('ov-img').classList.add('on');};ct.appendChild(img);});
+    });
+    atualizarScore();
+  },150);
+}
+function finalizarPendente(id){retornarPendente(id);setTimeout(function(){gerarPDF();},400);}
+function excluirPendente(id){
+  if(!confirm('Descartar?'))return;
+  pendentes=pendentes.filter(function(x){return x.id!==id;});salvar();badges();renderPendentes();
 }
 
+// ─── FOTOS ───────────────────────────────────────────────
 function abrirOvFoto(i){fotoIdx=i;document.getElementById('ov-foto').classList.add('on');}
 function fecharOvFoto(){document.getElementById('ov-foto').classList.remove('on');}
-
-function abrirCamera() {
-  fecharOvFoto();
-  document.getElementById('ov-camera').classList.add('on');
-  var video=document.getElementById('cam-video');
+function abrirCamera(){
+  fecharOvFoto();document.getElementById('ov-camera').classList.add('on');
   navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false})
-    .then(function(s){video.srcObject=s;})
+    .then(function(s){document.getElementById('cam-video').srcObject=s;})
     .catch(function(){alert('Câmera não disponível. Use a galeria.');fecharCamera();});
 }
-
-function fecharCamera() {
-  var video=document.getElementById('cam-video');
-  if(video.srcObject){video.srcObject.getTracks().forEach(function(t){t.stop();});video.srcObject=null;}
+function fecharCamera(){
+  var v=document.getElementById('cam-video');
+  if(v.srcObject){v.srcObject.getTracks().forEach(function(t){t.stop();});v.srcObject=null;}
   document.getElementById('ov-camera').classList.remove('on');
 }
-
-function tirarFoto() {
-  var video=document.getElementById('cam-video');
-  var canvas=document.createElement('canvas');
-  canvas.width=video.videoWidth; canvas.height=video.videoHeight;
-  canvas.getContext('2d').drawImage(video,0,0);
-  adicionarFoto(canvas.toDataURL('image/jpeg',0.8));
-  fecharCamera();
+function tirarFoto(){
+  var v=document.getElementById('cam-video');
+  var c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;
+  c.getContext('2d').drawImage(v,0,0);addFoto(c.toDataURL('image/jpeg',0.7));fecharCamera();
 }
-
-function fotosDaGaleria(input) {
+function fotosGaleria(input){
   fecharOvFoto();
-  Array.from(input.files).forEach(function(file){
-    var reader=new FileReader();
-    reader.onload=function(e){adicionarFoto(e.target.result);};
-    reader.readAsDataURL(file);
-  });
+  Array.from(input.files).forEach(function(f){var r=new FileReader();r.onload=function(e){addFoto(e.target.result);};r.readAsDataURL(f);});
   input.value='';
 }
-
-function adicionarFoto(dataUrl) {
-  var i=fotoIdx;
-  if(!fotos[i])fotos[i]=[];
-  fotos[i].push(dataUrl);
-  var container=document.getElementById('ft-'+i);
-  var img=document.createElement('img');
-  img.src=dataUrl; img.className='thumb';
-  img.onclick=function(){document.getElementById('ov-img-src').src=dataUrl;document.getElementById('ov-img').classList.add('on');};
-  container.appendChild(img);
+function addFoto(d){
+  var i=fotoIdx;if(!fotos[i])fotos[i]=[];
+  if(fotos[i].length>=5){alert('Limite de 5 fotos por item.');return;}
+  fotos[i].push(d);
+  var img=document.createElement('img');img.src=d;img.className='thumb';
+  img.onclick=function(){document.getElementById('ov-img-src').src=d;document.getElementById('ov-img').classList.add('on');};
+  document.getElementById('ft-'+i).appendChild(img);
+  salvarPendente();
 }
-
 function fecharOvImg(){document.getElementById('ov-img').classList.remove('on');}
 
-function getDados() {
+// ─── PDF ─────────────────────────────────────────────────
+function getDados(){
   var idx=parseInt(document.getElementById('v-cl').value);
-  return {cliente:document.getElementById('v-cli').value||'—',responsavel:document.getElementById('v-resp').value||'—',data:document.getElementById('v-data').value,cl:cls[idx],ans:Object.assign({},ans),fotos:JSON.parse(JSON.stringify(fotos)),coments:Object.assign({},coments)};
+  return{clienteId:document.getElementById('v-cli-sel').value,cliente:document.getElementById('v-cli').value||'—',
+    responsavel:document.getElementById('v-resp').value||'—',data:document.getElementById('v-data').value,
+    cl:cls[idx],ans:Object.assign({},ans),fotos:JSON.parse(JSON.stringify(fotos)),coments:Object.assign({},coments)};
 }
-
-function fmtData(d){return d?new Date(d+'T12:00:00').toLocaleDateString('pt-BR'):'—';}
-
-function calcScore(d) {
-  var vals=Object.values(d.ans);
-  var sim=vals.filter(function(v){return v==='sim';}).length;
-  var nao=vals.filter(function(v){return v==='nao';}).length;
-  var parc=vals.filter(function(v){return v==='parc';}).length;
-  var na=vals.filter(function(v){return v==='na';}).length;
-  var total=sim+nao+parc;
-  return {sim:sim,nao:nao,parc:parc,na:na,pct:total?Math.round((sim+parc*0.5)/total*100):0};
+function gerarPDF(){
+  var idx=document.getElementById('v-cl').value;if(idx===''){alert('Selecione um checklist.');return;}
+  var d=getDados(),sc=calcScore(d.ans);
+  _gerarPDFDados(d.cliente,d.responsavel,d.data,d.cl,d.ans,d.fotos,d.coments,sc,d.clienteId);
+  var vr={id:Date.now()+'',clienteId:d.clienteId,data:d.data,cliente:d.cliente,responsavel:d.responsavel,
+    tipo:d.cl.tipo,setor:d.cl.setor,tema:d.cl.tema,pct:sc.pct,sim:sc.sim,nao:sc.nao,parc:sc.parc,na:sc.na,
+    itens:d.cl.itens,ans:d.ans,coments:d.coments};
+  vis.unshift(vr);if(vis.length>200)vis=vis.slice(0,200);
+  if(visitaId){pendentes=pendentes.filter(function(x){return x.id!==visitaId;});visitaId=null;}
+  if(window._ast){clearInterval(window._ast);window._ast=null;}
+  salvar();badges();
 }
-
-function gerarPDF() {
-  var idx=document.getElementById('v-cl').value;
-  if(idx===''){alert('Selecione um checklist.');return;}
-  var d=getDados(), sc=calcScore(d);
-  var J=window.jspdf.jsPDF;
-  var doc=new J({orientation:'p',unit:'mm',format:'a4'});
-  var W=210,M=15,TW=W-M*2,y=M;
-  var corR=26,corG=26,corB=24;
-  if(marca.cor){var hex=marca.cor.replace('#','');corR=parseInt(hex.substr(0,2),16);corG=parseInt(hex.substr(2,2),16);corB=parseInt(hex.substr(4,2),16);}
-
-  doc.setFillColor(corR,corG,corB); doc.rect(0,0,W,28,'F');
+function _gerarPDFDados(cliente,resp,data,cl,ansObj,fotosObj,comentsObj,sc,cliId){
+  var J=window.jspdf.jsPDF,doc=new J({orientation:'p',unit:'mm',format:'a4'});
+  var W=210,M=15,TW=W-M*2,y=M,cR=26,cG=26,cB=24;
+  if(marca.cor){var h=marca.cor.replace('#','');cR=parseInt(h.substr(0,2),16);cG=parseInt(h.substr(2,2),16);cB=parseInt(h.substr(4,2),16);}
+  doc.setFillColor(cR,cG,cB);doc.rect(0,0,W,28,'F');
   if(marca.logo){try{doc.addImage(marca.logo,'PNG',M,4,20,20);}catch(e){}}
-  var txtX=marca.logo?M+24:M;
-  doc.setTextColor(255,255,255); doc.setFontSize(14); doc.setFont(undefined,'bold');
-  doc.text(marca.nome||'Relatório de Consultoria',txtX,12);
-  if(marca.slogan){doc.setFontSize(9);doc.setFont(undefined,'normal');doc.text(marca.slogan,txtX,18);}
-  doc.setFontSize(8); doc.setFont(undefined,'normal');
+  var tx=marca.logo?M+24:M;
+  doc.setTextColor(255,255,255);doc.setFontSize(14);doc.setFont(undefined,'bold');
+  doc.text(marca.nome||'Relatório de Consultoria',tx,12);
+  if(marca.slogan){doc.setFontSize(9);doc.setFont(undefined,'normal');doc.text(marca.slogan,tx,18);}
+  doc.setFontSize(8);doc.setFont(undefined,'normal');
   if(marca.fone)doc.text(marca.fone,W-M,12,{align:'right'});
   if(marca.email)doc.text(marca.email,W-M,18,{align:'right'});
-  y=36; doc.setTextColor(0);
-
+  y=36;doc.setTextColor(0);
+  var c=cliId?clientes.find(function(x){return x.id===cliId;}):null;
   doc.setFontSize(10);doc.setFont(undefined,'bold');doc.text('Dados da visita',M,y);y+=6;
   doc.setFontSize(9);
-  [['Cliente',d.cliente],['Responsável',d.responsavel],['Data',fmtData(d.data)],['Tipo',d.cl.tipo],['Setor',d.cl.setor||'—'],['Tema',d.cl.tema||'—']].forEach(function(r){
-    doc.setFont(undefined,'bold');doc.text(r[0]+':',M,y);
-    doc.setFont(undefined,'normal');doc.text(r[1],M+28,y);y+=5;
-  });
+  var rows=[['Cliente',cliente],['Responsável',resp||'—'],['Data',fmtData(data)],['Tipo',cl.tipo],['Setor',cl.setor||'—'],['Tema',cl.tema||'—']];
+  if(c){if(c.endereco)rows.push(['Endereço',c.endereco+(c.cidade?' — '+c.cidade:'')]);if(c.fone)rows.push(['WhatsApp',c.fone]);}
+  rows.forEach(function(r){doc.setFont(undefined,'bold');doc.text(r[0]+':',M,y);doc.setFont(undefined,'normal');doc.text(r[1],M+28,y);y+=5;});
   y+=4;
-
   doc.setFillColor(240,240,238);doc.rect(M,y,TW,18,'F');
-  doc.setFontSize(12);doc.setFont(undefined,'bold');
-  doc.text('Conformidade: '+sc.pct+'%',M+4,y+8);
-  doc.setFontSize(9);doc.setFont(undefined,'normal');
-  doc.text('Sim: '+sc.sim+'   Não: '+sc.nao+'   Parcial: '+sc.parc+'   N/A: '+sc.na,M+4,y+14);
-  y+=24;
-
+  doc.setFontSize(12);doc.setFont(undefined,'bold');doc.text('Conformidade: '+sc.pct+'%',M+4,y+8);
+  doc.setFontSize(9);doc.setFont(undefined,'normal');doc.text('Sim: '+sc.sim+'   Não: '+sc.nao+'   Parcial: '+sc.parc+'   N/A: '+sc.na,M+4,y+14);y+=24;
   doc.setFontSize(10);doc.setFont(undefined,'bold');doc.text('Itens avaliados',M,y);y+=6;
-  var labels={sim:'SIM',nao:'NÃO',parc:'PARCIAL',na:'N/A'};
-  var cores={sim:[42,120,42],nao:[180,0,0],parc:[133,79,11],na:[120,120,120]};
-
-  d.cl.itens.forEach(function(it,i){
+  var labs={sim:'SIM',nao:'NÃO',parc:'PARCIAL',na:'N/A'},cors={sim:[42,120,42],nao:[180,0,0],parc:[133,79,11],na:[120,120,120]};
+  cl.itens.forEach(function(it,i){
     if(y>265){doc.addPage();y=M;}
-    var resp=d.ans[i],label=labels[resp]||'—',cor=cores[resp]||[170,170,170];
+    var rp=ansObj[i],lb=labs[rp]||'—',cr=cors[rp]||[170,170,170];
     doc.setFillColor(252,252,250);doc.setDrawColor(220);doc.rect(M,y,TW,9,'FD');
     doc.setFontSize(8);doc.setFont(undefined,'normal');doc.setTextColor(0);
-    var lines=doc.splitTextToSize((i+1)+'. '+it.texto,TW-28);
-    doc.text(lines,M+2,y+5.5);
-    doc.setTextColor(cor[0],cor[1],cor[2]);doc.setFont(undefined,'bold');
-    doc.text(label,W-M-2,y+5.5,{align:'right'});
-    doc.setTextColor(0);doc.setFont(undefined,'normal');
-    y+=(lines.length>1?lines.length*4+4:10);
-    var c=d.coments[i];
-    if(c&&c.trim()){
-      if(y>265){doc.addPage();y=M;}
-      doc.setFontSize(7);doc.setTextColor(100);
-      var cl2=doc.splitTextToSize('Comentário: '+c,TW-4);
-      doc.text(cl2,M+4,y);y+=cl2.length*4+2;doc.setTextColor(0);
-    }
-    var fs=d.fotos[i];
+    var ln=doc.splitTextToSize((i+1)+'. '+it.texto,TW-28);doc.text(ln,M+2,y+5.5);
+    doc.setTextColor(cr[0],cr[1],cr[2]);doc.setFont(undefined,'bold');doc.text(lb,W-M-2,y+5.5,{align:'right'});
+    doc.setTextColor(0);doc.setFont(undefined,'normal');y+=(ln.length>1?ln.length*4+4:10);
+    var cm=comentsObj[i];
+    if(cm&&cm.trim()){if(y>265){doc.addPage();y=M;}doc.setFontSize(7);doc.setTextColor(100);var cl2=doc.splitTextToSize('Comentário: '+cm,TW-4);doc.text(cl2,M+4,y);y+=cl2.length*4+2;doc.setTextColor(0);}
+    var fs=fotosObj[i];
     if(fs&&fs.length){fs.forEach(function(f){if(y>240){doc.addPage();y=M;}try{doc.addImage(f,'JPEG',M,y,40,30);}catch(e){}y+=33;});}
   });
-
-  doc.setFontSize(7);doc.setTextColor(150);
-  doc.text((marca.nome||'Checklist de Consultoria')+' — Relatório gerado em '+new Date().toLocaleDateString('pt-BR'),W/2,290,{align:'center'});
-
-  var vr={id:Date.now()+'',data:d.data,cliente:d.cliente,responsavel:d.responsavel,tipo:d.cl.tipo,setor:d.cl.setor,tema:d.cl.tema,pct:sc.pct,sim:sc.sim,nao:sc.nao,parc:sc.parc,na:sc.na};
-  vis.unshift(vr);if(vis.length>100)vis=vis.slice(0,100);salvar();
-  doc.save('relatorio_'+d.cliente.replace(/\s+/g,'_')+'_'+d.data+'.pdf');
+  doc.setFontSize(7);doc.setTextColor(150);doc.text((marca.nome||'Checklist de Consultoria')+' — '+new Date().toLocaleDateString('pt-BR'),W/2,290,{align:'center'});
+  doc.save('relatorio_'+cliente.replace(/\s+/g,'_')+'_'+data+'.pdf');
 }
-
-function enviarWA() {
-  var idx=document.getElementById('v-cl').value;
-  if(idx===''){alert('Selecione um checklist.');return;}
-  var d=getDados(),sc=calcScore(d);
-  var txt='*Relatório de Consultoria*'+(marca.nome?'\n'+marca.nome:'')+'\nCliente: '+d.cliente+'\nData: '+fmtData(d.data)+'\nTipo: '+d.cl.tipo+(d.cl.setor?' | '+d.cl.setor:'')+'\n\n*Conformidade: '+sc.pct+'%*\nSim: '+sc.sim+' | Não: '+sc.nao+' | Parcial: '+sc.parc+'\n\n_Relatório PDF em anexo._';
+function enviarWA(){
+  var idx=document.getElementById('v-cl').value;if(idx===''){alert('Selecione um checklist.');return;}
+  var d=getDados(),sc=calcScore(d.ans);
+  var txt='*Relatório de Consultoria*'+(marca.nome?'\n'+marca.nome:'')+'\nCliente: '+d.cliente+'\nData: '+fmtData(d.data)+'\nTipo: '+d.cl.tipo+(d.cl.setor?' | '+d.cl.setor:'')+'\n\n*Conformidade: '+sc.pct+'%*\nSim: '+sc.sim+' | Não: '+sc.nao+' | Parcial: '+sc.parc+'\n\n_PDF em anexo._';
   window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');
 }
-
-function enviarEmail() {
-  var idx=document.getElementById('v-cl').value;
-  if(idx===''){alert('Selecione um checklist.');return;}
-  var d=getDados(),sc=calcScore(d);
-  var subj='Relatório de Consultoria — '+d.cliente+' — '+fmtData(d.data);
-  var body='Olá,\n\nSegue o relatório de consultoria'+(marca.nome?' de '+marca.nome:'')+'\n\nCliente: '+d.cliente+'\nResponsável: '+d.responsavel+'\nData: '+fmtData(d.data)+'\nTipo: '+d.cl.tipo+(d.cl.setor?' | '+d.cl.setor:'')+'\n\nConformidade: '+sc.pct+'%\nSim: '+sc.sim+' | Não: '+sc.nao+' | Parcial: '+sc.parc+'\n\nO PDF completo está em anexo.\n\nAtenciosamente,\n'+(marca.nome||'')+(marca.fone?'\n'+marca.fone:'')+(marca.email?'\n'+marca.email:'');
+function enviarEmail(){
+  var idx=document.getElementById('v-cl').value;if(idx===''){alert('Selecione um checklist.');return;}
+  var d=getDados(),sc=calcScore(d.ans);
+  var subj='Relatório — '+d.cliente+' — '+fmtData(d.data);
+  var body='Olá,\n\nRelatório de consultoria'+(marca.nome?' de '+marca.nome:'')+'\n\nCliente: '+d.cliente+'\nResponsável: '+d.responsavel+'\nData: '+fmtData(d.data)+'\n\nConformidade: '+sc.pct+'%\n\nPDF em anexo.\n\nAtenciosamente,\n'+(marca.nome||'')+(marca.fone?'\n'+marca.fone:'')+(marca.email?'\n'+marca.email:'');
   window.open('mailto:?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body),'_blank');
 }
 
-function renderHis() {
+// ─── HISTÓRICO ───────────────────────────────────────────
+function renderHis(f){
   var el=document.getElementById('lista-his');
-  if(!vis.length){el.innerHTML='<div class="empty">Nenhuma visita registrada</div>';return;}
-  el.innerHTML=vis.map(function(v){
+  var lista=vis.filter(function(v){return!f||v.cliente.toLowerCase().includes(f.toLowerCase());});
+  if(!lista.length){el.innerHTML='<div class="empty">'+(f?'Nenhum resultado':'Nenhuma visita registrada')+'</div>';return;}
+  el.innerHTML=lista.map(function(v){
     var cor=v.pct>=70?'#2a6':v.pct>=40?'#854f0b':'#c00';
-    return '<div class="cl-card" style="margin-bottom:8px">'
-      +'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">'
+    return '<div class="cl-card" style="margin-bottom:8px;cursor:pointer;flex-direction:column;align-items:stretch" onclick="verDetalhe(\''+v.id+'\')">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center">'
       +'<div><div style="font-size:14px;font-weight:500">'+v.cliente+'</div>'
       +'<div style="font-size:12px;color:#777">'+fmtData(v.data)+' — '+(v.responsavel||'—')+'</div></div>'
-      +'<div style="text-align:right"><div style="font-size:20px;font-weight:500;color:'+cor+'">'+v.pct+'%</div>'
-      +'<div style="font-size:11px;color:#777">conformidade</div></div></div>'
-      +'<div style="margin-top:6px">'
-      +'<span class="badge b-tipo">'+v.tipo+'</span>'
+      +'<div style="text-align:right"><div style="font-size:20px;font-weight:500;color:'+cor+'">'+v.pct+'%</div></div></div>'
+      +'<div style="margin-top:6px"><span class="badge b-tipo">'+v.tipo+'</span>'
       +(v.setor?'<span class="badge b-setor">'+v.setor+'</span>':'')
-      +(v.tema?'<span class="badge b-tema">'+v.tema+'</span>':'')
-      +'</div>'
-      +'<div style="font-size:12px;color:#777;margin-top:4px">Sim: '+v.sim+' | Não: '+v.nao+' | Parcial: '+v.parc+' | N/A: '+v.na+'</div>'
+      +(v.tema?'<span class="badge b-tema">'+v.tema+'</span>':'')+'</div>'
+      +'<div style="font-size:12px;color:#185fa5;margin-top:6px">👁 Ver detalhes</div>'
       +'</div>';
   }).join('');
 }
+function verDetalhe(id){
+  var v=vis.find(function(x){return x.id===id;});if(!v)return;
+  var cor=v.pct>=70?'#2a6':v.pct>=40?'#854f0b':'#c00';
+  var labs={sim:'✓ Sim',nao:'✗ Não',parc:'~ Parcial',na:'— N/A'};
+  var ctxt={sim:'#2a6',nao:'#c00',parc:'#854f0b',na:'#888'};
+  var itens='';
+  if(v.itens&&v.itens.length){
+    itens=v.itens.map(function(it,i){
+      var rp=v.ans&&v.ans[i],lb=labs[rp]||'— Sem resposta',c2=ctxt[rp]||'#aaa';
+      var cm=v.coments&&v.coments[i];
+      return '<div style="padding:10px 0;border-bottom:1px solid #f0f0ee">'
+        +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">'
+        +'<div style="font-size:13px;flex:1">'+(i+1)+'. '+it.texto+'</div>'
+        +'<div style="font-size:12px;font-weight:500;color:'+c2+';white-space:nowrap">'+lb+'</div></div>'
+        +(cm?'<div style="font-size:12px;color:#666;margin-top:4px;padding:6px 8px;background:#f9f9f7;border-radius:6px">💬 '+cm+'</div>':'')
+        +'</div>';
+    }).join('');
+  } else itens='<div class="empty">Itens não disponíveis</div>';
+  document.getElementById('detalhe-content').innerHTML=
+    '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">'
+    +'<div><div style="font-size:16px;font-weight:500">'+v.cliente+'</div>'
+    +'<div style="font-size:12px;color:#777">'+fmtData(v.data)+' — '+(v.responsavel||'—')+'</div></div>'
+    +'<div style="font-size:28px;font-weight:500;color:'+cor+'">'+v.pct+'%</div></div>'
+    +'<div style="margin-bottom:10px"><span class="badge b-tipo">'+v.tipo+'</span>'
+    +(v.setor?'<span class="badge b-setor">'+v.setor+'</span>':'')
+    +(v.tema?'<span class="badge b-tema">'+v.tema+'</span>':'')+'</div>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">'
+    +'<span style="background:#e6f9ee;color:#2a6;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:500">✓ Sim: '+v.sim+'</span>'
+    +'<span style="background:#fff0f0;color:#c00;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:500">✗ Não: '+v.nao+'</span>'
+    +'<span style="background:#faeeda;color:#854f0b;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:500">~ Parcial: '+v.parc+'</span>'
+    +'<span style="background:#f1efe8;color:#888;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:500">N/A: '+v.na+'</span>'
+    +'</div>'
+    +'<button class="btn p" onclick="gerarPDFHist(\''+id+'\')" style="margin-bottom:12px">📄 Gerar PDF</button>'
+    +'<div class="sec">Checklist completo</div>'+itens+'</div>';
+  ir('detalhe');
+}
+function gerarPDFHist(id){
+  var v=vis.find(function(x){return x.id===id;});if(!v||!v.itens){alert('Dados não disponíveis.');return;}
+  var sc={pct:v.pct,sim:v.sim,nao:v.nao,parc:v.parc,na:v.na};
+  _gerarPDFDados(v.cliente,v.responsavel,v.data,{tipo:v.tipo,setor:v.setor,tema:v.tema,itens:v.itens},v.ans||{},{},v.coments||{},sc,v.clienteId);
+}
 
-aplicarMarca();
-renderItemsCfg();
-renderCls();
-renderBase();
+// ─── CHECKLISTS ──────────────────────────────────────────
+var BASE=[
+  {id:'base_rdc216',tipo:'Serviço de Alimentação',setor:'Higiene',tema:'RDC 216 — Boas Práticas',itens:[
+    {id:'b1',texto:'Edificação, instalações, equipamentos e utensílios estão em condições higiênico-sanitárias adequadas?'},
+    {id:'b2',texto:'Existe controle de saúde dos manipuladores (atestados, exames)?'},
+    {id:'b3',texto:'Os manipuladores usam uniformes limpos, cabelos cobertos e sem adornos?'},
+    {id:'b4',texto:'Higienização das mãos é realizada corretamente nos momentos adequados?'},
+    {id:'b5',texto:'Matérias-primas e ingredientes estão identificados, dentro do prazo e armazenados corretamente?'},
+    {id:'b6',texto:'Temperatura dos equipamentos de refrigeração e congelamento está correta?'},
+    {id:'b7',texto:'Alimentos preparados estão protegidos de contaminação e com temperatura controlada?'},
+    {id:'b8',texto:'Existe separação física entre alimentos crus e cozidos?'},
+    {id:'b9',texto:'Água utilizada é potável e tem controle de qualidade?'},
+    {id:'b10',texto:'Existe Manual de Boas Práticas e POPs implantados e atualizados?'},
+    {id:'b11',texto:'POPs de higienização de instalações estão disponíveis e sendo seguidos?'},
+    {id:'b12',texto:'POPs de controle de pragas estão disponíveis e sendo seguidos?'},
+    {id:'b13',texto:'Registros de controle de temperatura são realizados e arquivados?'},
+    {id:'b14',texto:'Responsável Técnico está identificado e presente durante o funcionamento?'}
+  ]},
+  {id:'base_higiene',tipo:'Serviço de Alimentação',setor:'Higiene',tema:'Higienização Geral',itens:[
+    {id:'h1',texto:'Pisos limpos, sem resíduos, gordura ou umidade?'},
+    {id:'h2',texto:'Paredes e tetos sem sujidade, mofo ou descascamento?'},
+    {id:'h3',texto:'Ralos e canaletas limpos e funcionando corretamente?'},
+    {id:'h4',texto:'Bancadas e superfícies de manipulação higienizadas?'},
+    {id:'h5',texto:'Equipamentos (fogões, fornos, fritadeiras) limpos externamente e internamente?'},
+    {id:'h6',texto:'Utensílios (facas, tábuas, panelas) higienizados corretamente?'},
+    {id:'h7',texto:'Tábuas de corte separadas por tipo de alimento?'},
+    {id:'h8',texto:'Pias de higienização com sabonete líquido, papel toalha e álcool gel?'},
+    {id:'h9',texto:'Lixeiras com tampa e pedal, em número e localização adequados?'},
+    {id:'h10',texto:'Câmaras e geladeiras limpas, sem odor, sem excesso de gelo?'},
+    {id:'h11',texto:'Produtos de limpeza identificados e separados dos alimentos?'},
+    {id:'h12',texto:'Panos de limpeza são descartáveis ou higienizados corretamente?'}
+  ]},
+  {id:'base_estrutural',tipo:'Serviço de Alimentação',setor:'Estrutura',tema:'Checklist Estrutural',itens:[
+    {id:'e1',texto:'Piso de material liso, resistente, impermeável e antiderrapante?'},
+    {id:'e2',texto:'Paredes e divisórias de material liso, impermeável, lavável?'},
+    {id:'e3',texto:'Forro ou teto sem goteiras, trincas ou descascamento?'},
+    {id:'e4',texto:'Janelas e aberturas com telas milimétricas em bom estado?'},
+    {id:'e5',texto:'Portas de acesso com fechamento automático e sem folgas?'},
+    {id:'e6',texto:'Iluminação adequada em todas as áreas de manipulação?'},
+    {id:'e7',texto:'Ventilação adequada sem causar contaminação cruzada?'},
+    {id:'e8',texto:'Instalações elétricas protegidas e em bom estado?'},
+    {id:'e9',texto:'Banheiros sem comunicação direta com a área de produção?'},
+    {id:'e10',texto:'Reservatório de água limpo, vedado e higienizado dentro do prazo?'},
+    {id:'e11',texto:'Estoque organizado, prateleiras sem contato com o piso, limpo e seco?'}
+  ]},
+  {id:'base_documentacao',tipo:'Serviço de Alimentação',setor:'Documentação',tema:'Documentação Vigilância Sanitária',itens:[
+    {id:'d1',texto:'Alvará Sanitário válido e afixado em local visível?'},
+    {id:'d2',texto:'Alvará de Funcionamento da Prefeitura válido?'},
+    {id:'d3',texto:'Manual de Boas Práticas elaborado e atualizado?'},
+    {id:'d4',texto:'POPs disponíveis e atualizados?'},
+    {id:'d5',texto:'Registro de treinamentos dos manipuladores arquivados?'},
+    {id:'d6',texto:'Atestados de saúde dos manipuladores válidos e arquivados?'},
+    {id:'d7',texto:'Laudos de potabilidade da água dentro do prazo?'},
+    {id:'d8',texto:'Comprovante de higienização do reservatório de água (semestral)?'},
+    {id:'d9',texto:'Contrato e laudos de empresa de controle de pragas válidos?'},
+    {id:'d10',texto:'Registros de temperatura de equipamentos arquivados?'},
+    {id:'d11',texto:'Responsável Técnico com habilitação comprovada?'}
+  ]},
+  {id:'base_pragas',tipo:'Serviço de Alimentação',setor:'Controle de Pragas',tema:'Controle Integrado de Pragas',itens:[
+    {id:'p1',texto:'Existe contrato vigente com empresa especializada em controle de pragas?'},
+    {id:'p2',texto:'Laudos e relatórios de desinsetização/desratização dentro do prazo?'},
+    {id:'p3',texto:'Ausência de sinais de presença de insetos (baratas, moscas, formigas)?'},
+    {id:'p4',texto:'Ausência de sinais de presença de roedores (fezes, roeduras, ninhos)?'},
+    {id:'p5',texto:'Todas as aberturas com barreiras físicas adequadas?'},
+    {id:'p6',texto:'Ausência de acúmulo de materiais que possam servir de abrigo para pragas?'},
+    {id:'p7',texto:'Lixo é retirado diariamente e armazenado em área separada com tampa?'},
+    {id:'p8',texto:'Área externa sem mato alto, entulho ou materiais que atraiam pragas?'}
+  ]},
+  {id:'base_treinamento',tipo:'Serviço de Alimentação',setor:'Treinamento',tema:'Treinamento de Manipuladores',itens:[
+    {id:'t1',texto:'Todos os manipuladores receberam treinamento de boas práticas?'},
+    {id:'t2',texto:'Registros de treinamento com assinaturas estão arquivados?'},
+    {id:'t3',texto:'Manipuladores conhecem os POPs e sabem aplicá-los?'},
+    {id:'t4',texto:'Higienização das mãos é realizada nos momentos corretos?'},
+    {id:'t5',texto:'Uso correto de EPI (luvas, máscara, touca) é observado?'},
+    {id:'t6',texto:'Manipuladores com sintomas de doenças estão afastados da produção?'},
+    {id:'t7',texto:'Há responsável pelo monitoramento das boas práticas no estabelecimento?'}
+  ]},
+  {id:'base_livre',tipo:'Qualquer estabelecimento',setor:'Geral',tema:'Visita Livre (fotos e comentários)',itens:[
+    {id:'l1',texto:'Observação 1 — descreva no comentário e/ou adicione foto'},
+    {id:'l2',texto:'Observação 2 — descreva no comentário e/ou adicione foto'},
+    {id:'l3',texto:'Observação 3 — descreva no comentário e/ou adicione foto'},
+    {id:'l4',texto:'Observação 4 — descreva no comentário e/ou adicione foto'},
+    {id:'l5',texto:'Observação 5 — descreva no comentário e/ou adicione foto'},
+    {id:'l6',texto:'Observação 6 — descreva no comentário e/ou adicione foto'},
+    {id:'l7',texto:'Observação 7 — descreva no comentário e/ou adicione foto'},
+    {id:'l8',texto:'Observação 8 — descreva no comentário e/ou adicione foto'}
+  ]}
+];
+function renderBase(){
+  var el=document.getElementById('lista-base');
+  el.innerHTML=BASE.map(function(cl){
+    var jt=cls.some(function(c){return c.id===cl.id;});
+    return '<div class="base-item"><div><div style="font-weight:500;font-size:13px">'+cl.tema+'</div>'
+      +'<div style="font-size:11px;color:#777">'+cl.tipo+' — '+cl.itens.length+' itens</div></div>'
+      +(jt?'<span style="font-size:12px;color:#2a6;font-weight:500">✓</span>'
+        :'<button class="btn p" style="font-size:11px;padding:5px 12px" onclick="addBase(\''+cl.id+'\')">+ Usar</button>')
+      +'</div>';
+  }).join('');
+}
+function addBase(id){
+  var cl=BASE.find(function(c){return c.id===id;});
+  if(!cl||cls.some(function(c){return c.id===id;})){alert('Já adicionado!');return;}
+  cls.push(JSON.parse(JSON.stringify(cl)));salvar();renderBase();renderCls();badges();
+  alert('"'+cl.tema+'" adicionado!');
+}
+function addItem(){
+  var t=document.getElementById('novo-item').value.trim();if(!t)return;
+  tmpItems.push({id:Date.now()+'r'+Math.random(),texto:t});
+  document.getElementById('novo-item').value='';renderItemsCfg();
+}
+function addBulk(){
+  var t=document.getElementById('bulk-txt').value.trim();if(!t)return;
+  t.split('\n').forEach(function(l){l=l.trim();if(l)tmpItems.push({id:Date.now()+'r'+Math.random(),texto:l});});
+  document.getElementById('bulk-txt').value='';renderItemsCfg();
+}
+function renderItemsCfg(){
+  var el=document.getElementById('items-cfg');
+  if(!tmpItems.length){el.innerHTML='<div class="empty">Nenhum item ainda</div>';return;}
+  el.innerHTML=tmpItems.map(function(it,i){
+    return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f5f5f3;font-size:13px">'
+      +'<span style="flex:1">'+(i+1)+'. '+it.texto+'</span>'
+      +'<button class="btn d" style="padding:3px 8px;font-size:11px" onclick="remItem('+i+')">✕</button></div>';
+  }).join('');
+}
+function remItem(i){tmpItems.splice(i,1);renderItemsCfg();}
+function salvarCL(){
+  var tipo=document.getElementById('cl-tipo').value.trim();
+  if(!tipo){alert('Informe o tipo.');return;}if(!tmpItems.length){alert('Adicione ao menos 1 item.');return;}
+  cls.push({id:Date.now()+'',tipo:tipo,setor:document.getElementById('cl-setor').value.trim(),tema:document.getElementById('cl-tema').value.trim(),itens:tmpItems.slice()});
+  salvar();tmpItems=[];
+  document.getElementById('cl-tipo').value='';document.getElementById('cl-setor').value='';document.getElementById('cl-tema').value='';
+  renderItemsCfg();renderCls();badges();alert('Checklist salvo!');
+}
+function renderCls(){
+  var el=document.getElementById('lista-cls');
+  if(!cls.length){el.innerHTML='<div class="empty">Nenhum checklist salvo</div>';return;}
+  el.innerHTML=cls.map(function(cl,i){
+    return '<div class="cl-card"><span class="badge b-tipo">'+cl.tipo+'</span>'
+      +(cl.setor?'<span class="badge b-setor">'+cl.setor+'</span>':'')
+      +(cl.tema?'<span class="badge b-tema">'+cl.tema+'</span>':'')
+      +'<div style="font-size:12px;color:#777;margin-top:4px">'+cl.itens.length+' itens</div>'
+      +'<div style="display:flex;gap:6px;margin-top:8px">'
+      +'<button class="btn" style="font-size:11px;padding:4px 10px" onclick="editCL('+i+')">✏ Editar</button>'
+      +'<button class="btn d" style="font-size:11px;padding:4px 10px" onclick="delCL('+i+')">✕</button>'
+      +'</div></div>';
+  }).join('');
+}
+function editCL(i){var cl=cls[i];document.getElementById('cl-tipo').value=cl.tipo;document.getElementById('cl-setor').value=cl.setor||'';document.getElementById('cl-tema').value=cl.tema||'';tmpItems=cl.itens.slice();cls.splice(i,1);salvar();renderItemsCfg();renderCls();}
+function delCL(i){if(!confirm('Excluir?'))return;cls.splice(i,1);salvar();renderCls();renderBase();badges();}
+function exportarCls(){
+  if(!cls.length){alert('Nenhum checklist.');return;}
+  document.getElementById('exp-txt').value=btoa(unescape(encodeURIComponent(JSON.stringify(cls))));
+  document.getElementById('exp-area').style.display='block';document.getElementById('imp-area').style.display='none';
+}
+function copiarExp(){
+  var el=document.getElementById('exp-txt');el.select();el.setSelectionRange(0,99999);
+  try{document.execCommand('copy');}catch(e){navigator.clipboard&&navigator.clipboard.writeText(el.value);}
+  var ok=document.getElementById('copy-ok');ok.style.display='inline';setTimeout(function(){ok.style.display='none';},2500);
+}
+function showImport(){document.getElementById('imp-area').style.display='block';document.getElementById('exp-area').style.display='none';}
+function importarCls(){
+  var t=document.getElementById('imp-txt').value.trim();if(!t){alert('Cole o código.');return;}
+  try{
+    var imp=JSON.parse(decodeURIComponent(escape(atob(t))));if(!Array.isArray(imp))throw new Error();
+    var n=0;imp.forEach(function(cl){if(!cls.some(function(c){return c.id===cl.id;})){cls.push(cl);n++;}});
+    salvar();renderCls();renderBase();badges();
+    document.getElementById('imp-area').style.display='none';document.getElementById('imp-txt').value='';
+    alert(n+' importado(s)!');
+  }catch(e){alert('Código inválido.');}
+}
+
+// ─── AGENDA ──────────────────────────────────────────────
+function initAgenda(){
+  document.getElementById('ag-data').value=new Date().toISOString().split('T')[0];
+  var sc=document.getElementById('ag-cli');
+  sc.innerHTML='<option value="">-- selecione --</option>';
+  clientes.forEach(function(c){sc.innerHTML+='<option value="'+c.id+'">'+c.nome+(c.tipo?' — '+c.tipo:'')+'</option>';});
+  var scl=document.getElementById('ag-cl');
+  scl.innerHTML='<option value="">-- selecione --</option>';
+  cls.forEach(function(cl,i){scl.innerHTML+='<option value="'+i+'">'+cl.tipo+(cl.tema?' | '+cl.tema:'')+'</option>';});
+  renderCal();renderListaAg();
+}
+function mudarMes(d){calMes+=d;if(calMes>11){calMes=0;calAno++;}if(calMes<0){calMes=11;calAno--;}renderCal();}
+function renderCal(){
+  var ms=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  document.getElementById('cal-titulo').textContent=ms[calMes]+' '+calAno;
+  var grid=document.getElementById('cal-grid');
+  var prim=new Date(calAno,calMes,1).getDay();
+  var dias=new Date(calAno,calMes+1,0).getDate();
+  var hoje=new Date().toISOString().split('T')[0];
+  var agMes={};
+  agenda.forEach(function(a){
+    if(!a.data)return;var p=a.data.split('-');
+    if(parseInt(p[0])===calAno&&parseInt(p[1])-1===calMes){
+      var d2=parseInt(p[2]);if(!agMes[d2])agMes[d2]=[];agMes[d2].push(a);
+    }
+  });
+  var html='';
+  for(var i=0;i<prim;i++)html+='<div></div>';
+  for(var d=1;d<=dias;d++){
+    var ds=calAno+'-'+String(calMes+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var eh=ds===hoje,es=ds===diaSel;
+    var ags=agMes[d]||[];
+    var atr=ags.some(function(a){return a.status==='pendente'&&a.data<hoje;});
+    var pen=ags.some(function(a){return a.status==='pendente';});
+    var rea=ags.some(function(a){return a.status==='realizado';});
+    var dc=atr?'#c00':pen?'#e67e00':rea?'#2a6':null;
+    html+='<div class="cal-day" onclick="selDia(\''+ds+'\')" style="'
+      +(eh?'background:#1a1a18;color:#fff;font-weight:500;':'')
+      +(es&&!eh?'background:#e6f1fb;color:#185fa5;font-weight:500;':'')
+      +(ags.length&&!eh&&!es?'background:#f9f9f7;':'')
+      +'">'
+      +'<div>'+d+'</div>'
+      +(dc?'<div class="cal-dot" style="background:'+dc+'"></div>':'<div style="height:8px"></div>')
+      +'</div>';
+  }
+  grid.innerHTML=html;
+}
+function selDia(ds){
+  diaSel=ds;renderCal();
+  var d=new Date(ds+'T12:00:00');
+  var dias2=['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+  var ms2=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  var tit=dias2[d.getDay()]+', '+d.getDate()+' de '+ms2[d.getMonth()];
+  document.getElementById('titulo-dia').textContent=tit.charAt(0).toUpperCase()+tit.slice(1);
+  var agsDia=agenda.filter(function(a){return a.data===ds;});
+  var cd=document.getElementById('card-dia'),ld=document.getElementById('lista-dia');
+  cd.style.display='block';
+  if(!agsDia.length){
+    ld.innerHTML='<div class="empty">Nenhuma visita neste dia<br><button class="btn p" style="margin-top:10px;font-size:12px" onclick="document.getElementById(\'ag-data\').value=\''+ds+'\';document.getElementById(\'ag-data\').scrollIntoView({behavior:\'smooth\'})">+ Agendar neste dia</button></div>';
+    return;
+  }
+  var hoje=new Date().toISOString().split('T')[0];
+  ld.innerHTML=agsDia.sort(function(a,b){return(a.hora||'').localeCompare(b.hora||'');}).map(function(a){
+    var at=a.status==='pendente'&&a.data<hoje;
+    var cor=a.status==='realizado'?'#2a6':at?'#c00':'#e67e00';
+    var lb=a.status==='realizado'?'Realizado':at?'Atrasado':'Pendente';
+    return '<div style="padding:12px;border-radius:10px;border:1px solid #e0e0de;margin-bottom:8px;background:#fafaf8">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
+      +'<div style="font-size:14px;font-weight:500">'+a.clienteNome+'</div>'
+      +'<span style="font-size:11px;font-weight:500;color:'+cor+';background:'+cor+'18;padding:3px 8px;border-radius:20px">'+lb+'</span></div>'
+      +(a.hora?'<div style="font-size:12px;color:#888;margin-bottom:4px">🕐 '+a.hora+'</div>':'')
+      +(a.clNome?'<div style="font-size:12px;color:#888;margin-bottom:4px">📋 '+a.clNome+'</div>':'')
+      +(a.obs?'<div style="font-size:12px;color:#666;margin-bottom:8px">📝 '+a.obs+'</div>':'')
+      +'<div style="display:flex;gap:6px;flex-wrap:wrap">'
+      +(a.status==='pendente'?'<button class="btn p" style="font-size:11px;padding:5px 10px" onclick="iniciarAg(\''+a.id+'\')">▶ Iniciar</button>':'')
+      +(a.status==='pendente'?'<button class="btn g" style="font-size:11px;padding:5px 10px" onclick="markRealizado(\''+a.id+'\')">✓ Realizado</button>':'')
+      +'<button class="btn d" style="font-size:11px;padding:5px 10px" onclick="delAg(\''+a.id+'\')">✕</button>'
+      +'</div></div>';
+  }).join('');
+}
+function salvarAg(){
+  var cid=document.getElementById('ag-cli').value;
+  var data=document.getElementById('ag-data').value;
+  if(!cid){alert('Selecione um cliente.');return;}if(!data){alert('Selecione uma data.');return;}
+  var c=clientes.find(function(x){return x.id===cid;});
+  var ci=document.getElementById('ag-cl').value;
+  var a={id:Date.now()+'',clienteId:cid,clienteNome:c?c.nome:'—',
+    clIdx:ci!==''?parseInt(ci):null,clNome:ci!==''&&cls[parseInt(ci)]?(cls[parseInt(ci)].tema||cls[parseInt(ci)].tipo):'',
+    data:data,hora:document.getElementById('ag-hora').value,obs:document.getElementById('ag-obs').value.trim(),status:'pendente'};
+  agenda.push(a);salvar();badges();
+  document.getElementById('ag-obs').value='';document.getElementById('ag-hora').value='';
+  renderCal();renderListaAg();if(diaSel===data)selDia(data);
+  alert('Agendado!');
+}
+function iniciarAg(id){
+  var a=agenda.find(function(x){return x.id===id;});if(!a)return;
+  ir('visita');
+  setTimeout(function(){
+    if(a.clienteId){document.getElementById('v-cli-sel').value=a.clienteId;preencherCliente();}
+    document.getElementById('v-data').value=a.data;
+    if(a.clIdx!==null&&a.clIdx!==undefined){document.getElementById('v-cl').value=a.clIdx;carregarCL();}
+  },150);
+}
+function markRealizado(id){
+  var a=agenda.find(function(x){return x.id===id;});if(!a)return;
+  a.status='realizado';salvar();badges();renderCal();renderListaAg();if(diaSel)selDia(diaSel);
+}
+function delAg(id){
+  if(!confirm('Excluir agendamento?'))return;
+  agenda=agenda.filter(function(x){return x.id!==id;});salvar();badges();renderCal();renderListaAg();if(diaSel)selDia(diaSel);
+}
+function renderListaAg(){
+  var el=document.getElementById('lista-ag');
+  var hoje=new Date().toISOString().split('T')[0];
+  var prox=agenda.filter(function(a){return a.data>=hoje&&a.status==='pendente';}).sort(function(a,b){return a.data.localeCompare(b.data)||(a.hora||'').localeCompare(b.hora||'');});
+  var atr=agenda.filter(function(a){return a.data<hoje&&a.status==='pendente';});
+  if(!prox.length&&!atr.length){el.innerHTML='<div class="empty">Nenhuma visita pendente</div>';return;}
+  var html='';
+  var ms3=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  var ds3=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  function agRow(a,at){
+    var d3=new Date(a.data+'T12:00:00');
+    return '<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f3;align-items:flex-start">'
+      +'<div style="text-align:center;min-width:42px;background:'+(at?'#fff0f0':'#faeeda')+';border-radius:8px;padding:6px 4px">'
+      +'<div style="font-size:18px;font-weight:500;color:'+(at?'#c00':'#e67e00')+';line-height:1">'+d3.getDate()+'</div>'
+      +'<div style="font-size:10px;color:'+(at?'#c00':'#e67e00')+'">'+ms3[d3.getMonth()]+'</div></div>'
+      +'<div style="flex:1"><div style="font-size:13px;font-weight:500">'+a.clienteNome+'</div>'
+      +'<div style="font-size:12px;color:#888">'+ds3[d3.getDay()]+(a.hora?', '+a.hora:'')+'</div>'
+      +(a.clNome?'<div style="font-size:12px;color:#888">📋 '+a.clNome+'</div>':'')
+      +(a.obs?'<div style="font-size:11px;color:#aaa">'+a.obs+'</div>':'')
+      +'<button class="btn p" style="font-size:11px;padding:4px 10px;margin-top:6px" onclick="iniciarAg(\''+a.id+'\')">▶ Iniciar</button>'
+      +'</div></div>';
+  }
+  if(atr.length){html+='<div style="font-size:12px;font-weight:500;color:#c00;margin-bottom:6px">⚠ Atrasadas</div>';atr.forEach(function(a){html+=agRow(a,true);});}
+  if(prox.length){html+='<div style="font-size:12px;font-weight:500;color:#555;margin:8px 0 6px">Próximas</div>';prox.forEach(function(a){html+=agRow(a,false);});}
+  el.innerHTML=html;
+}
+
+// ─── DASHBOARD ───────────────────────────────────────────
+function renderDash(){
+  var el=document.getElementById('dash-content');
+  if(!vis.length){el.innerHTML='<div class="card"><div class="empty">Nenhuma visita realizada ainda.<br>Comece fazendo sua primeira auditoria!</div></div>';return;}
+  var tot=vis.length;
+  var med=Math.round(vis.reduce(function(s,v){return s+v.pct;},0)/tot);
+  var cAt=new Set(vis.map(function(v){return v.clienteId||v.cliente;})).size;
+  var hoje=new Date(),u30=vis.filter(function(v){if(!v.data)return false;var d=new Date(v.data+'T12:00:00');return(hoje-d)/(864e5)<=30;}).length;
+  var vd=vis.filter(function(v){return v.pct>=70;}).length;
+  var am=vis.filter(function(v){return v.pct>=40&&v.pct<70;}).length;
+  var vm=vis.filter(function(v){return v.pct<40;}).length;
+  var cc={};vis.forEach(function(v){var k=v.cliente;if(!cc[k])cc[k]={nome:k,q:0,s:0};cc[k].q++;cc[k].s+=v.pct;});
+  var top=Object.values(cc).sort(function(a,b){return b.q-a.q;}).slice(0,5);
+  var ult=vis.slice(0,8).reverse();
+  var ct={};vis.forEach(function(v){var t=v.tipo||'Outros';ct[t]=(ct[t]||0)+1;});
+  var tt=Object.entries(ct).sort(function(a,b){return b[1]-a[1];})[0];
+  function bw(n){return Math.max(2,Math.round(n/tot*100));}
+  function mc(icon,lbl,val){return '<div class="card" style="margin:0;text-align:center"><div style="font-size:22px;margin-bottom:4px">'+icon+'</div><div style="font-size:22px;font-weight:500">'+val+'</div><div style="font-size:11px;color:#888;margin-top:2px">'+lbl+'</div></div>';}
+  el.innerHTML=
+  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">'
+  +mc('📋','Total de visitas',tot)+mc('📊','Conformidade média',med+'%')
+  +mc('👥','Clientes atendidos',cAt)+mc('📅','Últimos 30 dias',u30)+' </div>'
+  +'<div class="card" style="margin-bottom:10px"><div class="sec">Distribuição de conformidade</div>'
+  +'<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:#2a6;font-weight:500">✓ Adequado (≥70%)</span><span>'+vd+'</span></div><div class="bar"><div class="bar-fill" style="width:'+bw(vd)+'%"></div></div></div>'
+  +'<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:#854f0b;font-weight:500">⚠ Atenção (40–69%)</span><span>'+am+'</span></div><div class="bar"><div class="bar-fill" style="width:'+bw(am)+'%;background:#854f0b"></div></div></div>'
+  +'<div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:#c00;font-weight:500">✗ Crítico (&lt;40%)</span><span>'+vm+'</span></div><div class="bar"><div class="bar-fill" style="width:'+bw(vm)+'%;background:#c00"></div></div></div></div>'
+  +(ult.length>1?'<div class="card" style="margin-bottom:10px"><div class="sec">Evolução recente</div><div style="display:flex;align-items:flex-end;gap:4px;height:80px;padding-top:8px">'
+  +ult.map(function(v){var h=Math.max(8,Math.round(v.pct*0.7));var c=v.pct>=70?'#2a6':v.pct>=40?'#854f0b':'#c00';
+  return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px"><div style="font-size:10px;color:#666">'+v.pct+'%</div><div style="width:100%;height:'+h+'px;background:'+c+';border-radius:3px 3px 0 0"></div><div style="font-size:9px;color:#aaa;text-align:center">'+v.cliente.split(' ')[0]+'</div></div>';}).join('')
+  +'</div></div>':'')
+  +'<div class="card" style="margin-bottom:10px"><div class="sec">Clientes mais visitados</div>'
+  +top.map(function(c){var m=Math.round(c.s/c.q);var cr=m>=70?'#2a6':m>=40?'#854f0b':'#c00';
+  return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f5f5f3"><div><div style="font-size:13px;font-weight:500">'+c.nome+'</div><div style="font-size:11px;color:#888">'+c.q+' visita'+(c.q>1?'s':'')+'</div></div><div style="text-align:right"><div style="font-size:15px;font-weight:500;color:'+cr+'">'+m+'%</div><div style="font-size:11px;color:#aaa">média</div></div></div>';}).join('')+'</div>'
+  +(tt?'<div class="card"><div class="sec">Tipo mais auditado</div><div style="font-size:24px;font-weight:500;color:#185fa5">'+tt[0]+'</div><div style="font-size:13px;color:#777;margin-top:4px">'+tt[1]+' visita'+(tt[1]>1?'s':'')+' realizadas</div></div>':'');
+}
+
+// ─── INIT ────────────────────────────────────────────────
+var s=getSessao();
+if(s&&getUs()[s])iniciarApp(s);
 </script>
 </body>
 </html>
