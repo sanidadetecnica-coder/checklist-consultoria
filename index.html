@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checklist de Consultoria</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f5f5f3;color:#1a1a18;font-size:14px}
+.app{max-width:860px;margin:0 auto;padding:10px}
+.header{color:#fff;border-radius:10px;padding:12px 16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.header h1{font-size:16px;font-weight:500}
+.nav{display:flex;gap:6px;flex-wrap:wrap}
+.nb{padding:6px 14px;border-radius:7px;border:1px solid rgba(255,255,255,0.4);background:transparent;color:#fff;cursor:pointer;font-size:13px}
+.nb.on{background:#fff;color:#1a1a18}
+.panel{display:none}.panel.on{display:block}
+.card{background:#fff;border-radius:10px;border:1px solid #e0e0de;padding:14px;margin-bottom:10px}
+label{font-size:12px;color:#666;display:block;margin-bottom:3px}
+input[type=text],input[type=date],input[type=color],input[type=email],select,textarea{width:100%;padding:8px 10px;border-radius:7px;border:1px solid #ccc;font-size:13px;color:#1a1a18;background:#fff;margin-bottom:8px}
+input[type=color]{height:38px;padding:2px 4px;cursor:pointer}
+textarea{resize:vertical;min-height:44px}
+.row{display:flex;gap:8px;flex-wrap:wrap}.fg{flex:1;min-width:120px}
+.btn{padding:7px 14px;border-radius:7px;border:1px solid #ccc;background:#fff;cursor:pointer;font-size:13px;font-weight:500;display:inline-block}
+.btn:hover{background:#f0f0ee}
+.btn.p{background:#1a1a18;color:#fff;border-color:#1a1a18}.btn.p:hover{background:#333}
+.btn.d{border-color:#c00;color:#c00}.btn.g{border-color:#2a6;color:#2a6}
+.sec{font-size:13px;font-weight:500;padding-bottom:6px;border-bottom:1px solid #eee;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.item-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f5f5f3;font-size:13px}
+.badge{font-size:11px;padding:2px 8px;border-radius:5px;font-weight:500;display:inline-block;margin-right:4px}
+.b-tipo{background:#e6f1fb;color:#185fa5}.b-setor{background:#e1f5ee;color:#0f6e56}.b-tema{background:#faeeda;color:#854f0b}
+.cl-card{background:#fafaf8;border:1px solid #e5e5e2;border-radius:8px;padding:12px;margin-bottom:8px}
+.empty{text-align:center;padding:20px;color:#aaa;font-size:13px}
+.exec-card{background:#fff;border:1px solid #e0e0de;border-radius:10px;padding:12px;margin-bottom:8px}
+.resp-row{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.rb{padding:6px 12px;border-radius:7px;border:1px solid #ccc;background:#fff;cursor:pointer;font-size:13px;font-weight:500}
+.rb.sim.on{background:#e6f9ee;border-color:#2a6;color:#2a6}
+.rb.nao.on{background:#fff0f0;border-color:#c00;color:#c00}
+.rb.parc.on{background:#faeeda;border-color:#854f0b;color:#854f0b}
+.rb.na.on{background:#f1efe8;border-color:#888;color:#555}
+.photo-area{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.photo-btn{width:52px;height:52px;border-radius:8px;border:2px dashed #ccc;background:#fafaf8;cursor:pointer;font-size:24px;display:flex;align-items:center;justify-content:center}
+.thumb{width:52px;height:52px;object-fit:cover;border-radius:8px;border:1px solid #ddd;cursor:pointer}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+.met{background:#f5f5f3;border-radius:8px;padding:10px;text-align:center}
+.mv{font-size:22px;font-weight:500}.ml{font-size:11px;color:#777}
+.bar{height:8px;border-radius:4px;background:#eee;overflow:hidden;margin:4px 0}
+.bar-fill{height:100%;background:#2a6;border-radius:4px}
+.send-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.tip{font-size:11px;color:#999;margin-top:6px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:999;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px}
+.overlay.on{display:flex}
+.ocard{background:#fff;border-radius:12px;padding:20px;width:100%;max-width:340px;display:flex;flex-direction:column;gap:10px}
+.logo-preview{width:80px;height:80px;object-fit:contain;border-radius:8px;border:1px solid #eee;background:#f9f9f7}
+.logo-placeholder{width:80px;height:80px;border-radius:8px;border:2px dashed #ccc;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;background:#f9f9f7}
+.base-cl-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid #e5e5e2;border-radius:8px;margin-bottom:6px;background:#fafaf8;font-size:13px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header" id="app-header" style="background:#1a1a18">
+    <div style="display:flex;align-items:center;gap:10px">
+      <img id="header-logo" src="" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:none">
+      <div>
+        <div id="header-empresa" style="font-size:15px;font-weight:500;color:#fff">Checklist de Consultoria</div>
+        <div id="header-slogan" style="font-size:11px;color:rgba(255,255,255,0.6);display:none"></div>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="nb on" id="nb-cfg" onclick="go('cfg')">Configurar</button>
+      <button class="nb" id="nb-vis" onclick="go('vis')">Nova visita</button>
+      <button class="nb" id="nb-his" onclick="go('his')">Histórico</button>
+      <button class="nb" id="nb-marc" onclick="go('marc')">Minha marca</button>
+    </div>
+  </div>
+
+  <!-- MINHA MARCA -->
+  <div id="p-marc" class="panel">
+    <div class="card">
+      <div class="sec">Personalização da marca</div>
+      <div class="row">
+        <div class="fg">
+          <label>Nome da empresa / consultor</label>
+          <input type="text" id="m-nome" placeholder="Ex: Consultoria Silva" oninput="previewMarca()">
+        </div>
+        <div class="fg">
+          <label>Slogan ou especialidade</label>
+          <input type="text" id="m-slogan" placeholder="Ex: Especialista em Vigilância Sanitária" oninput="previewMarca()">
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg">
+          <label>E-mail profissional</label>
+          <input type="email" id="m-email" placeholder="contato@empresa.com.br">
+        </div>
+        <div class="fg">
+          <label>WhatsApp / Telefone</label>
+          <input type="text" id="m-fone" placeholder="(54) 99999-9999">
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg">
+          <label>Cor principal da marca</label>
+          <input type="color" id="m-cor" value="#1a1a18" oninput="previewMarca()">
+        </div>
+        <div class="fg">
+          <label>Logo da empresa</label>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <div id="logo-placeholder" class="logo-placeholder" onclick="document.getElementById('inp-logo').click()">+</div>
+            <img id="logo-preview" class="logo-preview" src="" style="display:none">
+            <input type="file" id="inp-logo" accept="image/*" style="display:none" onchange="carregarLogo(this)">
+            <div>
+              <div style="font-size:12px;color:#666">Toque para adicionar</div>
+              <div style="font-size:11px;color:#aaa">PNG com fundo transparente recomendado</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn p" onclick="salvarMarca()">✓ Salvar personalização</button>
+    </div>
+  </div>
+
+  <!-- CONFIGURAR -->
+  <div id="p-cfg" class="panel on">
+    <div class="card">
+      <div class="sec">Checklists base prontos para usar</div>
+      <div id="lista-base"></div>
+    </div>
+    <div class="card">
+      <div class="sec">Criar novo checklist <button class="btn p" onclick="salvarCL()">+ Salvar</button></div>
+      <div class="row">
+        <div class="fg"><label>Tipo de estabelecimento</label><input type="text" id="cl-tipo" placeholder="Ex: Restaurante, Padaria, Farmácia..."></div>
+        <div class="fg"><label>Setor</label><input type="text" id="cl-setor" placeholder="Ex: Higiene, Documentação..."></div>
+        <div class="fg"><label>Tema da visita</label><input type="text" id="cl-tema" placeholder="Ex: Auditoria RDC 216"></div>
+      </div>
+      <div class="sec" style="margin-top:4px">Itens do checklist</div>
+      <div id="items-cfg"><div class="empty">Nenhum item ainda</div></div>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <input type="text" id="novo-item" placeholder="Digite um item e pressione Enter..." style="margin:0;flex:1" onkeydown="if(event.key==='Enter'){addItem();event.preventDefault()}">
+        <button class="btn" onclick="addItem()">+ Add</button>
+      </div>
+      <div style="margin-top:10px">
+        <label>Ou cole várias perguntas de uma vez (uma por linha):</label>
+        <textarea id="bulk-txt" placeholder="Pergunta 1&#10;Pergunta 2&#10;Pergunta 3..." style="margin-top:4px;min-height:80px"></textarea>
+        <button class="btn" onclick="addBulk()">+ Importar todas as linhas</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sec">Meus checklists salvos</div>
+      <div id="lista-cls"><div class="empty">Nenhum checklist salvo</div></div>
+      <div style="margin-top:14px;border-top:1px solid #eee;padding-top:12px">
+        <div style="font-size:13px;font-weight:500;margin-bottom:10px">Transferir para outro dispositivo</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn p" onclick="exportarCls()">⬆ Exportar</button>
+          <button class="btn" onclick="showImport()">⬇ Importar</button>
+        </div>
+        <div id="exp-area" style="display:none;margin-top:10px">
+          <label>Copie este código:</label>
+          <textarea id="exp-txt" style="min-height:70px;font-family:monospace;font-size:11px;margin-top:4px" readonly></textarea>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+            <button class="btn g" onclick="copiarExp()">📋 Copiar</button>
+            <span id="copy-ok" style="font-size:12px;color:#2a6;display:none">✓ Copiado!</span>
+          </div>
+        </div>
+        <div id="imp-area" style="display:none;margin-top:10px">
+          <label>Cole o código exportado aqui:</label>
+          <textarea id="imp-txt" style="min-height:70px;font-family:monospace;font-size:11px;margin-top:4px" placeholder="Cole aqui..."></textarea>
+          <button class="btn g" style="margin-top:6px" onclick="importarCls()">✓ Importar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISITA -->
+  <div id="p-vis" class="panel">
+    <div class="card">
+      <div class="sec">Dados da visita</div>
+      <div class="row">
+        <div class="fg"><label>Cliente / Estabelecimento</label><input type="text" id="v-cli" placeholder="Nome do cliente"></div>
+        <div class="fg"><label>Responsável no local</label><input type="text" id="v-resp" placeholder="Nome"></div>
+        <div class="fg"><label>Data</label><input type="date" id="v-data"></div>
+      </div>
+      <label>Checklist</label>
+      <select id="v-cl" onchange="carregarCL()"><option value="">-- selecione --</option></select>
+    </div>
+    <div id="exec-area"></div>
+    <div id="resumo-area" style="display:none">
+      <div class="card">
+        <div class="sec">Resumo da visita</div>
+        <div class="metrics">
+          <div class="met" style="color:#2a6"><div class="mv" id="r-sim">0</div><div class="ml">Sim</div></div>
+          <div class="met" style="color:#c00"><div class="mv" id="r-nao">0</div><div class="ml">Não</div></div>
+          <div class="met" style="color:#854f0b"><div class="mv" id="r-parc">0</div><div class="ml">Parcial</div></div>
+          <div class="met" style="color:#888"><div class="mv" id="r-na">0</div><div class="ml">N/A</div></div>
+        </div>
+        <div style="font-size:12px;color:#777">Conformidade (excl. N/A)</div>
+        <div class="bar"><div class="bar-fill" id="bar-fill" style="width:0%"></div></div>
+        <div style="font-size:15px;font-weight:500;margin-top:4px" id="pct-txt">0%</div>
+        <div class="send-row">
+          <button class="btn p" onclick="gerarPDF()">📄 Gerar PDF</button>
+          <button class="btn g" onclick="enviarWA()">💬 WhatsApp</button>
+          <button class="btn" onclick="enviarEmail()">✉ E-mail</button>
+        </div>
+        <div class="tip">Gere o PDF primeiro e depois envie como anexo pelo WhatsApp ou e-mail.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTÓRICO -->
+  <div id="p-his" class="panel">
+    <div class="card">
+      <div class="sec">Visitas realizadas</div>
+      <div id="lista-his"></div>
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY FOTO -->
+<div id="ov-foto" class="overlay">
+  <div class="ocard">
+    <div style="font-size:15px;font-weight:500;text-align:center">Adicionar foto</div>
+    <button class="btn p" style="padding:12px;font-size:15px" onclick="abrirCamera()">📷 Usar câmera</button>
+    <label class="btn" style="padding:12px;font-size:15px;text-align:center;cursor:pointer">
+      🖼 Escolher da galeria
+      <input type="file" id="inp-galeria" accept="image/*" multiple style="display:none" onchange="fotosDaGaleria(this)">
+    </label>
+    <button class="btn d" onclick="fecharOvFoto()">✕ Cancelar</button>
+  </div>
+</div>
+
+<!-- OVERLAY CÂMERA -->
+<div id="ov-camera" class="overlay">
+  <video id="cam-video" style="width:100%;max-width:480px;border-radius:10px;background:#000" playsinline autoplay></video>
+  <div style="display:flex;gap:12px">
+    <button class="btn p" style="padding:14px 28px;font-size:16px" onclick="tirarFoto()">📸 Capturar</button>
+    <button class="btn d" style="padding:14px 20px" onclick="fecharCamera()">✕</button>
+  </div>
+</div>
+
+<!-- OVERLAY VER FOTO -->
+<div id="ov-img" class="overlay" onclick="fecharOvImg()">
+  <img id="ov-img-src" src="" style="max-width:95vw;max-height:85vh;border-radius:10px" alt="">
+  <button class="btn" onclick="fecharOvImg()">✕ Fechar</button>
+</div>
+
+<script>
+var cls = JSON.parse(localStorage.getItem('c_cls')||'[]');
+var vis = JSON.parse(localStorage.getItem('c_vis')||'[]');
+var marca = JSON.parse(localStorage.getItem('c_marca')||'{}');
+var tmpItems = [];
+var ans = {}, fotos = {}, coments = {};
+var fotoIdx = -1;
+
+var CHECKLISTS_BASE = [
+  {
+    id:'base_rdc216', tipo:'Serviço de Alimentação', setor:'Higiene', tema:'RDC 216 — Boas Práticas',
+    itens:[
+      {id:'b1',texto:'Edificação, instalações, equipamentos e utensílios estão em condições higiênico-sanitárias adequadas?'},
+      {id:'b2',texto:'Existe controle de saúde dos manipuladores (atestados, exames)?'},
+      {id:'b3',texto:'Os manipuladores usam uniformes limpos, cabelos cobertos e sem adornos?'},
+      {id:'b4',texto:'Higienização das mãos é realizada corretamente nos momentos adequados?'},
+      {id:'b5',texto:'Matérias-primas e ingredientes estão identificados, dentro do prazo e armazenados corretamente?'},
+      {id:'b6',texto:'Temperatura dos equipamentos de refrigeração e congelamento está correta?'},
+      {id:'b7',texto:'Alimentos preparados estão protegidos de contaminação e com temperatura controlada?'},
+      {id:'b8',texto:'Existe separação física entre alimentos crus e cozidos?'},
+      {id:'b9',texto:'Água utilizada é potável e tem controle de qualidade?'},
+      {id:'b10',texto:'Existe Manual de Boas Práticas e POPs implantados e atualizados?'},
+      {id:'b11',texto:'POPs de higienização de instalações estão disponíveis e sendo seguidos?'},
+      {id:'b12',texto:'POPs de controle de pragas estão disponíveis e sendo seguidos?'},
+      {id:'b13',texto:'POPs de higienização do reservatório de água estão disponíveis?'},
+      {id:'b14',texto:'Registros de controle de temperatura são realizados e arquivados?'},
+      {id:'b15',texto:'Responsável Técnico está identificado e presente durante o funcionamento?'}
+    ]
+  },
+  {
+    id:'base_higiene', tipo:'Serviço de Alimentação', setor:'Higiene', tema:'Higienização Geral',
+    itens:[
+      {id:'h1',texto:'Pisos limpos, sem resíduos, gordura ou umidade?'},
+      {id:'h2',texto:'Paredes e tetos sem sujidade, mofo ou descascamento?'},
+      {id:'h3',texto:'Ralos e canaletas limpos e funcionando corretamente?'},
+      {id:'h4',texto:'Bancadas e superfícies de manipulação higienizadas?'},
+      {id:'h5',texto:'Equipamentos (fogões, fornos, fritadeiras) limpos externamente e internamente?'},
+      {id:'h6',texto:'Utensílios (facas, tábuas, panelas) higienizados corretamente?'},
+      {id:'h7',texto:'Tábuas de corte separadas por tipo de alimento (carne, legumes, etc.)?'},
+      {id:'h8',texto:'Pias de higienização com sabonete líquido, papel toalha e álcool gel?'},
+      {id:'h9',texto:'Lixeiras com tampa e pedal, em número e localização adequados?'},
+      {id:'h10',texto:'Câmaras e geladeiras limpas, sem odor, sem excesso de gelo?'},
+      {id:'h11',texto:'Produtos de limpeza identificados e armazenados separados dos alimentos?'},
+      {id:'h12',texto:'Panos de limpeza são descartáveis ou higienizados corretamente?'}
+    ]
+  },
+  {
+    id:'base_estrutural', tipo:'Serviço de Alimentação', setor:'Estrutura', tema:'Checklist Estrutural',
+    itens:[
+      {id:'e1',texto:'Piso de material liso, resistente, impermeável e antiderrapante?'},
+      {id:'e2',texto:'Paredes e divisórias de material liso, impermeável, lavável?'},
+      {id:'e3',texto:'Forro ou teto sem goteiras, trincas ou descascamento?'},
+      {id:'e4',texto:'Janelas e aberturas com telas milimétricas em bom estado?'},
+      {id:'e5',texto:'Portas de acesso com fechamento automático e sem folgas?'},
+      {id:'e6',texto:'Iluminação adequada em todas as áreas de manipulação?'},
+      {id:'e7',texto:'Ventilação adequada sem causar contaminação cruzada?'},
+      {id:'e8',texto:'Instalações elétricas protegidas e em bom estado?'},
+      {id:'e9',texto:'Banheiros e vestiários sem comunicação direta com a área de produção?'},
+      {id:'e10',texto:'Reservatório de água limpo, vedado e higienizado dentro do prazo?'},
+      {id:'e11',texto:'Área de recebimento de mercadorias adequada e separada da produção?'},
+      {id:'e12',texto:'Estoque organizado, com prateleiras sem contato com o piso, limpo e seco?'}
+    ]
+  },
+  {
+    id:'base_documentacao', tipo:'Serviço de Alimentação', setor:'Documentação', tema:'Documentação Vigilância Sanitária',
+    itens:[
+      {id:'d1',texto:'Alvará Sanitário válido e afixado em local visível?'},
+      {id:'d2',texto:'Alvará de Funcionamento da Prefeitura válido?'},
+      {id:'d3',texto:'Manual de Boas Práticas elaborado e atualizado?'},
+      {id:'d4',texto:'POPs (Procedimentos Operacionais Padronizados) disponíveis e atualizados?'},
+      {id:'d5',texto:'Registro de treinamentos dos manipuladores arquivados?'},
+      {id:'d6',texto:'Atestados de saúde dos manipuladores válidos e arquivados?'},
+      {id:'d7',texto:'Laudos de potabilidade da água dentro do prazo?'},
+      {id:'d8',texto:'Comprovante de higienização do reservatório de água (semestral)?'},
+      {id:'d9',texto:'Contrato e laudos de empresa de controle de pragas válidos?'},
+      {id:'d10',texto:'Notas fiscais de compras de matérias-primas arquivadas?'},
+      {id:'d11',texto:'Registros de temperatura de equipamentos arquivados?'},
+      {id:'d12',texto:'Responsável Técnico com habilitação comprovada?'}
+    ]
+  },
+  {
+    id:'base_pragas', tipo:'Serviço de Alimentação', setor:'Controle de Pragas', tema:'Controle Integrado de Pragas',
+    itens:[
+      {id:'p1',texto:'Existe contrato vigente com empresa especializada em controle de pragas?'},
+      {id:'p2',texto:'Laudos e relatórios de desinsetização/desratização dentro do prazo?'},
+      {id:'p3',texto:'Certificado da empresa de controle de pragas válido (cadastro na ANVISA)?'},
+      {id:'p4',texto:'Ausência de sinais de presença de insetos (baratas, moscas, formigas)?'},
+      {id:'p5',texto:'Ausência de sinais de presença de roedores (fezes, roeduras, ninhos)?'},
+      {id:'p6',texto:'Todas as aberturas (ralos, janelas, portas) com barreiras físicas adequadas?'},
+      {id:'p7',texto:'Ausência de acúmulo de materiais que possam servir de abrigo para pragas?'},
+      {id:'p8',texto:'Lixo é retirado diariamente e armazenado em área separada com tampa?'},
+      {id:'p9',texto:'Não há alimentos ou embalagens com sinais de ataque de pragas?'},
+      {id:'p10',texto:'Área externa sem mato alto, entulho ou materiais que atraiam pragas?'}
+    ]
+  },
+  {
+    id:'base_treinamento', tipo:'Serviço de Alimentação', setor:'Treinamento', tema:'Treinamento de Manipuladores',
+    itens:[
+      {id:'t1',texto:'Todos os manipuladores receberam treinamento de boas práticas?'},
+      {id:'t2',texto:'Registros de treinamento com assinaturas estão arquivados?'},
+      {id:'t3',texto:'Manipuladores conhecem os POPs e sabem aplicá-los?'},
+      {id:'t4',texto:'Higienização das mãos é realizada nos momentos corretos?'},
+      {id:'t5',texto:'Manipuladores conhecem os perigos de contaminação cruzada?'},
+      {id:'t6',texto:'Uso correto de EPI (luvas, máscara, touca) é observado?'},
+      {id:'t7',texto:'Manipuladores com sintomas de doenças estão afastados da produção?'},
+      {id:'t8',texto:'Está previsto treinamento periódico (mínimo anual)?'},
+      {id:'t9',texto:'Há responsável pelo monitoramento das boas práticas no estabelecimento?'},
+      {id:'t10',texto:'Manipuladores conhecem as temperaturas seguras para alimentos?'}
+    ]
+  },
+  {
+    id:'base_livre', tipo:'Qualquer estabelecimento', setor:'Geral', tema:'Visita Livre (fotos e comentários)',
+    itens:[
+      {id:'l1',texto:'Observação 1 — descreva no campo de comentário e/ou adicione foto'},
+      {id:'l2',texto:'Observação 2 — descreva no campo de comentário e/ou adicione foto'},
+      {id:'l3',texto:'Observação 3 — descreva no campo de comentário e/ou adicione foto'},
+      {id:'l4',texto:'Observação 4 — descreva no campo de comentário e/ou adicione foto'},
+      {id:'l5',texto:'Observação 5 — descreva no campo de comentário e/ou adicione foto'},
+      {id:'l6',texto:'Observação 6 — descreva no campo de comentário e/ou adicione foto'},
+      {id:'l7',texto:'Observação 7 — descreva no campo de comentário e/ou adicione foto'},
+      {id:'l8',texto:'Observação 8 — descreva no campo de comentário e/ou adicione foto'},
+      {id:'l9',texto:'Observação 9 — descreva no campo de comentário e/ou adicione foto'},
+      {id:'l10',texto:'Observação 10 — descreva no campo de comentário e/ou adicione foto'}
+    ]
+  }
+];
+
+function salvar() {
+  localStorage.setItem('c_cls', JSON.stringify(cls));
+  localStorage.setItem('c_vis', JSON.stringify(vis));
+  localStorage.setItem('c_marca', JSON.stringify(marca));
+}
+
+function go(p) {
+  ['cfg','vis','his','marc'].forEach(function(x) {
+    document.getElementById('p-'+x).classList.remove('on');
+    document.getElementById('nb-'+x).classList.remove('on');
+  });
+  document.getElementById('p-'+p).classList.add('on');
+  document.getElementById('nb-'+p).classList.add('on');
+  if (p==='vis') initVis();
+  if (p==='his') renderHis();
+  if (p==='marc') carregarFormMarca();
+  if (p==='cfg') renderBase();
+}
+
+function carregarFormMarca() {
+  if (marca.nome) document.getElementById('m-nome').value = marca.nome;
+  if (marca.slogan) document.getElementById('m-slogan').value = marca.slogan;
+  if (marca.email) document.getElementById('m-email').value = marca.email;
+  if (marca.fone) document.getElementById('m-fone').value = marca.fone;
+  if (marca.cor) document.getElementById('m-cor').value = marca.cor;
+  if (marca.logo) {
+    document.getElementById('logo-preview').src = marca.logo;
+    document.getElementById('logo-preview').style.display = 'block';
+    document.getElementById('logo-placeholder').style.display = 'none';
+  }
+}
+
+function carregarLogo(input) {
+  if (!input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('logo-preview').src = e.target.result;
+    document.getElementById('logo-preview').style.display = 'block';
+    document.getElementById('logo-placeholder').style.display = 'none';
+    marca.logo = e.target.result;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function previewMarca() {
+  var cor = document.getElementById('m-cor').value;
+  document.getElementById('app-header').style.background = cor;
+  var nome = document.getElementById('m-nome').value||'Checklist de Consultoria';
+  document.getElementById('header-empresa').textContent = nome;
+  var slogan = document.getElementById('m-slogan').value;
+  var sel = document.getElementById('header-slogan');
+  if (slogan) { sel.textContent = slogan; sel.style.display='block'; } else sel.style.display='none';
+}
+
+function salvarMarca() {
+  marca.nome = document.getElementById('m-nome').value;
+  marca.slogan = document.getElementById('m-slogan').value;
+  marca.email = document.getElementById('m-email').value;
+  marca.fone = document.getElementById('m-fone').value;
+  marca.cor = document.getElementById('m-cor').value;
+  salvar(); aplicarMarca();
+  alert('Marca salva!');
+}
+
+function aplicarMarca() {
+  if (marca.cor) document.getElementById('app-header').style.background = marca.cor;
+  if (marca.nome) document.getElementById('header-empresa').textContent = marca.nome;
+  if (marca.slogan) { document.getElementById('header-slogan').textContent = marca.slogan; document.getElementById('header-slogan').style.display='block'; }
+  if (marca.logo) {
+    var img = document.getElementById('header-logo');
+    img.src = marca.logo; img.style.display='block';
+  }
+}
+
+function renderBase() {
+  var el = document.getElementById('lista-base');
+  el.innerHTML = CHECKLISTS_BASE.map(function(cl) {
+    var jatem = cls.some(function(c){ return c.id===cl.id; });
+    return '<div class="base-cl-item">'
+      +'<div>'
+      +'<div style="font-weight:500;font-size:13px">'+cl.tema+'</div>'
+      +'<div style="font-size:11px;color:#777">'+cl.tipo+' — '+cl.itens.length+' itens</div>'
+      +'</div>'
+      +(jatem
+        ? '<span style="font-size:12px;color:#2a6;font-weight:500">✓ Adicionado</span>'
+        : '<button class="btn p" style="font-size:11px;padding:5px 12px" onclick="adicionarBase(\''+cl.id+'\')">+ Usar</button>')
+      +'</div>';
+  }).join('');
+}
+
+function adicionarBase(id) {
+  var cl = CHECKLISTS_BASE.find(function(c){ return c.id===id; });
+  if (!cl) return;
+  if (cls.some(function(c){ return c.id===id; })) { alert('Já adicionado!'); return; }
+  cls.push(JSON.parse(JSON.stringify(cl)));
+  salvar(); renderBase(); renderCls();
+  alert('"'+cl.tema+'" adicionado aos seus checklists!');
+}
+
+function addItem() {
+  var txt = document.getElementById('novo-item').value.trim();
+  if (!txt) return;
+  tmpItems.push({id:Date.now()+'r'+Math.random(), texto:txt});
+  document.getElementById('novo-item').value='';
+  renderItemsCfg();
+}
+
+function addBulk() {
+  var txt = document.getElementById('bulk-txt').value.trim();
+  if (!txt) return;
+  txt.split('\n').forEach(function(l){ l=l.trim(); if(l) tmpItems.push({id:Date.now()+'r'+Math.random(),texto:l}); });
+  document.getElementById('bulk-txt').value='';
+  renderItemsCfg();
+}
+
+function renderItemsCfg() {
+  var el = document.getElementById('items-cfg');
+  if (!tmpItems.length) { el.innerHTML='<div class="empty">Nenhum item ainda</div>'; return; }
+  el.innerHTML = tmpItems.map(function(it,i){
+    return '<div class="item-row"><span style="flex:1">'+(i+1)+'. '+it.texto+'</span>'
+      +'<button class="btn d" style="padding:3px 8px;font-size:11px" onclick="remItem('+i+')">✕</button></div>';
+  }).join('');
+}
+
+function remItem(i) { tmpItems.splice(i,1); renderItemsCfg(); }
+
+function salvarCL() {
+  var tipo = document.getElementById('cl-tipo').value.trim();
+  if (!tipo) { alert('Informe o tipo de estabelecimento.'); return; }
+  if (!tmpItems.length) { alert('Adicione ao menos 1 item.'); return; }
+  cls.push({id:Date.now()+'', tipo:tipo, setor:document.getElementById('cl-setor').value.trim(), tema:document.getElementById('cl-tema').value.trim(), itens:tmpItems.slice()});
+  salvar(); tmpItems=[];
+  document.getElementById('cl-tipo').value='';
+  document.getElementById('cl-setor').value='';
+  document.getElementById('cl-tema').value='';
+  renderItemsCfg(); renderCls(); renderBase();
+  alert('Checklist salvo!');
+}
+
+function renderCls() {
+  var el = document.getElementById('lista-cls');
+  if (!cls.length) { el.innerHTML='<div class="empty">Nenhum checklist salvo</div>'; return; }
+  el.innerHTML = cls.map(function(cl,i){
+    return '<div class="cl-card">'
+      +'<span class="badge b-tipo">'+cl.tipo+'</span>'
+      +(cl.setor?'<span class="badge b-setor">'+cl.setor+'</span>':'')
+      +(cl.tema?'<span class="badge b-tema">'+cl.tema+'</span>':'')
+      +'<div style="font-size:12px;color:#777;margin-top:4px">'+cl.itens.length+' itens</div>'
+      +'<div style="display:flex;gap:6px;margin-top:8px">'
+      +'<button class="btn" style="font-size:11px;padding:4px 10px" onclick="editCL('+i+')">✏ Editar</button>'
+      +'<button class="btn d" style="font-size:11px;padding:4px 10px" onclick="delCL('+i+')">✕ Excluir</button>'
+      +'</div></div>';
+  }).join('');
+}
+
+function editCL(i) {
+  var cl=cls[i];
+  document.getElementById('cl-tipo').value=cl.tipo;
+  document.getElementById('cl-setor').value=cl.setor||'';
+  document.getElementById('cl-tema').value=cl.tema||'';
+  tmpItems=cl.itens.slice();
+  cls.splice(i,1); salvar(); renderItemsCfg(); renderCls(); window.scrollTo(0,0);
+}
+
+function delCL(i) {
+  if (!confirm('Excluir este checklist?')) return;
+  cls.splice(i,1); salvar(); renderCls(); renderBase();
+}
+
+function exportarCls() {
+  if (!cls.length) { alert('Nenhum checklist para exportar.'); return; }
+  var cod = btoa(unescape(encodeURIComponent(JSON.stringify(cls))));
+  document.getElementById('exp-txt').value=cod;
+  document.getElementById('exp-area').style.display='block';
+  document.getElementById('imp-area').style.display='none';
+}
+
+function copiarExp() {
+  var el=document.getElementById('exp-txt');
+  el.select(); el.setSelectionRange(0,99999);
+  try{document.execCommand('copy');}catch(e){navigator.clipboard&&navigator.clipboard.writeText(el.value);}
+  var ok=document.getElementById('copy-ok');
+  ok.style.display='inline';
+  setTimeout(function(){ok.style.display='none';},2500);
+}
+
+function showImport() {
+  document.getElementById('imp-area').style.display='block';
+  document.getElementById('exp-area').style.display='none';
+}
+
+function importarCls() {
+  var txt=document.getElementById('imp-txt').value.trim();
+  if (!txt){alert('Cole o código antes de importar.');return;}
+  try {
+    var imp=JSON.parse(decodeURIComponent(escape(atob(txt))));
+    if (!Array.isArray(imp)) throw new Error();
+    var n=0;
+    imp.forEach(function(cl){ if(!cls.some(function(c){return c.id===cl.id;})){cls.push(cl);n++;} });
+    salvar(); renderCls(); renderBase();
+    document.getElementById('imp-area').style.display='none';
+    document.getElementById('imp-txt').value='';
+    alert(n+' checklist(s) importado(s)!');
+  } catch(e) { alert('Código inválido.'); }
+}
+
+function initVis() {
+  document.getElementById('v-data').value=new Date().toISOString().split('T')[0];
+  var sel=document.getElementById('v-cl');
+  sel.innerHTML='<option value="">-- selecione --</option>';
+  cls.forEach(function(cl,i){
+    sel.innerHTML+='<option value="'+i+'">'+cl.tipo+(cl.setor?' | '+cl.setor:'')+(cl.tema?' | '+cl.tema:'')+'</option>';
+  });
+  document.getElementById('exec-area').innerHTML='';
+  document.getElementById('resumo-area').style.display='none';
+  ans={}; fotos={}; coments={};
+}
+
+function carregarCL() {
+  var idx=document.getElementById('v-cl').value;
+  if (idx===''){document.getElementById('exec-area').innerHTML='';document.getElementById('resumo-area').style.display='none';return;}
+  ans={}; fotos={}; coments={};
+  var cl=cls[parseInt(idx)];
+  document.getElementById('exec-area').innerHTML=cl.itens.map(function(it,i){
+    return '<div class="exec-card" id="ec-'+i+'">'
+      +'<div style="font-size:13px;font-weight:500;margin-bottom:8px">'+(i+1)+'. '+it.texto+'</div>'
+      +'<div class="resp-row">'
+      +'<button class="rb sim" onclick="setAns('+i+',\'sim\',this)">✓ Sim</button>'
+      +'<button class="rb nao" onclick="setAns('+i+',\'nao\',this)">✗ Não</button>'
+      +'<button class="rb parc" onclick="setAns('+i+',\'parc\',this)">~ Parcial</button>'
+      +'<button class="rb na" onclick="setAns('+i+',\'na\',this)">— N/A</button>'
+      +'</div>'
+      +'<textarea placeholder="Comentário..." style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid #ddd;font-size:13px;resize:vertical;min-height:40px;margin-top:4px;color:#1a1a18" onchange="coments['+i+']=this.value"></textarea>'
+      +'<div class="photo-area">'
+      +'<div class="photo-btn" onclick="abrirOvFoto('+i+')" title="Adicionar foto">📷</div>'
+      +'<div id="ft-'+i+'" style="display:flex;gap:6px;flex-wrap:wrap"></div>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+  document.getElementById('resumo-area').style.display='block';
+  atualizarScore();
+}
+
+function setAns(i,val,btn) {
+  document.getElementById('ec-'+i).querySelectorAll('.rb').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on'); ans[i]=val; atualizarScore();
+}
+
+function atualizarScore() {
+  var vals=Object.values(ans);
+  var sim=vals.filter(function(v){return v==='sim';}).length;
+  var nao=vals.filter(function(v){return v==='nao';}).length;
+  var parc=vals.filter(function(v){return v==='parc';}).length;
+  var na=vals.filter(function(v){return v==='na';}).length;
+  document.getElementById('r-sim').textContent=sim;
+  document.getElementById('r-nao').textContent=nao;
+  document.getElementById('r-parc').textContent=parc;
+  document.getElementById('r-na').textContent=na;
+  var total=sim+nao+parc;
+  var pct=total?Math.round((sim+parc*0.5)/total*100):0;
+  document.getElementById('bar-fill').style.width=pct+'%';
+  document.getElementById('pct-txt').textContent=pct+'%';
+}
+
+function abrirOvFoto(i){fotoIdx=i;document.getElementById('ov-foto').classList.add('on');}
+function fecharOvFoto(){document.getElementById('ov-foto').classList.remove('on');}
+
+function abrirCamera() {
+  fecharOvFoto();
+  document.getElementById('ov-camera').classList.add('on');
+  var video=document.getElementById('cam-video');
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false})
+    .then(function(s){video.srcObject=s;})
+    .catch(function(){alert('Câmera não disponível. Use a galeria.');fecharCamera();});
+}
+
+function fecharCamera() {
+  var video=document.getElementById('cam-video');
+  if(video.srcObject){video.srcObject.getTracks().forEach(function(t){t.stop();});video.srcObject=null;}
+  document.getElementById('ov-camera').classList.remove('on');
+}
+
+function tirarFoto() {
+  var video=document.getElementById('cam-video');
+  var canvas=document.createElement('canvas');
+  canvas.width=video.videoWidth; canvas.height=video.videoHeight;
+  canvas.getContext('2d').drawImage(video,0,0);
+  adicionarFoto(canvas.toDataURL('image/jpeg',0.8));
+  fecharCamera();
+}
+
+function fotosDaGaleria(input) {
+  fecharOvFoto();
+  Array.from(input.files).forEach(function(file){
+    var reader=new FileReader();
+    reader.onload=function(e){adicionarFoto(e.target.result);};
+    reader.readAsDataURL(file);
+  });
+  input.value='';
+}
+
+function adicionarFoto(dataUrl) {
+  var i=fotoIdx;
+  if(!fotos[i])fotos[i]=[];
+  fotos[i].push(dataUrl);
+  var container=document.getElementById('ft-'+i);
+  var img=document.createElement('img');
+  img.src=dataUrl; img.className='thumb';
+  img.onclick=function(){document.getElementById('ov-img-src').src=dataUrl;document.getElementById('ov-img').classList.add('on');};
+  container.appendChild(img);
+}
+
+function fecharOvImg(){document.getElementById('ov-img').classList.remove('on');}
+
+function getDados() {
+  var idx=parseInt(document.getElementById('v-cl').value);
+  return {cliente:document.getElementById('v-cli').value||'—',responsavel:document.getElementById('v-resp').value||'—',data:document.getElementById('v-data').value,cl:cls[idx],ans:Object.assign({},ans),fotos:JSON.parse(JSON.stringify(fotos)),coments:Object.assign({},coments)};
+}
+
+function fmtData(d){return d?new Date(d+'T12:00:00').toLocaleDateString('pt-BR'):'—';}
+
+function calcScore(d) {
+  var vals=Object.values(d.ans);
+  var sim=vals.filter(function(v){return v==='sim';}).length;
+  var nao=vals.filter(function(v){return v==='nao';}).length;
+  var parc=vals.filter(function(v){return v==='parc';}).length;
+  var na=vals.filter(function(v){return v==='na';}).length;
+  var total=sim+nao+parc;
+  return {sim:sim,nao:nao,parc:parc,na:na,pct:total?Math.round((sim+parc*0.5)/total*100):0};
+}
+
+function gerarPDF() {
+  var idx=document.getElementById('v-cl').value;
+  if(idx===''){alert('Selecione um checklist.');return;}
+  var d=getDados(), sc=calcScore(d);
+  var J=window.jspdf.jsPDF;
+  var doc=new J({orientation:'p',unit:'mm',format:'a4'});
+  var W=210,M=15,TW=W-M*2,y=M;
+  var corR=26,corG=26,corB=24;
+  if(marca.cor){var hex=marca.cor.replace('#','');corR=parseInt(hex.substr(0,2),16);corG=parseInt(hex.substr(2,2),16);corB=parseInt(hex.substr(4,2),16);}
+
+  doc.setFillColor(corR,corG,corB); doc.rect(0,0,W,28,'F');
+  if(marca.logo){try{doc.addImage(marca.logo,'PNG',M,4,20,20);}catch(e){}}
+  var txtX=marca.logo?M+24:M;
+  doc.setTextColor(255,255,255); doc.setFontSize(14); doc.setFont(undefined,'bold');
+  doc.text(marca.nome||'Relatório de Consultoria',txtX,12);
+  if(marca.slogan){doc.setFontSize(9);doc.setFont(undefined,'normal');doc.text(marca.slogan,txtX,18);}
+  doc.setFontSize(8); doc.setFont(undefined,'normal');
+  if(marca.fone)doc.text(marca.fone,W-M,12,{align:'right'});
+  if(marca.email)doc.text(marca.email,W-M,18,{align:'right'});
+  y=36; doc.setTextColor(0);
+
+  doc.setFontSize(10);doc.setFont(undefined,'bold');doc.text('Dados da visita',M,y);y+=6;
+  doc.setFontSize(9);
+  [['Cliente',d.cliente],['Responsável',d.responsavel],['Data',fmtData(d.data)],['Tipo',d.cl.tipo],['Setor',d.cl.setor||'—'],['Tema',d.cl.tema||'—']].forEach(function(r){
+    doc.setFont(undefined,'bold');doc.text(r[0]+':',M,y);
+    doc.setFont(undefined,'normal');doc.text(r[1],M+28,y);y+=5;
+  });
+  y+=4;
+
+  doc.setFillColor(240,240,238);doc.rect(M,y,TW,18,'F');
+  doc.setFontSize(12);doc.setFont(undefined,'bold');
+  doc.text('Conformidade: '+sc.pct+'%',M+4,y+8);
+  doc.setFontSize(9);doc.setFont(undefined,'normal');
+  doc.text('Sim: '+sc.sim+'   Não: '+sc.nao+'   Parcial: '+sc.parc+'   N/A: '+sc.na,M+4,y+14);
+  y+=24;
+
+  doc.setFontSize(10);doc.setFont(undefined,'bold');doc.text('Itens avaliados',M,y);y+=6;
+  var labels={sim:'SIM',nao:'NÃO',parc:'PARCIAL',na:'N/A'};
+  var cores={sim:[42,120,42],nao:[180,0,0],parc:[133,79,11],na:[120,120,120]};
+
+  d.cl.itens.forEach(function(it,i){
+    if(y>265){doc.addPage();y=M;}
+    var resp=d.ans[i],label=labels[resp]||'—',cor=cores[resp]||[170,170,170];
+    doc.setFillColor(252,252,250);doc.setDrawColor(220);doc.rect(M,y,TW,9,'FD');
+    doc.setFontSize(8);doc.setFont(undefined,'normal');doc.setTextColor(0);
+    var lines=doc.splitTextToSize((i+1)+'. '+it.texto,TW-28);
+    doc.text(lines,M+2,y+5.5);
+    doc.setTextColor(cor[0],cor[1],cor[2]);doc.setFont(undefined,'bold');
+    doc.text(label,W-M-2,y+5.5,{align:'right'});
+    doc.setTextColor(0);doc.setFont(undefined,'normal');
+    y+=(lines.length>1?lines.length*4+4:10);
+    var c=d.coments[i];
+    if(c&&c.trim()){
+      if(y>265){doc.addPage();y=M;}
+      doc.setFontSize(7);doc.setTextColor(100);
+      var cl2=doc.splitTextToSize('Comentário: '+c,TW-4);
+      doc.text(cl2,M+4,y);y+=cl2.length*4+2;doc.setTextColor(0);
+    }
+    var fs=d.fotos[i];
+    if(fs&&fs.length){fs.forEach(function(f){if(y>240){doc.addPage();y=M;}try{doc.addImage(f,'JPEG',M,y,40,30);}catch(e){}y+=33;});}
+  });
+
+  doc.setFontSize(7);doc.setTextColor(150);
+  doc.text((marca.nome||'Checklist de Consultoria')+' — Relatório gerado em '+new Date().toLocaleDateString('pt-BR'),W/2,290,{align:'center'});
+
+  var vr={id:Date.now()+'',data:d.data,cliente:d.cliente,responsavel:d.responsavel,tipo:d.cl.tipo,setor:d.cl.setor,tema:d.cl.tema,pct:sc.pct,sim:sc.sim,nao:sc.nao,parc:sc.parc,na:sc.na};
+  vis.unshift(vr);if(vis.length>100)vis=vis.slice(0,100);salvar();
+  doc.save('relatorio_'+d.cliente.replace(/\s+/g,'_')+'_'+d.data+'.pdf');
+}
+
+function enviarWA() {
+  var idx=document.getElementById('v-cl').value;
+  if(idx===''){alert('Selecione um checklist.');return;}
+  var d=getDados(),sc=calcScore(d);
+  var txt='*Relatório de Consultoria*'+(marca.nome?'\n'+marca.nome:'')+'\nCliente: '+d.cliente+'\nData: '+fmtData(d.data)+'\nTipo: '+d.cl.tipo+(d.cl.setor?' | '+d.cl.setor:'')+'\n\n*Conformidade: '+sc.pct+'%*\nSim: '+sc.sim+' | Não: '+sc.nao+' | Parcial: '+sc.parc+'\n\n_Relatório PDF em anexo._';
+  window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');
+}
+
+function enviarEmail() {
+  var idx=document.getElementById('v-cl').value;
+  if(idx===''){alert('Selecione um checklist.');return;}
+  var d=getDados(),sc=calcScore(d);
+  var subj='Relatório de Consultoria — '+d.cliente+' — '+fmtData(d.data);
+  var body='Olá,\n\nSegue o relatório de consultoria'+(marca.nome?' de '+marca.nome:'')+'\n\nCliente: '+d.cliente+'\nResponsável: '+d.responsavel+'\nData: '+fmtData(d.data)+'\nTipo: '+d.cl.tipo+(d.cl.setor?' | '+d.cl.setor:'')+'\n\nConformidade: '+sc.pct+'%\nSim: '+sc.sim+' | Não: '+sc.nao+' | Parcial: '+sc.parc+'\n\nO PDF completo está em anexo.\n\nAtenciosamente,\n'+(marca.nome||'')+(marca.fone?'\n'+marca.fone:'')+(marca.email?'\n'+marca.email:'');
+  window.open('mailto:?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body),'_blank');
+}
+
+function renderHis() {
+  var el=document.getElementById('lista-his');
+  if(!vis.length){el.innerHTML='<div class="empty">Nenhuma visita registrada</div>';return;}
+  el.innerHTML=vis.map(function(v){
+    var cor=v.pct>=70?'#2a6':v.pct>=40?'#854f0b':'#c00';
+    return '<div class="cl-card" style="margin-bottom:8px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">'
+      +'<div><div style="font-size:14px;font-weight:500">'+v.cliente+'</div>'
+      +'<div style="font-size:12px;color:#777">'+fmtData(v.data)+' — '+(v.responsavel||'—')+'</div></div>'
+      +'<div style="text-align:right"><div style="font-size:20px;font-weight:500;color:'+cor+'">'+v.pct+'%</div>'
+      +'<div style="font-size:11px;color:#777">conformidade</div></div></div>'
+      +'<div style="margin-top:6px">'
+      +'<span class="badge b-tipo">'+v.tipo+'</span>'
+      +(v.setor?'<span class="badge b-setor">'+v.setor+'</span>':'')
+      +(v.tema?'<span class="badge b-tema">'+v.tema+'</span>':'')
+      +'</div>'
+      +'<div style="font-size:12px;color:#777;margin-top:4px">Sim: '+v.sim+' | Não: '+v.nao+' | Parcial: '+v.parc+' | N/A: '+v.na+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+aplicarMarca();
+renderItemsCfg();
+renderCls();
+renderBase();
+</script>
+</body>
+</html>
