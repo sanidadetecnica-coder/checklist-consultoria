@@ -246,7 +246,7 @@ body.dark .fab-salvar{background:#e8e8e6;color:#0f0f11}
       <span class="auth-link" onclick="authTab('login')">← Voltar ao login</span>
     </div>
   </div>
-  <div class="auth-footer">Dados salvos localmente · SaniCheck v3.1</div>
+  <div class="auth-footer">Dados salvos localmente · SaniCheck v3.2</div>
 </div>
 
 <div class="app" id="app-main">
@@ -277,11 +277,9 @@ body.dark .fab-salvar{background:#e8e8e6;color:#0f0f11}
       <div class="menu-item" onclick="ir('pendentes')"><div class="menu-icon-wrap">⏳</div><div class="menu-label">Pendentes</div><div class="menu-desc">Em andamento</div><div class="menu-badge or" id="b-pendentes">0</div></div>
       <div class="menu-item" onclick="ir('historico')"><div class="menu-icon-wrap">📁</div><div class="menu-label">Histórico</div><div class="menu-desc">Visitas realizadas</div><div class="menu-badge vd" id="b-visitas">0</div></div>
       <div class="menu-item" onclick="ir('checklists')"><div class="menu-icon-wrap">⚙️</div><div class="menu-label">Checklists</div><div class="menu-desc">Gerenciar</div><div class="menu-badge" id="b-cls">0</div></div>
-      <div class="menu-item" onclick="ir('dashboard')"><div class="menu-icon-wrap">📊</div><div class="menu-label">Dashboard</div><div class="menu-desc">Resumo</div></div>
       <div class="menu-item" onclick="ir('marca')"><div class="menu-icon-wrap">🎨</div><div class="menu-label">Minha marca</div><div class="menu-desc">Logo e cores</div></div>
       <div class="menu-item" onclick="ir('notas')"><div class="menu-icon-wrap">📝</div><div class="menu-label">Notas</div><div class="menu-desc">Anotações</div></div>
       <div class="menu-item" onclick="ir('backup')"><div class="menu-icon-wrap">💾</div><div class="menu-label">Backup</div><div class="menu-desc">Exportar / Restaurar</div></div>
-
       <div class="menu-item" onclick="ir('ajuda')"><div class="menu-icon-wrap">❓</div><div class="menu-label">Ajuda</div><div class="menu-desc">Instruções & SAC</div></div>
     </div>
     <div class="card">
@@ -411,20 +409,12 @@ body.dark .fab-salvar{background:#e8e8e6;color:#0f0f11}
     <div id="edit-hist-content"></div>
   </div>
 
-  <div id="s-score" class="screen">
-    <div class="panel-hdr"><button class="back-btn" onclick="ir('dashboard')">←</button><div class="panel-title" id="score-titulo">Ficha do cliente</div></div>
-    <div id="score-content"></div>
-  </div>
-
-  <!-- CHECKLISTS PRINCIPAL -->
   <div id="s-checklists" class="screen">
     <div class="panel-hdr"><button class="back-btn" onclick="ir('menu')">←</button><div class="panel-title">Checklists</div></div>
-    <!-- abas -->
     <div style="display:flex;gap:7px;margin-bottom:11px">
       <button class="btn p" id="cl-aba-0" onclick="clAba(0)" style="flex:1;justify-content:center">📋 Modelos</button>
       <button class="btn" id="cl-aba-1" onclick="clAba(1)" style="flex:1;justify-content:center">⚙️ Meus checklists</button>
     </div>
-    <!-- painel modelos -->
     <div id="cl-painel-0">
       <div class="card">
         <div class="sec">Criar novo modelo <button class="btn p" style="font-size:12px;padding:4px 11px" onclick="ir('cl-criar')">+ Novo</button></div>
@@ -435,20 +425,17 @@ body.dark .fab-salvar{background:#e8e8e6;color:#0f0f11}
       </div>
       <div class="card"><div class="sec">Modelos salvos</div><div id="lista-modelos"><div class="empty">Nenhum modelo criado ainda.<br>Clique em "+ Novo" para começar.</div></div></div>
     </div>
-    <!-- painel meus checklists (base RDC etc) -->
     <div id="cl-painel-1" style="display:none">
       <div class="card"><div class="sec">Checklists base prontos</div><div id="lista-base"></div></div>
       <div class="card"><div class="sec">Salvos manualmente</div><div id="lista-cls"><div class="empty">Nenhum checklist salvo</div></div></div>
     </div>
   </div>
 
-  <!-- CRIAR / EDITAR MODELO -->
   <div id="s-cl-criar" class="screen">
     <div class="panel-hdr">
       <button class="back-btn" onclick="ir('checklists')">←</button>
       <div class="panel-title" id="cl-criar-titulo">Novo modelo</div>
     </div>
-    <!-- passo 1 -->
     <div class="card">
       <div class="sec">1. Identificação</div>
       <label>Tipo de estabelecimento</label>
@@ -462,22 +449,18 @@ body.dark .fab-salvar{background:#e8e8e6;color:#0f0f11}
       <label>Nome do checklist</label>
       <input type="text" id="clm-nome" placeholder="Ex: Checklist Geral Padaria" style="margin-bottom:0">
     </div>
-    <!-- passo 2 setores -->
     <div class="card">
       <div class="sec">2. Setores e perguntas</div>
-      <!-- colar tudo de uma vez -->
       <div style="background:#f0f7ff;border:1px solid #b0d4f5;border-radius:9px;padding:11px;margin-bottom:11px">
         <div style="font-size:13px;font-weight:600;color:#185fa5;margin-bottom:5px">⚡ Colar tudo de uma vez</div>
         <div style="font-size:12px;color:#555;margin-bottom:7px;line-height:1.6">Cole o texto do seu checklist. Linhas em <b>MAIÚSCULO</b> viram títulos de setor. As demais viram perguntas.</div>
         <textarea id="clm-bulk-all" placeholder="ESTOQUE&#10;O estoque está limpo?&#10;Produtos afastados do piso?&#10;&#10;COZINHA PRINCIPAL&#10;A área está limpa e organizada?&#10;..." style="min-height:120px;margin-bottom:7px;font-size:12px"></textarea>
         <button class="btn p" style="width:100%;justify-content:center" onclick="processarBulkAll()">⚡ Processar e montar setores</button>
       </div>
-      <!-- ou construir setor a setor -->
       <div style="font-size:12px;color:#888;text-align:center;margin-bottom:11px">— ou adicione setor por setor —</div>
       <div id="clm-setores-lista"></div>
       <button class="btn az" style="width:100%;justify-content:center;margin-top:5px" onclick="addSetorModelo()">+ Adicionar setor</button>
     </div>
-    <!-- passo 3 opcionais -->
     <div class="card">
       <div class="sec">3. Seções finais opcionais</div>
       <label style="display:flex;align-items:center;gap:9px;cursor:pointer;margin-bottom:11px">
@@ -492,7 +475,6 @@ body.dark .fab-salvar{background:#e8e8e6;color:#0f0f11}
     </div>
   </div>
 
-  <!-- PRÉ-EDIÇÃO ANTES DA VISITA -->
   <div id="s-cl-previsita" class="screen">
     <div class="panel-hdr">
       <button class="back-btn" onclick="ir('checklists')">←</button>
@@ -506,11 +488,6 @@ body.dark .fab-salvar{background:#e8e8e6;color:#0f0f11}
       <button class="btn" style="flex:1;justify-content:center" onclick="ir('checklists')">✕ Cancelar</button>
       <button class="btn p" style="flex:2;justify-content:center;font-size:14px" onclick="usarModeloComoChecklist()">▶ Iniciar visita com este modelo</button>
     </div>
-  </div>
-
-  <div id="s-dashboard" class="screen">
-    <div class="panel-hdr"><button class="back-btn" onclick="ir('menu')">←</button><div class="panel-title">Dashboard</div></div>
-    <div id="dash-content"></div>
   </div>
 
   <div id="s-notas" class="screen">
@@ -527,8 +504,6 @@ body.dark .fab-salvar{background:#e8e8e6;color:#0f0f11}
     <div class="card"><div class="sec">ℹ️ Sobre seus dados</div><div style="font-size:13px;color:#666;line-height:1.7">• Dados salvos <b>localmente</b> neste dispositivo<br>• Não são enviados a nenhum servidor<br>• Trocar de navegador ou limpar cache apaga os dados<br>• Faça backup regularmente</div></div>
   </div>
 
-
-
   <div id="s-ajuda" class="screen">
     <div class="panel-hdr"><button class="back-btn" onclick="ir('menu')">←</button><div class="panel-title">Ajuda & Instruções</div></div>
     <div class="card">
@@ -543,6 +518,7 @@ body.dark .fab-salvar{background:#e8e8e6;color:#0f0f11}
     </div>
   </div>
 
+  <!-- ═══ MINHA MARCA — com campos RT ═══ -->
   <div id="s-marca" class="screen">
     <div class="panel-hdr"><button class="back-btn" onclick="ir('menu')">←</button><div class="panel-title">Minha marca</div></div>
     <div class="card">
@@ -571,7 +547,10 @@ body.dark .fab-salvar{background:#e8e8e6;color:#0f0f11}
           </div>
         </div>
       </div>
+
+      <!-- ═══ RESPONSÁVEL TÉCNICO ═══ -->
       <div class="sec" style="margin-top:3px">Responsável técnico</div>
+      <div style="font-size:12px;color:#888;margin-bottom:9px;line-height:1.5">Esses dados aparecem no cabeçalho do PDF gerado.</div>
       <div class="row">
         <div class="fg"><label>Nome do consultor / RT</label><input type="text" id="m-rt-nome" placeholder="Ex: Patrícia Griep"></div>
         <div class="fg">
@@ -584,6 +563,7 @@ body.dark .fab-salvar{background:#e8e8e6;color:#0f0f11}
         </div>
         <div class="fg"><label>Número do registro</label><input type="text" id="m-rt-num" placeholder="Ex: 12345/RS"></div>
       </div>
+
       <button class="btn p" onclick="salvarMarca()">✓ Salvar marca</button>
     </div>
   </div>
@@ -613,19 +593,6 @@ function aplicarPrefs(){
   if(!st){st=document.createElement('style');st.id='dyn-r';document.head.appendChild(st);}
   st.textContent='.card{border-radius:'+r+'!important}.btn{border-radius:'+r2+'!important}.menu-item{border-radius:'+r+'!important}';
 }
-function setFonte(f){_prefs.fonte=f;salvarPrefs();aplicarPrefs();document.querySelectorAll('[data-fc]').forEach(function(el){el.classList.remove('on');});var el=document.querySelector('[data-fc="'+f+'"]');if(el)el.classList.add('on');}
-function setRaio(r){_prefs.raio=r;salvarPrefs();aplicarPrefs();['sharp','default'].forEach(function(k){var el=document.getElementById('rd-'+k);if(el)el.classList.remove('on');});var el=document.getElementById('rd-'+r);if(el)el.classList.add('on');}
-function initVisual(){
-  var fc=document.getElementById('font-chips');
-  if(fc){fc.innerHTML=FONTES.map(function(f){return'<span class="pref-chip'+(f.id===_prefs.fonte?' on':'')+'" data-fc="'+f.id+'" onclick="setFonte(\''+f.id+'\')" style="flex:1;text-align:center;padding:10px 0'+(f.css?';font-family:'+f.css:'')+'">'+(f.id==='system'?'Sistema (padrão)':'Nunito')+'</span>';}).join('');}
-  ['sharp','default'].forEach(function(k){var el=document.getElementById('rd-'+k);if(el)el.classList.remove('on');});
-  var rd=document.getElementById('rd-'+(_prefs.raio==='soft'?'default':_prefs.raio));if(rd)rd.classList.add('on');
-  var sw=document.getElementById('dark-sw');if(sw){if(document.body.classList.contains('dark'))sw.classList.add('on');else sw.classList.remove('on');}
-}
-function initSetorSugestoes(){
-  var el=document.getElementById('setor-sugestoes');if(!el)return;
-  el.innerHTML=SETORES_SUGESTAO.map(function(s){return'<button class="setor-chip" onclick="document.getElementById(\'cl-setor\').value=\''+s+'\';this.parentNode.querySelectorAll(\'.setor-chip\').forEach(function(x){x.style.background=\'\'});this.style.background=\'#d1fae5\'">'+s+'</button>';}).join('');
-}
 
 // ═══ DARK MODE ═══
 function toggleDark(){
@@ -640,7 +607,6 @@ function initDark(){
   var isDark=s==='dark'||(s===null&&prefereDark);
   document.body.classList.remove('light','dark');
   document.body.classList.add(isDark?'dark':'light');
-  var sw=document.getElementById('dark-sw');if(sw&&isDark)sw.classList.add('on');
 }
 
 // ═══ HELPERS ═══
@@ -727,12 +693,11 @@ function ir(s){
   if(s==='agenda')initAgenda();if(s==='pendentes')renderPendentes();if(s==='historico')renderHis('');
   if(s==='checklists'){carregarModelos();renderModelos();renderBase();renderCls();}
   if(s==='cl-criar'){initCriarModelo(_modeloEditId);}
-  if(s==='dashboard')renderDash();
-  if(s==='visual')initVisual();if(s==='notas')initNotas();if(s==='ajuda')initAjuda();if(s==='marca')carregarFormMarca();
+  if(s==='notas')initNotas();if(s==='ajuda')initAjuda();if(s==='marca')carregarFormMarca();
   window.scrollTo(0,0);
 }
 
-// ═══ MARCA ═══
+// ═══ MARCA — com salvamento correto do RT ═══
 function carregarFormMarca(){
   if(marca.nome)document.getElementById('m-nome').value=marca.nome;
   if(marca.slogan)document.getElementById('m-slogan').value=marca.slogan;
@@ -741,6 +706,10 @@ function carregarFormMarca(){
   var cor=marca.cor||'#1a1a18';
   document.getElementById('m-cor').value=cor;document.getElementById('m-cor-hex').value=cor;
   if(marca.logo)_mostrarLogo(marca.logo);
+  // RT
+  if(marca.rtNome)document.getElementById('m-rt-nome').value=marca.rtNome;
+  if(marca.rtTipo)document.getElementById('m-rt-tipo').value=marca.rtTipo;
+  if(marca.rtNum)document.getElementById('m-rt-num').value=marca.rtNum;
   var cr=document.getElementById('cores-rapidas');
   if(cr)cr.innerHTML=CORES_RAPIDAS.map(function(c){return'<div onclick="aplicarCorRapida(\''+c+'\')" style="width:22px;height:22px;border-radius:50%;background:'+c+';cursor:pointer;border:2px solid '+(cor===c?'#fff':'transparent')+';box-shadow:0 0 0 2px '+(cor===c?c:'#ccc')+'" title="'+c+'"></div>';}).join('');
 }
@@ -752,7 +721,20 @@ function _mostrarLogo(src){var pv=document.getElementById('logo-pv');var ph=docu
 function removerLogo(){if(!confirm('Remover a logo?'))return;marca.logo='';var pv=document.getElementById('logo-pv');var ph=document.getElementById('logo-ph');var bt=document.getElementById('btn-trocar-logo');var br=document.getElementById('btn-remover-logo');var hl=document.getElementById('header-logo');var hi=document.getElementById('header-logo-icon');pv.src='';pv.style.display='none';ph.style.display='flex';if(bt)bt.style.display='none';if(br)br.style.display='none';if(hl){hl.src='';hl.style.display='none';}if(hi)hi.style.display='flex';document.getElementById('inp-logo').value='';salvar();}
 function carregarLogo(input){if(!input.files[0])return;var r=new FileReader();r.onload=function(e){marca.logo=e.target.result;_mostrarLogo(e.target.result);};r.readAsDataURL(input.files[0]);}
 function pvMarca(){document.getElementById('app-header').style.background=document.getElementById('m-cor').value;document.getElementById('header-nome').textContent=document.getElementById('m-nome').value||'SaniCheck';var sl=document.getElementById('m-slogan').value,el=document.getElementById('header-slogan');if(sl){el.textContent=sl;el.style.display='block';}else el.style.display='none';}
-function salvarMarca(){marca.nome=document.getElementById('m-nome').value;marca.slogan=document.getElementById('m-slogan').value;marca.email=document.getElementById('m-email').value;marca.fone=document.getElementById('m-fone').value;marca.cor=document.getElementById('m-cor').value;salvar();aplicarMarca();alert('Marca salva!');}
+
+// ═══ SALVAR MARCA — agora inclui RT ═══
+function salvarMarca(){
+  marca.nome=document.getElementById('m-nome').value;
+  marca.slogan=document.getElementById('m-slogan').value;
+  marca.email=document.getElementById('m-email').value;
+  marca.fone=document.getElementById('m-fone').value;
+  marca.cor=document.getElementById('m-cor').value;
+  // ── RT ──
+  marca.rtNome=document.getElementById('m-rt-nome').value.trim();
+  marca.rtTipo=document.getElementById('m-rt-tipo').value;
+  marca.rtNum=document.getElementById('m-rt-num').value.trim();
+  salvar();aplicarMarca();alert('Marca salva!');
+}
 function aplicarMarca(){if(marca.cor)document.getElementById('app-header').style.background=marca.cor;if(marca.nome)document.getElementById('header-nome').textContent=marca.nome;if(marca.slogan){document.getElementById('header-slogan').textContent=marca.slogan;document.getElementById('header-slogan').style.display='block';}if(marca.logo){var img=document.getElementById('header-logo');img.src=marca.logo;img.style.display='block';document.getElementById('header-logo-icon').style.display='none';}}
 
 // ═══ CLIENTES ═══
@@ -796,9 +778,12 @@ function remFoto(i,fi){if(!confirm('Remover esta foto?'))return;fotos[i].splice(
 function renderFotos(i){var pa=document.getElementById('pa-'+i);if(!pa)return;var tot=(fotos[i]||[]).length,vag=5-tot;pa.innerHTML=vag>0?'<div class="photo-btn" onclick="abrirOvFoto('+i+')">📷<div style="font-size:9px;color:#888;margin-top:1px">'+tot+'/5</div></div>':'<div style="font-size:11px;color:#aaa;padding:3px 0;align-self:center">📷 5/5</div>';(fotos[i]||[]).forEach(function(d,fi){var w=document.createElement('div');w.style.cssText='position:relative;display:inline-flex';var img=document.createElement('img');img.src=d;img.className='thumb';img.onclick=function(){document.getElementById('ov-img-src').src=d;document.getElementById('ov-img').classList.add('on');};var del=document.createElement('button');del.textContent='✕';del.style.cssText='position:absolute;top:-5px;right:-5px;width:17px;height:17px;border-radius:50%;border:none;background:#dc2626;color:#fff;font-size:10px;cursor:pointer;padding:0';del.onclick=function(e){e.stopPropagation();remFoto(i,fi);};w.appendChild(img);w.appendChild(del);pa.appendChild(w);});}
 function fecharOvImg(){document.getElementById('ov-img').classList.remove('on');}
 
-// ═══ PDF ═══
+// ═══════════════════════════════════════════════════════
+// PDF — lógica de fotos com quebra de linha automática
+// ═══════════════════════════════════════════════════════
 function getDados(){var idx=parseInt(document.getElementById('v-cl').value);return{clienteId:document.getElementById('v-cli-sel').value,cliente:document.getElementById('v-cli').value||'—',responsavel:document.getElementById('v-resp').value||'—',data:document.getElementById('v-data').value,cl:cls[idx],ans:Object.assign({},ans),fotos:JSON.parse(JSON.stringify(fotos)),coments:Object.assign({},coments)};}
 function gerarPDF(){var idx=document.getElementById('v-cl').value;if(idx==='')return;var d=getDados(),sc=calcScore(d.ans);_gerarPDFDados(d.cliente,d.responsavel,d.data,d.cl,d.ans,d.fotos,d.coments,sc,d.clienteId);var vr={id:Date.now()+'',clienteId:d.clienteId,data:d.data,cliente:d.cliente,responsavel:d.responsavel,tipo:d.cl.tipo,setor:d.cl.setor,tema:d.cl.tema,pct:sc.pct,sim:sc.sim,nao:sc.nao,parc:sc.parc,na:sc.na,obtido:sc.obtido,possivel:sc.possivel,itens:d.cl.itens,ans:d.ans,fotos:d.fotos,coments:d.coments};vis.unshift(vr);if(vis.length>200)vis=vis.slice(0,200);if(visitaId){pendentes=pendentes.filter(function(x){return x.id!==visitaId;});agenda.forEach(function(a){if(a.clienteId===d.clienteId&&a.data===d.data&&a.status==='pendente'){a.status='realizado';a.visId=vr.id;}});visitaId=null;}if(window._ast){clearInterval(window._ast);window._ast=null;}salvar();badges();}
+
 function _gerarPDFDados(cliente,resp,data,cl,ansObj,fotosObj,comentsObj,sc,cliId){
   var r=getRisco(sc.pct);var J=window.jspdf.jsPDF,doc=new J({orientation:'p',unit:'mm',format:'a4'});
   var W=210,M=15,TW=W-M*2,cR=26,cG=26,cB=24;
@@ -807,30 +792,37 @@ function _gerarPDFDados(cliente,resp,data,cl,ansObj,fotosObj,comentsObj,sc,cliId
   var cObj=cliId?clientes.find(function(x){return x.id===cliId;}):null;
 
   // ── CABEÇALHO ──
-  doc.setFillColor(cR,cG,cB);doc.rect(0,0,W,28,'F');
-  var lX=M;if(marca.logo){try{doc.addImage(marca.logo,'PNG',M,3,20,20);lX=M+24;}catch(e){}}
+  // Altura do cabeçalho: maior se tiver RT
+  var temRT=!!(marca.rtNome&&marca.rtNome.trim());
+  var cabH=temRT?34:28;
+  doc.setFillColor(cR,cG,cB);doc.rect(0,0,W,cabH,'F');
+  var lX=M;
+  if(marca.logo){try{doc.addImage(marca.logo,'PNG',M,3,20,20);lX=M+24;}catch(e){}}
   doc.setTextColor(255,255,255);doc.setFontSize(13);doc.setFont(undefined,'bold');
   doc.text(marca.nome||'Relatório de Consultoria',lX,11);
   if(marca.slogan){doc.setFontSize(8);doc.setFont(undefined,'normal');doc.text(marca.slogan,lX,17);}
-  // RT no cabeçalho
-  if(marca.rtNome){
-    var rtLinha=marca.rtNome+(marca.rtTipo?' — '+marca.rtTipo:'')+(marca.rtNum?' '+marca.rtNum:'');
-    doc.setFontSize(7.5);doc.setFont(undefined,'normal');doc.text(rtLinha,lX,23);
+  // RT no cabeçalho — linha destacada
+  if(temRT){
+    var rtLinha='Resp. Técnico: '+marca.rtNome+(marca.rtTipo?' — '+marca.rtTipo:'')+(marca.rtNum?' '+marca.rtNum:'');
+    doc.setFontSize(7.5);doc.setFont(undefined,'normal');
+    doc.setTextColor(255,255,220); // amarelo suave para destacar
+    doc.text(rtLinha,lX,temRT?24:23);
+    doc.setTextColor(255,255,255);
   }
   // contato à direita
-  doc.setFontSize(7.5);doc.setFont(undefined,'normal');
+  doc.setFontSize(7.5);doc.setFont(undefined,'normal');doc.setTextColor(255,255,255);
   var cy=9;if(marca.fone){doc.text(marca.fone,W-M,cy,{align:'right'});cy+=5;}
   if(marca.email)doc.text(marca.email,W-M,cy,{align:'right'});
 
   // subtítulo
-  doc.setFillColor(245,245,243);doc.rect(0,28,W,13,'F');
+  doc.setFillColor(245,245,243);doc.rect(0,cabH,W,13,'F');
   doc.setTextColor(cR,cG,cB);doc.setFontSize(10);doc.setFont(undefined,'bold');
-  doc.text('RELATÓRIO DE VISITA TÉCNICA',W/2,35,{align:'center'});
+  doc.text('RELATÓRIO DE VISITA TÉCNICA',W/2,cabH+7,{align:'center'});
   doc.setFontSize(7.5);doc.setFont(undefined,'normal');doc.setTextColor(100,100,100);
-  doc.text(cl.tipo+(cl.setor?' — '+cl.setor:'')+(cl.tema?' — '+cl.tema:''),W/2,41,{align:'center'});
+  doc.text(cl.tipo+(cl.setor?' — '+cl.setor:'')+(cl.tema?' — '+cl.tema:''),W/2,cabH+13,{align:'center'});
 
   // bloco cliente + score
-  var bY=43,bH=20;
+  var bY=cabH+15,bH=20;
   doc.setDrawColor(220,220,218);doc.setFillColor(252,252,252);doc.rect(M,bY,TW,bH,'FD');
   doc.setFontSize(7.5);doc.setTextColor(120,120,120);doc.setFont(undefined,'normal');doc.text('CLIENTE',M+2,bY+4);
   doc.setFontSize(10);doc.setTextColor(26,26,24);doc.setFont(undefined,'bold');doc.text(cliente,M+2,bY+10);
@@ -867,28 +859,96 @@ function _gerarPDFDados(cliente,resp,data,cl,ansObj,fotosObj,comentsObj,sc,cliId
     doc.text((marca.nome||'Relatório')+' — '+cliente+' — '+fmtData(data),M,6);y=12;
   }
 
-  // ── FUNÇÃO AUXILIAR: adicionar foto proporcional ──
-  function addFotoPDF(dataUrl,x,y2,maxW,maxH){
-    return new Promise(function(resolve){
-      var img=new Image();
-      img.onload=function(){
-        var iW=img.naturalWidth,iH=img.naturalHeight;
-        var ratio=iW/iH;
-        var fw,fh;
-        if(ratio>=1){// horizontal ou quadrada
-          fw=Math.min(maxW,maxH*ratio);fh=fw/ratio;
-        } else {// vertical
-          fh=Math.min(maxH,maxW/ratio);fw=fh*ratio;
-        }
-        try{doc.addImage(dataUrl,'JPEG',x,y2,fw,fh,'','MEDIUM');}catch(e){}
-        resolve({w:fw,h:fh});
-      };
-      img.onerror=function(){resolve({w:0,h:0});};
-      img.src=dataUrl;
+  // ══════════════════════════════════════════════════
+  // FUNÇÃO AUXILIAR: renderizar grupo de fotos com
+  // quebra de linha automática respeitando orientação
+  // ══════════════════════════════════════════════════
+  async function renderFotosPDF(fotosArr, startY) {
+    if (!fotosArr || !fotosArr.length) return startY;
+
+    // 1. Pré-carregar todas as imagens para obter dimensões reais
+    var metas = await Promise.all(fotosArr.map(function(src) {
+      return new Promise(function(resolve) {
+        var img = new Image();
+        img.onload = function() {
+          var ratio = img.naturalWidth / img.naturalHeight;
+          resolve({ src: src, ratio: ratio });
+        };
+        img.onerror = function() { resolve(null); };
+        img.src = src;
+      });
+    }));
+    metas = metas.filter(Boolean);
+    if (!metas.length) return startY;
+
+    // 2. Calcular dimensões de cada foto preservando proporção
+    // Horizontal (ratio >= 1): max largura 56mm, max altura 44mm
+    // Vertical   (ratio < 1) : max largura 36mm, max altura 52mm
+    // Quadrada   (ratio ~ 1) : trata como horizontal
+    var GAP = 2; // espaço entre fotos (mm)
+    var dims = metas.map(function(m) {
+      var maxW, maxH;
+      if (m.ratio >= 1) { maxW = 56; maxH = 44; }
+      else               { maxW = 36; maxH = 52; }
+      var fw, fh;
+      if (m.ratio >= 1) {
+        fw = maxW; fh = fw / m.ratio;
+        if (fh > maxH) { fh = maxH; fw = fh * m.ratio; }
+      } else {
+        fh = maxH; fw = fh * m.ratio;
+        if (fw > maxW) { fw = maxW; fh = fw / m.ratio; }
+      }
+      return { src: m.src, fw: Math.round(fw * 10) / 10, fh: Math.round(fh * 10) / 10 };
     });
+
+    // 3. Distribuir em linhas respeitando largura disponível (TW)
+    var linhas = [];
+    var linhaAtual = [];
+    var largAtual = 0;
+    dims.forEach(function(d) {
+      var needed = largAtual > 0 ? (d.fw + GAP) : d.fw;
+      if (largAtual > 0 && largAtual + needed > TW) {
+        // não cabe → quebra de linha
+        linhas.push(linhaAtual);
+        linhaAtual = [d];
+        largAtual = d.fw;
+      } else {
+        linhaAtual.push(d);
+        largAtual += needed;
+      }
+    });
+    if (linhaAtual.length) linhas.push(linhaAtual);
+
+    // 4. Renderizar cada linha
+    var curY = startY;
+    for (var li = 0; li < linhas.length; li++) {
+      var linha = linhas[li];
+      // altura da linha = maior foto da linha + gap inferior
+      var altLinha = Math.max.apply(null, linha.map(function(d) { return d.fh; })) + 3;
+
+      // verifica quebra de página
+      if (curY + altLinha > SAFE) {
+        newPage(); // newPage() redefine y internamente
+        curY = y;
+      }
+
+      var fx = M;
+      for (var fi = 0; fi < linha.length; fi++) {
+        var d = linha[fi];
+        // centraliza verticalmente dentro da linha
+        var offsetY = (altLinha - 3 - d.fh) / 2;
+        try {
+          doc.addImage(d.src, 'JPEG', fx, curY + offsetY, d.fw, d.fh, '', 'MEDIUM');
+        } catch(e) {}
+        fx += d.fw + GAP;
+      }
+      curY += altLinha;
+    }
+
+    return curY; // retorna y após as fotos
   }
 
-  // ── ITENS (processamento assíncrono para fotos) ──
+  // ── ITENS (processamento assíncrono) ──
   async function processarItens(){
     for(var i=0;i<cl.itens.length;i++){
       var it=cl.itens[i];
@@ -899,14 +959,12 @@ function _gerarPDFDados(cliente,resp,data,cl,ansObj,fotosObj,comentsObj,sc,cliId
       var cm=comentsObj[i]?comentsObj[i].trim():'';
 
       if(isTxt){
-        // campo de texto livre (correções / obs)
-        if(!cm&&!(fotosObj[i]&&fotosObj[i].length))continue;// pula se vazio
+        if(!cm&&!(fotosObj[i]&&fotosObj[i].length))continue;
         var cmL2=[],cmH2=0;
         doc.setFontSize(7);
         if(cm){cmL2=doc.splitTextToSize(cm,TW-8);cmH2=cmL2.length*3.5+8;}
         var fs2=fotosObj[i]||[];
-        var fotoH2=fs2.length?42:0;
-        var boxH2=Math.max(cmH2+fotoH2+4,10);
+        var boxH2=Math.max(cmH2+6,10);
         if(y+boxH2>SAFE)newPage();
         doc.setFillColor(240,247,255);doc.setDrawColor(176,212,245);doc.setLineWidth(0.2);
         doc.rect(M,y,TW,boxH2,'FD');
@@ -914,15 +972,11 @@ function _gerarPDFDados(cliente,resp,data,cl,ansObj,fotosObj,comentsObj,sc,cliId
         doc.text(it.texto,M+3,y+4.5);
         doc.setFont(undefined,'normal');doc.setTextColor(40,40,40);
         if(cm){doc.setFontSize(7);doc.text(cmL2,M+3,y+9);}
-        var fy=y+(cm?cmH2:6);
+        y+=boxH2+2;
         if(fs2.length){
-          var fx2=M+3;
-          for(var fi=0;fi<fs2.length;fi++){
-            var res=await addFotoPDF(fs2[fi],fx2,fy,44,36);
-            fx2+=res.w+3;
-          }
+          y=await renderFotosPDF(fs2,y);
+          y+=2;
         }
-        doc.setTextColor(0);y+=boxH2+2;
         continue;
       }
 
@@ -951,39 +1005,11 @@ function _gerarPDFDados(cliente,resp,data,cl,ansObj,fotosObj,comentsObj,sc,cliId
         y+=cmH+1.5;doc.setTextColor(0);
       }
 
-      // ── FOTOS PROPORCIONAIS ──
+      // ── FOTOS COM QUEBRA AUTOMÁTICA ──
       var fs=fotosObj[i]||[];
       if(fs.length){
-        // carrega todas as imagens para detectar orientação
-        var fotosMeta=await Promise.all(fs.map(function(f){
-          return new Promise(function(resolve){
-            var img=new Image();
-            img.onload=function(){resolve({src:f,w:img.naturalWidth,h:img.naturalHeight,ratio:img.naturalWidth/img.naturalHeight});};
-            img.onerror=function(){resolve(null);};
-            img.src=f;
-          });
-        }));
-        fotosMeta=fotosMeta.filter(Boolean);
-
-        var maxFH=42;// altura máx por foto
-        var totalW=0;
-        var fotDims=fotosMeta.map(function(m){
-          var fw,fh;
-          if(m.ratio>=1){fh=maxFH;fw=fh*m.ratio;if(fw>60){fw=60;fh=fw/m.ratio;}}
-          else{fw=30;fh=fw/m.ratio;if(fh>maxFH){fh=maxFH;fw=fh*m.ratio;}}
-          totalW+=fw+2;
-          return{fw:fw,fh:fh,src:m.src};
-        });
-
-        var linhaH=Math.max.apply(null,fotDims.map(function(d){return d.fh;}))+3;
-        if(y+linhaH>SAFE)newPage();
-        var fx=M;
-        for(var fi2=0;fi2<fotDims.length;fi2++){
-          var fd=fotDims[fi2];
-          try{doc.addImage(fd.src,'JPEG',fx,y,fd.fw,fd.fh,'','MEDIUM');}catch(e){}
-          fx+=fd.fw+2;
-        }
-        y+=linhaH;
+        y=await renderFotosPDF(fs,y);
+        y+=1;
       }
       y+=0.8;
     }
@@ -1039,7 +1065,7 @@ function _gerarPDFDados(cliente,resp,data,cl,ansObj,fotosObj,comentsObj,sc,cliId
       }
     }
 
-    // rodapés em todas as páginas
+    // ── RODAPÉS EM TODAS AS PÁGINAS ──
     var total=doc.internal.getNumberOfPages();
     for(var p2=1;p2<=total;p2++){doc.setPage(p2);_addFooter(doc,W,M,cR,cG,cB,marca,p2,total);}
     _ultimoPDFNome='relatorio_'+cliente.replace(/\s+/g,'_')+'_'+(data||'sem-data')+'.pdf';
@@ -1049,6 +1075,8 @@ function _gerarPDFDados(cliente,resp,data,cl,ansObj,fotosObj,comentsObj,sc,cliId
 
   processarItens();
 }
+
+// ── RODAPÉ COM "Gerado pelo SaniCheck" ──
 function _addFooter(doc,W,M,cR,cG,cB,marc,pag,tot){
   var PH=297;
   doc.setFillColor(cR,cG,cB);doc.rect(0,PH-9,W,9,'F');
@@ -1056,8 +1084,11 @@ function _addFooter(doc,W,M,cR,cG,cB,marc,pag,tot){
   doc.text('Documento confidencial — '+(marc.nome||'Consultoria'),M,PH-5.5);
   if(pag&&tot){
     doc.text('Pág. '+pag+'/'+tot+'  ·  Gerado pelo SaniCheck',W-M,PH-5.5,{align:'right'});
+  } else {
+    doc.text('Gerado pelo SaniCheck',W-M,PH-5.5,{align:'right'});
   }
 }
+
 function compartilharPDF(){if(!_ultimoPDFBlob){alert('Gere o PDF primeiro.');return;}var arq=new File([_ultimoPDFBlob],_ultimoPDFNome,{type:'application/pdf'});if(navigator.canShare&&navigator.canShare({files:[arq]})){navigator.share({title:_ultimoPDFNome.replace('.pdf',''),text:'Relatório de consultoria.',files:[arq]}).catch(function(e){if(e.name!=='AbortError')_fallbackPDF();});return;}_fallbackPDF();}
 function _fallbackPDF(){var url=URL.createObjectURL(_ultimoPDFBlob);var a=document.createElement('a');a.href=url;a.download=_ultimoPDFNome;a.click();URL.revokeObjectURL(url);setTimeout(function(){if(confirm('PDF baixado!\nDeseja abrir o WhatsApp para enviar?')){var cli=document.getElementById('v-cli')?document.getElementById('v-cli').value:'';var dt=document.getElementById('v-data')?document.getElementById('v-data').value:'';var txt='📋 *Relatório de Consultoria*'+(marca.nome?'\n_'+marca.nome+'_':'')+'\n\n📍 Cliente: '+cli+'\n📅 Data: '+fmtData(dt)+'\n\n_PDF disponível em anexo._';window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');}},600);}
 function gerarPDFHist(id){var v=vis.find(function(x){return x.id===id;});if(!v||!v.itens){alert('Dados não disponíveis.');return;}var sc={pct:v.pct,sim:v.sim,nao:v.nao,parc:v.parc,na:v.na,obtido:v.obtido||0,possivel:v.possivel||0};_gerarPDFDados(v.cliente,v.responsavel,v.data,{tipo:v.tipo,setor:v.setor,tema:v.tema,itens:v.itens},v.ans||{},v.fotos||{},v.coments||{},sc,v.clienteId);}
@@ -1091,10 +1122,10 @@ function aceitarSugestao(idx,ctx){var sg=_iaSugestoes[ctx+'_'+idx];if(!sg)return
 function ignorarSugestao(idx){var el=document.getElementById('ia-sug-'+idx);if(el)el.classList.remove('on');}
 
 // ═══ MODELOS DE CHECKLIST ═══
-var modelos = []; // {id, tipo, nome, setores:[{nome,perguntas:[str]},..], optCorrecoes, optObs}
+var modelos = [];
 var _modeloEditId = null;
-var _pvModelo = null; // modelo em pré-edição
-var _pvSetores = []; // setores editáveis na pré-visita
+var _pvModelo = null;
+var _pvSetores = [];
 
 function getModelos(){try{return JSON.parse(localStorage.getItem('c_modelos_'+U)||'[]');}catch(e){return[];}}
 function setModelos(m){localStorage.setItem('c_modelos_'+U,JSON.stringify(m));}
@@ -1133,8 +1164,7 @@ function renderModelos(){
   }).join('');
 }
 
-// ── CRIAR / EDITAR ──
-var _clmSetores = []; // [{nome, perguntas:[str]}]
+var _clmSetores = [];
 
 function initCriarModelo(editId){
   _modeloEditId=editId||null;_clmSetores=[];
@@ -1166,17 +1196,14 @@ function processarBulkAll(){
   linhas.forEach(function(linha){
     var l=linha.trim();
     if(!l)return;
-    // detecta setor: linha toda maiúscula (sem "?"), ou começa com número + ponto + maiúsculas
     var isTitulo=false;
-    var semNum=l.replace(/^\d+[\.\-\)]\s*/,'');// remove "1. " do início
+    var semNum=l.replace(/^\d+[\.\-\)]\s*/,'');
     if(semNum===semNum.toUpperCase()&&semNum.length>2&&!semNum.includes('?')&&!/^[-–•☐✅➡️]/.test(semNum))isTitulo=true;
     if(isTitulo){
-      // limpa número e emojis do título
       var nomeSetor=l.replace(/^\d+[\.\-\)]\s*/,'').replace(/[✅☐➡️📋👉🟢•–-]/g,'').trim().toUpperCase();
       if(nomeSetor.length>1){setorAtual={nome:nomeSetor,perguntas:[]};setores.push(setorAtual);}
     } else {
       if(!setorAtual){setorAtual={nome:'GERAL',perguntas:[]};setores.push(setorAtual);}
-      // limpa a linha de numeração e símbolos
       var p=l.replace(/^\d+[\.\-\)]\d*\s*/,'').replace(/^[☐✅•–➡️\-]\s*/,'').trim();
       if(p&&p.length>3)setorAtual.perguntas.push(p);
     }
@@ -1216,7 +1243,6 @@ function remSetorModelo(i){if(!confirm('Remover este setor?'))return;_clmSetores
 function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 function salvarModelo(){
-  // sincroniza textareas
   document.querySelectorAll('.clm-setor-nome').forEach(function(el,i){if(_clmSetores[i])_clmSetores[i].nome=el.value.toUpperCase().trim();});
   document.querySelectorAll('#clm-setores-lista textarea').forEach(function(el,i){if(_clmSetores[i])_clmSetores[i].perguntas=el.value.split('\n').map(function(x){return x.trim();}).filter(Boolean);});
   var tipo=document.getElementById('clm-tipo').value;
@@ -1241,7 +1267,6 @@ function salvarModelo(){
 function editarModelo(id){initCriarModelo(id);ir('cl-criar');}
 function excluirModelo(id){if(!confirm('Excluir este modelo?'))return;carregarModelos();modelos=modelos.filter(function(x){return x.id!==id;});salvarModelosLocal();renderModelos();}
 
-// ── IMPORTAR DOCX ──
 async function importarDocx(input){
   var file=input.files[0];if(!file)return;
   try{
@@ -1255,7 +1280,6 @@ async function importarDocx(input){
   input.value='';
 }
 
-// ── PRÉ-VISITA ──
 function abrirPreVisita(id){
   carregarModelos();
   var m=modelos.find(function(x){return x.id===id;});
@@ -1319,7 +1343,7 @@ function usarModeloComoChecklist(){
   setTimeout(function(){document.getElementById('v-cl').value=cls.length-1;carregarCL();},200);
 }
 
-// ═══ CHECKLISTS (base + manuais antigos) ═══
+// ═══ CHECKLISTS BASE ═══
 var BASE=[
   {id:'base_rdc216',tipo:'Serviço de Alimentação',setor:'Boas Práticas',tema:'RDC 216/2004 — Avaliação Completa',itens:[{id:'r1',texto:'EDIFICAÇÃO: Acesso controlado, direto e independente, não comum a outros usos?'},{id:'r2',texto:'EDIFICAÇÃO: Fluxo ordenado e sem cruzamentos?'},{id:'r3',texto:'PISO: Revestimento liso, impermeável e lavável?'},{id:'r4',texto:'PISO: Em bom estado de conservação, livre de rachaduras?'},{id:'r5',texto:'PISO: Em bom estado de higienização?'},{id:'r6',texto:'PAREDE: Revestimento liso, impermeável e lavável?'},{id:'r7',texto:'PAREDE: Em bom estado de conservação?'},{id:'r8',texto:'PAREDE: Em bom estado de higienização?'},{id:'r9',texto:'TETO: Revestimento liso, impermeável e lavável?'},{id:'r10',texto:'TETO: Em bom estado de conservação?'},{id:'r11',texto:'TETO: Em bom estado de higienização?'},{id:'r12',texto:'PORTAS: Em bom estado e ajustadas ao batente?'},{id:'r13',texto:'PORTAS: Fechamento automático nas áreas de preparação?'},{id:'r14',texto:'JANELAS: Em bom estado com telas milimétricas removíveis?'},{id:'r15',texto:'ILUMINAÇÃO: Adequada sem sombras excessivas?'},{id:'r16',texto:'ILUMINAÇÃO: Luminárias protegidas contra queda acidental?'},{id:'r17',texto:'VENTILAÇÃO: Natural ou artificial adequada?'},{id:'r18',texto:'VENTILAÇÃO: Fluxo de ar não incide diretamente sobre alimentos?'},{id:'r19',texto:'ESGOTO: Ralo sifonado com tampa giratória?'},{id:'r20',texto:'INSTALAÇÕES SANITÁRIAS: Sem comunicação direta com área de preparação?'},{id:'r21',texto:'INSTALAÇÕES SANITÁRIAS: Em bom estado e higienizadas?'},{id:'r22',texto:'LAVATÓRIO: Em posição estratégica com sabonete antisséptico e lixeira com pedal?'},{id:'r23',texto:'EQUIPAMENTOS: Resistentes à corrosão, superfícies lisas e laváveis?'},{id:'r24',texto:'EQUIPAMENTOS: Registro de manutenção e calibração?'},{id:'r25',texto:'HIGIENIZAÇÃO: Instalações e equipamentos em condições adequadas?'},{id:'r26',texto:'HIGIENIZAÇÃO: Produtos saneantes regularizados pelo Ministério da Saúde?'},{id:'r27',texto:'HIGIENIZAÇÃO: Local adequado para depósito de material de limpeza?'},{id:'r28',texto:'PRAGAS: Edificação livre de vetores e pragas?'},{id:'r29',texto:'PRAGAS: Controle por empresa especializada registrada na VISA?'},{id:'r30',texto:'ÁGUA: Utiliza exclusivamente água potável?'},{id:'r31',texto:'ÁGUA: Reservatório tampado, conservado e higienizado a cada 6 meses?'},{id:'r32',texto:'RESÍDUOS: Recipientes identificados com tampas acionadas por pedal?'},{id:'r33',texto:'RESÍDUOS: Coletados frequentemente, evitando acúmulo?'},{id:'r34',texto:'MANIPULADORES: Controle de saúde registrado?'},{id:'r35',texto:'MANIPULADORES: Ausência de lesões ou enfermidades?'},{id:'r36',texto:'MANIPULADORES: Uniforme limpo, cabelos presos, unhas curtas sem esmalte?'},{id:'r37',texto:'MANIPULADORES: Lavagem adequada das mãos?'},{id:'r38',texto:'MANIPULADORES: Capacitação/treinamentos registrados?'},{id:'r39',texto:'MATÉRIAS-PRIMAS: Recepção com inspeção de temperatura, embalagem e validade?'},{id:'r40',texto:'MATÉRIAS-PRIMAS: Armazenamento adequado, sobre paletes, com validade respeitada?'},{id:'r41',texto:'PREPARO: Medidas para minimizar contaminação cruzada?'},{id:'r42',texto:'PREPARO: Perecíveis expostos à temp. ambiente apenas pelo tempo mínimo?'},{id:'r43',texto:'PREPARO: Tratamento térmico adequado?'},{id:'r44',texto:'PREPARO: Alimentos prontos mantidos acima de 60ºC por no máximo 6 horas?'},{id:'r45',texto:'PREPARO: Resfriamento de 60ºC para 10ºC em até 2 horas?'},{id:'r46',texto:'PREPARO: Temperatura dos equipamentos de frios monitorada?'},{id:'r47',texto:'EXPOSIÇÃO: Área organizada e em condições higiênicas?'},{id:'r48',texto:'EXPOSIÇÃO: Barreiras de proteção contra contaminação pelo consumidor?'},{id:'r49',texto:'DOCUMENTAÇÃO: Manual de Boas Práticas disponível?'},{id:'r50',texto:'DOCUMENTAÇÃO: POPs elaborados, atualizados e assinados?'}]},
   {id:'base_agua',tipo:'Serviço de Alimentação',setor:'Infraestrutura',tema:'Abastecimento de Água e Esgoto',itens:[{id:'ag1',texto:'ÁGUA: Utiliza exclusivamente água potável para manipulação?'},{id:'ag2',texto:'ÁGUA: Volume e pressão adequados?'},{id:'ag3',texto:'ÁGUA: Reservatório tampado e conservado?'},{id:'ag4',texto:'ÁGUA: Reservatório higienizado a cada 6 meses com registro?'},{id:'ag5',texto:'ÁGUA: Laudos de potabilidade semestrais?'},{id:'ag6',texto:'ESGOTO: Ralos sifonados com dispositivos de fechamento?'},{id:'ag7',texto:'ESGOTO: Caixa de gordura fora das áreas de manipulação e limpa periodicamente?'},{id:'ag8',texto:'ESGOTO: Resíduos de óleo não descartados na rede de esgoto?'}]},
@@ -1329,15 +1353,11 @@ function renderBase(){var el=document.getElementById('lista-base');el.innerHTML=
 function addBase(id){var cl=BASE.find(function(c){return c.id===id;});if(!cl||cls.some(function(c){return c.id===id;})){alert('Já adicionado!');return;}cls.push(JSON.parse(JSON.stringify(cl)));salvar();renderBase();renderCls();badges();alert('"'+cl.tema+'" adicionado!');}
 function addItem(){var sec=document.getElementById('novo-item-sec').value.trim().toUpperCase();var t=document.getElementById('novo-item').value.trim();if(!t)return;var obj={id:Date.now()+'r'+Math.random(),texto:t};if(sec)obj.secao=sec;tmpItems.push(obj);document.getElementById('novo-item').value='';renderItemsCfg();}
 function addBulk(){var t=document.getElementById('bulk-txt').value.trim();if(!t)return;var sec=document.getElementById('novo-item-sec').value.trim().toUpperCase()||'';t.split('\n').forEach(function(l){l=l.trim();if(!l)return;var obj={id:Date.now()+'r'+Math.random(),texto:l};if(sec)obj.secao=sec;tmpItems.push(obj);});document.getElementById('bulk-txt').value='';renderItemsCfg();}
-function renderItemsCfg(){var el=document.getElementById('items-cfg');if(!tmpItems.length){el.innerHTML='<div class="empty">Nenhum item ainda</div>';return;}el.innerHTML=tmpItems.map(function(it,i){return'<div style="display:flex;align-items:center;gap:7px;padding:4px 0;font-size:13px"><span style="flex:1">'+(i+1)+'. '+it.texto+'</span><button class="btn d" style="padding:3px 7px;font-size:11px" onclick="remItem('+i+')">✕</button></div>';}).join('');}
+function renderItemsCfg(){var el=document.getElementById('items-cfg');if(!el)return;if(!tmpItems.length){el.innerHTML='<div class="empty">Nenhum item ainda</div>';return;}el.innerHTML=tmpItems.map(function(it,i){return'<div style="display:flex;align-items:center;gap:7px;padding:4px 0;font-size:13px"><span style="flex:1">'+(i+1)+'. '+it.texto+'</span><button class="btn d" style="padding:3px 7px;font-size:11px" onclick="remItem('+i+')">✕</button></div>';}).join('');}
 function remItem(i){tmpItems.splice(i,1);renderItemsCfg();}
-function salvarCL(){var tipo=document.getElementById('cl-tipo').value.trim();if(!tipo){alert('Informe o tipo.');return;}if(!tmpItems.length){alert('Adicione ao menos 1 item.');return;}cls.push({id:Date.now()+'',tipo:tipo,setor:document.getElementById('cl-setor').value.trim(),tema:document.getElementById('cl-tema').value.trim(),itens:tmpItems.slice()});salvar();tmpItems=[];['cl-tipo','cl-setor','cl-tema'].forEach(function(id){document.getElementById(id).value='';});renderItemsCfg();renderCls();badges();alert('Checklist salvo!');}
+function salvarCL(){var tipo=document.getElementById('cl-tipo')?document.getElementById('cl-tipo').value.trim():'';if(!tipo){alert('Informe o tipo.');return;}if(!tmpItems.length){alert('Adicione ao menos 1 item.');return;}cls.push({id:Date.now()+'',tipo:tipo,setor:document.getElementById('cl-setor')?document.getElementById('cl-setor').value.trim():'',tema:document.getElementById('cl-tema')?document.getElementById('cl-tema').value.trim():'',itens:tmpItems.slice()});salvar();tmpItems=[];renderItemsCfg();renderCls();badges();alert('Checklist salvo!');}
 function renderCls(){var el=document.getElementById('lista-cls');if(!cls.length){el.innerHTML='<div class="empty">Nenhum checklist salvo</div>';return;}el.innerHTML='';cls.forEach(function(cl,i){var div=document.createElement('div');div.className='cl-card';div.innerHTML='<span class="badge b-tipo">'+cl.tipo+'</span>'+(cl.setor?'<span class="badge b-setor">'+cl.setor+'</span>':'')+(cl.tema?'<span class="badge b-tema">'+cl.tema+'</span>':'')+'<div style="font-size:12px;color:#777;margin-top:3px">'+cl.itens.length+' itens</div><div style="display:flex;gap:5px;margin-top:7px" id="cls-row-'+i+'"></div>';el.appendChild(div);var row=document.getElementById('cls-row-'+i);var bD=document.createElement('button');bD.className='btn d';bD.style.cssText='font-size:11px;padding:4px 9px';bD.textContent='✕ Excluir';bD.addEventListener('click',function(){delCL(i);});row.appendChild(bD);});}
 function delCL(i){if(!confirm('Excluir este checklist?'))return;cls.splice(i,1);salvar();badges();renderCls();renderBase();}
-function exportarCls(){if(!cls.length){alert('Nenhum checklist.');return;}document.getElementById('exp-txt').value=btoa(unescape(encodeURIComponent(JSON.stringify(cls))));document.getElementById('exp-area').style.display='block';}
-function copiarExp(){var el=document.getElementById('exp-txt');el.select();try{document.execCommand('copy');}catch(e){}var ok=document.getElementById('copy-ok');ok.style.display='inline';setTimeout(function(){ok.style.display='none';},2200);}
-function showImport(){document.getElementById('imp-area').style.display='block';}
-function importarCls(){var t=document.getElementById('imp-txt').value.trim();if(!t)return;try{var imp=JSON.parse(decodeURIComponent(escape(atob(t))));var n=0;imp.forEach(function(cl){if(!cls.some(function(c){return c.id===cl.id;})){cls.push(cl);n++;}});salvar();renderCls();renderBase();badges();alert(n+' importado(s)!');}catch(e){alert('Código inválido.');}}
 
 // ═══ AGENDA ═══
 function atualizarTipoAg(){var tipo=document.getElementById('ag-tipo').value;var aviso=document.getElementById('ag-tipo-aviso');var obrig=document.getElementById('ag-cli-obrig');if(aviso)aviso.style.display=tipo==='interno'?'block':'none';if(obrig)obrig.style.display=tipo==='interno'?'none':'inline';}
@@ -1356,9 +1376,6 @@ function markRealizado(id){var a=agenda.find(function(x){return x.id===id;});if(
 function delAg(id){if(!confirm('Excluir?'))return;agenda=agenda.filter(function(x){return x.id!==id;});salvar();badges();renderCal();renderListaAg();}
 function renderListaAg(){var el=document.getElementById('lista-ag');var hoje=new Date().toISOString().split('T')[0];var prox=agenda.filter(function(a){return a.data>=hoje&&a.status==='pendente';}).sort(function(a,b){return a.data.localeCompare(b.data);});if(!prox.length){el.innerHTML='<div class="empty">Nenhuma visita pendente</div>';return;}var ms3=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];el.innerHTML=prox.map(function(a){var d3=new Date(a.data+'T12:00:00');return'<div style="display:flex;gap:11px;padding:9px 0;border-bottom:1px solid #f5f5f3;align-items:flex-start"><div style="text-align:center;min-width:40px;background:#faeeda;border-radius:7px;padding:5px 3px"><div style="font-size:17px;font-weight:700;color:#d97706;line-height:1">'+d3.getDate()+'</div><div style="font-size:10px;color:#d97706">'+ms3[d3.getMonth()]+'</div></div><div style="flex:1"><div style="font-size:13px;font-weight:600">'+(a.clienteNome||a.titulo||'Tarefa interna')+'</div>'+(a.hora?'<div style="font-size:12px;color:#888">'+a.hora+'</div>':'')+'<div style="display:flex;gap:5px;margin-top:5px">'+(a.clienteId?'<button class="btn p" style="font-size:11px;padding:4px 9px" onclick="iniciarAg(\''+a.id+'\')">▶ Iniciar</button>':'')+'<button class="btn az" style="font-size:11px;padding:4px 9px" onclick="abrirEditAg(\''+a.id+'\')">✏</button><button class="btn d" style="font-size:11px;padding:4px 9px" onclick="delAg(\''+a.id+'\')">✕</button></div></div></div>';}).join('');}
 
-// ═══ DASHBOARD ═══
-function renderDash(){var el=document.getElementById('dash-content');if(!vis.length){el.innerHTML='<div class="card"><div class="empty">Nenhuma visita realizada ainda.</div></div>';return;}var tot=vis.length,med=Math.round(vis.reduce(function(s,v){return s+v.pct;},0)/tot);var vd=vis.filter(function(v){return v.pct>=70;}).length,am=vis.filter(function(v){return v.pct>=40&&v.pct<70;}).length,vm=vis.filter(function(v){return v.pct<40;}).length;var rMed=getRisco(med);var recT=clientes.reduce(function(s,c){if(!c.valor||!c.valor.trim())return s;var n=parseFloat(c.valor.replace(/\./g,'').replace(',','.'));return s+(isNaN(n)?0:n);},0);function bw(n){return Math.max(2,Math.round(n/tot*100));}el.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px"><div class="card" style="margin:0;text-align:center"><div style="font-size:20px">📋</div><div style="font-size:20px;font-weight:700">'+tot+'</div><div style="font-size:11px;color:#888">Visitas</div></div><div class="card" style="margin:0;text-align:center"><div style="font-size:20px">📊</div><div style="font-size:20px;font-weight:700;color:'+rMed.cor+'">'+med+'%</div><div style="font-size:11px;color:#888">'+rMed.emoji+' '+rMed.label+'</div></div></div>'+(recT>0?'<div class="card" style="margin-bottom:9px;display:flex;align-items:center;gap:11px"><div style="font-size:26px">💰</div><div><div style="font-size:12px;color:#888">Receita mensal estimada</div><div style="font-size:22px;font-weight:700;color:#16a34a">R$ '+recT.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'</div></div></div>':'')+'<div class="card"><div class="sec">Conformidade</div><div style="margin-bottom:7px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:2px"><span style="color:#16a34a">🟢 Adequado (≥70%)</span><span>'+vd+'</span></div><div class="bar"><div class="bar-fill" style="width:'+bw(vd)+'%"></div></div></div><div style="margin-bottom:7px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:2px"><span style="color:#854f0b">🟡 Atenção (40–69%)</span><span>'+am+'</span></div><div class="bar"><div class="bar-fill" style="width:'+bw(am)+'%;background:#854f0b"></div></div></div><div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:2px"><span style="color:#dc2626">🔴 Crítico (&lt;40%)</span><span>'+vm+'</span></div><div class="bar"><div class="bar-fill" style="width:'+bw(vm)+'%;background:#dc2626"></div></div></div></div>';}
-
 // ═══ NOTAS ═══
 function initNotas(){var sc=document.getElementById('nota-cli-sel');sc.innerHTML='<option value="">-- selecione um cliente --</option>';clientes.forEach(function(c){sc.innerHTML+='<option value="'+c.id+'">'+c.nome+'</option>';});_notaCliId=null;document.getElementById('nota-cli-header').style.display='none';renderNotasGeral();renderNotasCli();}
 function _getNotas(){var us=getUs();return(us[U]&&us[U].notas)||{geral:[],clientes:{}};}
@@ -1372,16 +1389,16 @@ function salvarNota(){var txt=document.getElementById('nota-input-txt').value.tr
 function excluirNota(ctx,id){if(!confirm('Excluir esta nota?'))return;var n=_getNotas();if(ctx==='geral'){n.geral=(n.geral||[]).filter(function(x){return x.id!==id;});}else{if(n.clientes&&n.clientes[_notaCliId])n.clientes[_notaCliId]=n.clientes[_notaCliId].filter(function(x){return x.id!==id;});}_setNotas(n);if(ctx==='geral')renderNotasGeral();else renderNotasCli();}
 
 // ═══ BACKUP ═══
-function exportarBackup(){var us=getUs();if(!U||!us[U])return;var dados={versao:'3.1',exportadoEm:new Date().toISOString(),usuario:U,dados:{cls:cls,vis:vis,clientes:clientes,pendentes:pendentes,agenda:agenda,marca:marca,notas:us[U].notas||{geral:[],clientes:{}}}};var blob=new Blob([JSON.stringify(dados,null,2)],{type:'application/json'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='backup_sanicheck_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);}
+function exportarBackup(){var us=getUs();if(!U||!us[U])return;var dados={versao:'3.2',exportadoEm:new Date().toISOString(),usuario:U,dados:{cls:cls,vis:vis,clientes:clientes,pendentes:pendentes,agenda:agenda,marca:marca,notas:us[U].notas||{geral:[],clientes:{}}}};var blob=new Blob([JSON.stringify(dados,null,2)],{type:'application/json'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='backup_sanicheck_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);}
 function importarBackup(input){var file=input.files[0];if(!file)return;var st=document.getElementById('backup-status');var r=new FileReader();r.onload=function(e){try{var dados=JSON.parse(e.target.result);if(!dados.dados||!dados.versao)throw new Error();if(!confirm('Tem certeza? Os dados atuais serão substituídos.')){input.value='';return;}var us=getUs();if(!us[U])us[U]={nome:U,email:U,senha:'',cls:[],vis:[],clientes:[],pendentes:[],agenda:[],marca:{}};var d=dados.dados;us[U].cls=d.cls||[];us[U].vis=d.vis||[];us[U].clientes=d.clientes||[];us[U].pendentes=d.pendentes||[];us[U].agenda=d.agenda||[];us[U].marca=d.marca||{};us[U].notas=d.notas||{geral:[],clientes:{}};setUs(us);cls=us[U].cls;vis=us[U].vis;clientes=us[U].clientes;pendentes=us[U].pendentes;agenda=us[U].agenda;marca=us[U].marca;badges();aplicarMarca();st.style.display='block';st.style.color='#16a34a';st.textContent='✓ Backup restaurado!';}catch(err){st.style.display='block';st.style.color='#dc2626';st.textContent='✕ Arquivo inválido.';}input.value='';};r.readAsText(file);}
 
 // ═══ AJUDA ═══
 var AJ=[
-  '<div style="font-size:13px;line-height:1.8;color:#333"><b style="font-size:15px">🚀 Primeiros passos</b><br><br><b>1. Configure sua marca</b><br>Vá em Minha marca e adicione nome, slogan, cor e logo.<br><br><b>2. Cadastre seus clientes</b><br>Acesse Clientes e preencha os dados do estabelecimento.<br><br><b>3. Adicione checklists</b><br>Use os modelos prontos (RDC 216, etc.) ou crie do zero.<br><br><b>4. Inicie uma visita</b><br>Selecione cliente e checklist. Responda cada item com fotos e comentários.<br><br><b>5. Botão 💾 flutuante</b><br>Durante a visita, o botão fica fixo na tela para salvar a qualquer momento.<br><br><b>6. Gere o PDF</b><br>Ao finalizar clique em Gerar PDF. A visita vai automaticamente para o Histórico.</div>',
-  '<div style="font-size:13px;line-height:1.8;color:#333"><b style="font-size:15px">📋 Como funciona a visita</b><br><br><b>Responder itens:</b> Sim (2pts), Parcial (1pt), Não (0pt), N/A (excluído).<br><br><b>Seções:</b> Clique no cabeçalho para colapsar/expandir.<br><br><b>Fotos:</b> Toque em 📷 para adicionar até 5 fotos por item.<br><br><b>✨ Melhorar texto:</b> A IA reescreve seu comentário em linguagem técnica profissional.<br><br><b>Salvar:</b> Auto-save a cada 30s ou use o botão 💾 flutuante.<br><br><b>PDF:</b> Só gerado quando todos os itens tiverem resposta.</div>',
+  '<div style="font-size:13px;line-height:1.8;color:#333"><b style="font-size:15px">🚀 Primeiros passos</b><br><br><b>1. Configure sua marca</b><br>Vá em Minha marca e adicione nome, slogan, cor, logo e dados do RT.<br><br><b>2. Cadastre seus clientes</b><br>Acesse Clientes e preencha os dados do estabelecimento.<br><br><b>3. Adicione checklists</b><br>Use os modelos prontos (RDC 216, etc.) ou crie do zero.<br><br><b>4. Inicie uma visita</b><br>Selecione cliente e checklist. Responda cada item com fotos e comentários.<br><br><b>5. Botão 💾 flutuante</b><br>Durante a visita, o botão fica fixo na tela para salvar a qualquer momento.<br><br><b>6. Gere o PDF</b><br>Ao finalizar clique em Gerar PDF. A visita vai automaticamente para o Histórico.</div>',
+  '<div style="font-size:13px;line-height:1.8;color:#333"><b style="font-size:15px">📋 Como funciona a visita</b><br><br><b>Responder itens:</b> Sim (2pts), Parcial (1pt), Não (0pt), N/A (excluído).<br><br><b>Seções:</b> Clique no cabeçalho para colapsar/expandir.<br><br><b>Fotos:</b> Toque em 📷 para adicionar até 5 fotos por item. Fotos horizontais e verticais são exibidas proporcionalmente no PDF.<br><br><b>✨ Melhorar texto:</b> A IA reescreve seu comentário em linguagem técnica profissional.<br><br><b>Salvar:</b> Auto-save a cada 30s ou use o botão 💾 flutuante.<br><br><b>PDF:</b> Só gerado quando todos os itens tiverem resposta.</div>',
   '<div style="font-size:13px;line-height:1.8;color:#333"><b style="font-size:15px">📅 Usando a Agenda</b><br><br><b>Calendário:</b> Clique em um dia para ver os agendamentos.<br><br><b>Tarefa interna:</b> Para agendar sem cliente, selecione o tipo "Tarefa interna".<br><br><b>Iniciar visita:</b> Clique em ▶ para abrir o checklist com dados pré-preenchidos.<br><br><b>Vinculação:</b> Ao gerar o PDF, o agendamento é marcado como Realizado.</div>',
   '<div style="font-size:13px;line-height:1.8;color:#333"><b style="font-size:15px">❓ Perguntas frequentes</b><br><br><b>Os dados ficam salvos?</b><br>Sim, localmente no seu dispositivo. Faça backup regularmente.<br><br><b>Como migrar para outro celular?</b><br>Backup → Exportar → no novo celular → Restaurar.<br><br><b>Esqueci minha senha?</b><br>Na tela de login, clique em "Esqueci minha senha" e informe seu e-mail cadastrado.<br><br><b>Como enviar o PDF pelo WhatsApp?</b><br>Gere o PDF → clique em 📤 Compartilhar.<br><br><b>Posso editar uma visita finalizada?</b><br>Sim! Histórico → Ver detalhes → ✏ Editar visita.</div>',
-  '<div style="font-size:13px;line-height:1.8"><b style="font-size:15px">✉ Suporte / SAC</b><br><br>Tem dúvidas, sugestões ou encontrou algum problema no app?<br><br><div style="background:#f0f7ff;border:1px solid #b0d4f5;border-radius:9px;padding:13px;margin:9px 0"><b>Entre em contato:</b><br><br><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;margin-top:5px"><span style="color:#185fa5;font-weight:600;font-size:13px">📧 sanidadetecnica@gmail.com</span><button class="btn" style="font-size:11px;padding:5px 11px;flex-shrink:0" onclick="copiarEmailSAC(this)">📋 Copiar</button></div></div><button class="btn p" style="width:100%;padding:12px;justify-content:center;margin-top:9px;font-size:13px" onclick="abrirSAC()">📧 Enviar e-mail de suporte</button><div style="margin-top:13px;font-size:11px;color:#999">SaniCheck v3.1 · Consultoria em Segurança Alimentar</div></div>'
+  '<div style="font-size:13px;line-height:1.8"><b style="font-size:15px">✉ Suporte / SAC</b><br><br>Tem dúvidas, sugestões ou encontrou algum problema no app?<br><br><div style="background:#f0f7ff;border:1px solid #b0d4f5;border-radius:9px;padding:13px;margin:9px 0"><b>Entre em contato:</b><br><br><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;margin-top:5px"><span style="color:#185fa5;font-weight:600;font-size:13px">📧 sanidadetecnica@gmail.com</span><button class="btn" style="font-size:11px;padding:5px 11px;flex-shrink:0" onclick="copiarEmailSAC(this)">📋 Copiar</button></div></div><button class="btn p" style="width:100%;padding:12px;justify-content:center;margin-top:9px;font-size:13px" onclick="abrirSAC()">📧 Enviar e-mail de suporte</button><div style="margin-top:13px;font-size:11px;color:#999">SaniCheck v3.2 · Consultoria em Segurança Alimentar</div></div>'
 ];
 function initAjuda(){ajAba(0);}
 function ajAba(i){for(var j=0;j<5;j++){var b=document.getElementById('aj-btn-'+j);if(b){b.className=j===i?'btn p':'btn';b.style.fontSize='12px';b.style.padding='5px 11px';}}document.getElementById('aj-content').innerHTML=AJ[i]||'';}
