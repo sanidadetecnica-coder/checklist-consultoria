@@ -281,7 +281,7 @@ body.dark .fab-salvar{background:#e8e8e6;color:#0f0f11}
       <div class="menu-item" onclick="ir('marca')"><div class="menu-icon-wrap">🎨</div><div class="menu-label">Minha marca</div><div class="menu-desc">Logo e cores</div></div>
       <div class="menu-item" onclick="ir('notas')"><div class="menu-icon-wrap">📝</div><div class="menu-label">Notas</div><div class="menu-desc">Anotações</div></div>
       <div class="menu-item" onclick="ir('backup')"><div class="menu-icon-wrap">💾</div><div class="menu-label">Backup</div><div class="menu-desc">Exportar / Restaurar</div></div>
-      <div class="menu-item" onclick="ir('visual')"><div class="menu-icon-wrap">✨</div><div class="menu-label">Visual</div><div class="menu-desc">Tema e estilo</div></div>
+
       <div class="menu-item" onclick="ir('ajuda')"><div class="menu-icon-wrap">❓</div><div class="menu-label">Ajuda</div><div class="menu-desc">Instruções & SAC</div></div>
     </div>
     <div class="card">
@@ -416,34 +416,101 @@ body.dark .fab-salvar{background:#e8e8e6;color:#0f0f11}
     <div id="score-content"></div>
   </div>
 
+  <!-- CHECKLISTS PRINCIPAL -->
   <div id="s-checklists" class="screen">
     <div class="panel-hdr"><button class="back-btn" onclick="ir('menu')">←</button><div class="panel-title">Checklists</div></div>
-    <div class="card"><div class="sec">Checklists base prontos</div><div id="lista-base"></div></div>
-    <div class="card">
-      <div class="sec">Criar novo checklist <button class="btn p" onclick="salvarCL()">+ Salvar</button></div>
-      <div class="row">
-        <div class="fg"><label>Tipo de estabelecimento</label><input type="text" id="cl-tipo" placeholder="Ex: Restaurante..."></div>
-        <div class="fg"><label>Setor</label><input type="text" id="cl-setor" placeholder="Digite ou clique abaixo..."><div class="setor-chips" id="setor-sugestoes"></div></div>
-        <div class="fg"><label>Tema / Norma</label><input type="text" id="cl-tema" placeholder="Ex: RDC 216"></div>
-      </div>
-      <div class="sec" style="margin-top:3px">Itens</div>
-      <div id="items-cfg"><div class="empty">Nenhum item ainda</div></div>
-      <div style="display:flex;gap:5px;margin-top:7px">
-        <input type="text" id="novo-item-sec" placeholder="Seção (opcional)" style="margin:0;width:110px;flex-shrink:0">
-        <input type="text" id="novo-item" placeholder="Item — pressione Enter para adicionar" style="margin:0;flex:1" onkeydown="if(event.key==='Enter'){addItem();event.preventDefault()}">
-        <button class="btn" onclick="addItem()">+ Add</button>
-      </div>
-      <div style="margin-top:9px"><label>Ou cole várias perguntas (uma por linha):</label><textarea id="bulk-txt" placeholder="Pergunta 1&#10;Pergunta 2..." style="margin-top:3px;min-height:70px"></textarea><button class="btn" onclick="addBulk()">+ Importar linhas</button></div>
+    <!-- abas -->
+    <div style="display:flex;gap:7px;margin-bottom:11px">
+      <button class="btn p" id="cl-aba-0" onclick="clAba(0)" style="flex:1;justify-content:center">📋 Modelos</button>
+      <button class="btn" id="cl-aba-1" onclick="clAba(1)" style="flex:1;justify-content:center">⚙️ Meus checklists</button>
     </div>
-    <div class="card">
-      <div class="sec">Meus checklists</div>
-      <div id="lista-cls"><div class="empty">Nenhum checklist salvo</div></div>
-      <div style="margin-top:11px;border-top:1px solid #eee;padding-top:11px">
-        <div style="font-size:13px;font-weight:600;margin-bottom:7px">Transferir para outro dispositivo</div>
-        <div style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn p" onclick="exportarCls()">⬆ Exportar</button><button class="btn" onclick="showImport()">⬇ Importar</button></div>
+    <!-- painel modelos -->
+    <div id="cl-painel-0">
+      <div class="card">
+        <div class="sec">Criar novo modelo <button class="btn p" style="font-size:12px;padding:4px 11px" onclick="ir('cl-criar')">+ Novo</button></div>
+        <label class="btn" style="width:100%;justify-content:center;padding:9px;cursor:pointer;margin-bottom:0">
+          📄 Importar arquivo .docx
+          <input type="file" id="inp-docx" accept=".docx" style="display:none" onchange="importarDocx(this)">
+        </label>
+      </div>
+      <div class="card"><div class="sec">Modelos salvos</div><div id="lista-modelos"><div class="empty">Nenhum modelo criado ainda.<br>Clique em "+ Novo" para começar.</div></div></div>
+      <div class="card">
+        <div class="sec">Transferir modelos</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn p" onclick="exportarCls()">⬆ Exportar</button><button class="btn" onclick="showImport()">⬇ Importar código</button></div>
         <div id="exp-area" style="display:none;margin-top:9px"><label>Copie este código:</label><textarea id="exp-txt" style="min-height:55px;font-family:monospace;font-size:11px;margin-top:3px" readonly></textarea><div style="display:flex;align-items:center;gap:9px;margin-top:5px"><button class="btn g" onclick="copiarExp()">📋 Copiar</button><span id="copy-ok" style="font-size:12px;color:#16a34a;display:none">✓ Copiado!</span></div></div>
         <div id="imp-area" style="display:none;margin-top:9px"><label>Cole o código aqui:</label><textarea id="imp-txt" style="min-height:55px;font-family:monospace;font-size:11px;margin-top:3px" placeholder="Cole aqui..."></textarea><button class="btn g" style="margin-top:5px" onclick="importarCls()">✓ Importar</button></div>
       </div>
+    </div>
+    <!-- painel meus checklists (base RDC etc) -->
+    <div id="cl-painel-1" style="display:none">
+      <div class="card"><div class="sec">Checklists base prontos</div><div id="lista-base"></div></div>
+      <div class="card"><div class="sec">Salvos manualmente</div><div id="lista-cls"><div class="empty">Nenhum checklist salvo</div></div></div>
+    </div>
+  </div>
+
+  <!-- CRIAR / EDITAR MODELO -->
+  <div id="s-cl-criar" class="screen">
+    <div class="panel-hdr">
+      <button class="back-btn" onclick="ir('checklists')">←</button>
+      <div class="panel-title" id="cl-criar-titulo">Novo modelo</div>
+    </div>
+    <!-- passo 1 -->
+    <div class="card">
+      <div class="sec">1. Identificação</div>
+      <label>Tipo de estabelecimento</label>
+      <select id="clm-tipo" style="margin-bottom:7px">
+        <option value="">-- selecione --</option>
+        <option>Padaria / Confeitaria</option><option>Restaurante</option><option>Lanchonete / Fast food</option>
+        <option>Supermercado / Mercado</option><option>Hotel / Pousada</option><option>Hospital / Clínica</option>
+        <option>Escola / Creche</option><option>Indústria de alimentos</option><option>Açougue / Peixaria</option>
+        <option>Catering / Buffet</option><option>Bar / Boteco</option><option>Outro</option>
+      </select>
+      <label>Nome do checklist</label>
+      <input type="text" id="clm-nome" placeholder="Ex: Checklist Geral Padaria" style="margin-bottom:0">
+    </div>
+    <!-- passo 2 setores -->
+    <div class="card">
+      <div class="sec">2. Setores e perguntas</div>
+      <!-- colar tudo de uma vez -->
+      <div style="background:#f0f7ff;border:1px solid #b0d4f5;border-radius:9px;padding:11px;margin-bottom:11px">
+        <div style="font-size:13px;font-weight:600;color:#185fa5;margin-bottom:5px">⚡ Colar tudo de uma vez</div>
+        <div style="font-size:12px;color:#555;margin-bottom:7px;line-height:1.6">Cole o texto do seu checklist. Linhas em <b>MAIÚSCULO</b> viram títulos de setor. As demais viram perguntas.</div>
+        <textarea id="clm-bulk-all" placeholder="ESTOQUE&#10;O estoque está limpo?&#10;Produtos afastados do piso?&#10;&#10;COZINHA PRINCIPAL&#10;A área está limpa e organizada?&#10;..." style="min-height:120px;margin-bottom:7px;font-size:12px"></textarea>
+        <button class="btn p" style="width:100%;justify-content:center" onclick="processarBulkAll()">⚡ Processar e montar setores</button>
+      </div>
+      <!-- ou construir setor a setor -->
+      <div style="font-size:12px;color:#888;text-align:center;margin-bottom:11px">— ou adicione setor por setor —</div>
+      <div id="clm-setores-lista"></div>
+      <button class="btn az" style="width:100%;justify-content:center;margin-top:5px" onclick="addSetorModelo()">+ Adicionar setor</button>
+    </div>
+    <!-- passo 3 opcionais -->
+    <div class="card">
+      <div class="sec">3. Seções finais opcionais</div>
+      <label style="display:flex;align-items:center;gap:9px;cursor:pointer;margin-bottom:11px">
+        <input type="checkbox" id="clm-opt-correcoes" style="width:auto;margin:0"> <span style="font-size:13px">Incluir campo "Correções feitas na visita"</span>
+      </label>
+      <label style="display:flex;align-items:center;gap:9px;cursor:pointer;margin-bottom:0">
+        <input type="checkbox" id="clm-opt-obs" style="width:auto;margin:0"> <span style="font-size:13px">Incluir campo "Observações e orientações gerais"</span>
+      </label>
+    </div>
+    <div style="padding-bottom:18px">
+      <button class="btn p" style="width:100%;padding:13px;justify-content:center;font-size:14px" onclick="salvarModelo()">💾 Salvar modelo</button>
+    </div>
+  </div>
+
+  <!-- PRÉ-EDIÇÃO ANTES DA VISITA -->
+  <div id="s-cl-previsita" class="screen">
+    <div class="panel-hdr">
+      <button class="back-btn" onclick="ir('checklists')">←</button>
+      <div class="panel-title">Revisar antes de usar</div>
+    </div>
+    <div class="card" style="margin-bottom:9px">
+      <div style="font-size:13px;color:#666;line-height:1.6">Revise o modelo abaixo. Você pode remover perguntas ou setores antes de iniciar a visita.</div>
+    </div>
+    <div id="pv-conteudo"></div>
+    <div style="padding-bottom:18px;display:flex;gap:9px">
+      <button class="btn" style="flex:1;justify-content:center" onclick="ir('checklists')">✕ Cancelar</button>
+      <button class="btn p" style="flex:2;justify-content:center;font-size:14px" onclick="usarModeloComoChecklist()">▶ Iniciar visita com este modelo</button>
     </div>
   </div>
 
@@ -466,18 +533,7 @@ body.dark .fab-salvar{background:#e8e8e6;color:#0f0f11}
     <div class="card"><div class="sec">ℹ️ Sobre seus dados</div><div style="font-size:13px;color:#666;line-height:1.7">• Dados salvos <b>localmente</b> neste dispositivo<br>• Não são enviados a nenhum servidor<br>• Trocar de navegador ou limpar cache apaga os dados<br>• Faça backup regularmente</div></div>
   </div>
 
-  <div id="s-visual" class="screen">
-    <div class="panel-hdr"><button class="back-btn" onclick="ir('menu')">←</button><div class="panel-title">Preferências visuais</div></div>
-    <div class="card"><div class="sec">Tema</div><div class="dark-toggle-inline"><span style="font-size:13px">☀️ Claro</span><button class="toggle-sw" id="dark-sw" onclick="toggleDark()"></button><span style="font-size:13px">🌙 Escuro</span></div></div>
-    <div class="card"><div class="sec">Fonte do app</div><div id="font-chips" style="display:flex;gap:11px"></div></div>
-    <div class="card">
-      <div class="sec">Raio dos cards</div>
-      <div style="display:flex;gap:11px">
-        <span class="pref-chip" id="rd-sharp" onclick="setRaio('sharp')" style="flex:1;text-align:center;padding:11px 0;font-size:13px"><div style="display:inline-block;width:28px;height:19px;border:2px solid currentColor;border-radius:2px;vertical-align:middle;margin-right:6px"></div>Reto</span>
-        <span class="pref-chip" id="rd-default" onclick="setRaio('default')" style="flex:1;text-align:center;padding:11px 0;font-size:13px"><div style="display:inline-block;width:28px;height:19px;border:2px solid currentColor;border-radius:10px;vertical-align:middle;margin-right:6px"></div>Arredondado</span>
-      </div>
-    </div>
-  </div>
+
 
   <div id="s-ajuda" class="screen">
     <div class="panel-hdr"><button class="back-btn" onclick="ir('menu')">←</button><div class="panel-title">Ajuda & Instruções</div></div>
@@ -639,6 +695,7 @@ function iniciarApp(email){
   var us=getUs();U=email;var u=us[email];
   cls=u.cls||[];vis=u.vis||[];clientes=u.clientes||[];pendentes=u.pendentes||[];agenda=u.agenda||[];marca=u.marca||{};
   if(!u.notas){u.notas={geral:[],clientes:{}};setUs(us);}
+  carregarModelos();
   document.getElementById('auth-screen').classList.add('h');document.getElementById('app-main').classList.add('on');
   document.getElementById('user-avatar').textContent=u.nome.charAt(0).toUpperCase();
   aplicarMarca();badges();boasVindas(u);ir('menu');
@@ -661,7 +718,9 @@ function ir(s){
   var fab=document.getElementById('fab-salvar');if(fab)fab.className='fab-salvar'+(s==='visita'?' on':'');
   if(s==='visita')initVis();if(s==='clientes'){editCliId=null;limparFormCli();renderClientes('');}
   if(s==='agenda')initAgenda();if(s==='pendentes')renderPendentes();if(s==='historico')renderHis('');
-  if(s==='checklists'){renderBase();renderCls();initSetorSugestoes();}if(s==='dashboard')renderDash();
+  if(s==='checklists'){carregarModelos();renderModelos();renderBase();renderCls();}
+  if(s==='cl-criar'){initCriarModelo(_modeloEditId);}
+  if(s==='dashboard')renderDash();
   if(s==='visual')initVisual();if(s==='notas')initNotas();if(s==='ajuda')initAjuda();if(s==='marca')carregarFormMarca();
   window.scrollTo(0,0);
 }
@@ -767,7 +826,241 @@ async function melhorarComentario(idx,ctx){
 function aceitarSugestao(idx,ctx){var sg=_iaSugestoes[ctx+'_'+idx];if(!sg)return;var ta=document.getElementById('ta-'+idx);if(ta){ta.value=sg;coments[idx]=sg;var cc=document.getElementById('chars-'+idx);if(cc)cc.textContent=sg.length;}ignorarSugestao(idx);delete _iaSugestoes[ctx+'_'+idx];}
 function ignorarSugestao(idx){var el=document.getElementById('ia-sug-'+idx);if(el)el.classList.remove('on');}
 
-// ═══ CHECKLISTS ═══
+// ═══ MODELOS DE CHECKLIST ═══
+var modelos = []; // {id, tipo, nome, setores:[{nome,perguntas:[str]},..], optCorrecoes, optObs}
+var _modeloEditId = null;
+var _pvModelo = null; // modelo em pré-edição
+var _pvSetores = []; // setores editáveis na pré-visita
+
+function getModelos(){try{return JSON.parse(localStorage.getItem('c_modelos_'+U)||'[]');}catch(e){return[];}}
+function setModelos(m){localStorage.setItem('c_modelos_'+U,JSON.stringify(m));}
+function carregarModelos(){modelos=getModelos();}
+function salvarModelosLocal(){setModelos(modelos);}
+
+function clAba(i){
+  document.getElementById('cl-painel-0').style.display=i===0?'block':'none';
+  document.getElementById('cl-painel-1').style.display=i===1?'block':'none';
+  document.getElementById('cl-aba-0').className=i===0?'btn p':'btn';
+  document.getElementById('cl-aba-1').className=i===1?'btn p':'btn';
+  document.getElementById('cl-aba-0').style.flex='1';document.getElementById('cl-aba-0').style.justifyContent='center';
+  document.getElementById('cl-aba-1').style.flex='1';document.getElementById('cl-aba-1').style.justifyContent='center';
+  if(i===1){renderBase();renderCls();}
+  if(i===0)renderModelos();
+}
+
+function renderModelos(){
+  carregarModelos();
+  var el=document.getElementById('lista-modelos');
+  if(!modelos.length){el.innerHTML='<div class="empty">Nenhum modelo criado ainda.<br>Clique em "+ Novo" para começar.</div>';return;}
+  el.innerHTML=modelos.map(function(m){
+    var nS=m.setores?m.setores.length:0;
+    var nP=m.setores?m.setores.reduce(function(s,st){return s+(st.perguntas?st.perguntas.length:0);},0):0;
+    return'<div class="cl-card" style="margin-bottom:9px">'
+      +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:9px">'
+      +'<div><div style="font-size:14px;font-weight:600;margin-bottom:3px">'+m.nome+'</div>'
+      +(m.tipo?'<span class="badge b-tipo">'+m.tipo+'</span>':'')
+      +'<div style="font-size:12px;color:#888;margin-top:4px">'+nS+' setor'+(nS!==1?'es':'')+'&nbsp;·&nbsp;'+nP+' pergunta'+(nP!==1?'s':'')+'</div></div>'
+      +'</div>'
+      +'<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:9px">'
+      +'<button class="btn p" style="font-size:12px;padding:5px 11px" onclick="abrirPreVisita(\''+m.id+'\')">▶ Usar</button>'
+      +'<button class="btn az" style="font-size:12px;padding:5px 11px" onclick="editarModelo(\''+m.id+'\')">✏ Editar</button>'
+      +'<button class="btn d" style="font-size:12px;padding:5px 11px" onclick="excluirModelo(\''+m.id+'\')">✕</button>'
+      +'</div></div>';
+  }).join('');
+}
+
+// ── CRIAR / EDITAR ──
+var _clmSetores = []; // [{nome, perguntas:[str]}]
+
+function initCriarModelo(editId){
+  _modeloEditId=editId||null;_clmSetores=[];
+  document.getElementById('cl-criar-titulo').textContent=editId?'Editar modelo':'Novo modelo';
+  document.getElementById('clm-tipo').value='';
+  document.getElementById('clm-nome').value='';
+  document.getElementById('clm-bulk-all').value='';
+  document.getElementById('clm-opt-correcoes').checked=true;
+  document.getElementById('clm-opt-obs').checked=true;
+  if(editId){
+    carregarModelos();
+    var m=modelos.find(function(x){return x.id===editId;});
+    if(m){
+      document.getElementById('clm-tipo').value=m.tipo||'';
+      document.getElementById('clm-nome').value=m.nome||'';
+      document.getElementById('clm-opt-correcoes').checked=!!m.optCorrecoes;
+      document.getElementById('clm-opt-obs').checked=!!m.optObs;
+      _clmSetores=JSON.parse(JSON.stringify(m.setores||[]));
+    }
+  }
+  renderSetoresModelo();
+}
+
+function processarBulkAll(){
+  var txt=document.getElementById('clm-bulk-all').value.trim();
+  if(!txt){alert('Cole o texto primeiro.');return;}
+  var linhas=txt.split('\n');
+  var setores=[];var setorAtual=null;
+  linhas.forEach(function(linha){
+    var l=linha.trim();
+    if(!l)return;
+    // detecta setor: linha toda maiúscula (sem "?"), ou começa com número + ponto + maiúsculas
+    var isTitulo=false;
+    var semNum=l.replace(/^\d+[\.\-\)]\s*/,'');// remove "1. " do início
+    if(semNum===semNum.toUpperCase()&&semNum.length>2&&!semNum.includes('?')&&!/^[-–•☐✅➡️]/.test(semNum))isTitulo=true;
+    if(isTitulo){
+      // limpa número e emojis do título
+      var nomeSetor=l.replace(/^\d+[\.\-\)]\s*/,'').replace(/[✅☐➡️📋👉🟢•–-]/g,'').trim().toUpperCase();
+      if(nomeSetor.length>1){setorAtual={nome:nomeSetor,perguntas:[]};setores.push(setorAtual);}
+    } else {
+      if(!setorAtual){setorAtual={nome:'GERAL',perguntas:[]};setores.push(setorAtual);}
+      // limpa a linha de numeração e símbolos
+      var p=l.replace(/^\d+[\.\-\)]\d*\s*/,'').replace(/^[☐✅•–➡️\-]\s*/,'').trim();
+      if(p&&p.length>3)setorAtual.perguntas.push(p);
+    }
+  });
+  if(!setores.length){alert('Não consegui detectar setores. Verifique se os títulos estão em MAIÚSCULO.');return;}
+  _clmSetores=setores;
+  renderSetoresModelo();
+  document.getElementById('clm-bulk-all').value='';
+  alert('✓ '+setores.length+' setor'+(setores.length!==1?'es':'')+' detectado'+(setores.length!==1?'s':'')+' com sucesso!');
+}
+
+function addSetorModelo(){
+  _clmSetores.push({nome:'',perguntas:[]});
+  renderSetoresModelo();
+  setTimeout(function(){var inputs=document.querySelectorAll('.clm-setor-nome');if(inputs.length)inputs[inputs.length-1].focus();},100);
+}
+
+function renderSetoresModelo(){
+  var el=document.getElementById('clm-setores-lista');
+  if(!_clmSetores.length){el.innerHTML='<div class="empty" style="margin-bottom:9px">Nenhum setor ainda.</div>';return;}
+  el.innerHTML=_clmSetores.map(function(s,si){
+    return'<div style="background:#f9f9f7;border:1px solid #e5e5e2;border-radius:9px;padding:11px;margin-bottom:9px">'
+      +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">'
+      +'<input type="text" class="clm-setor-nome" placeholder="NOME DO SETOR (ex: ESTOQUE)" value="'+escHtml(s.nome)+'" oninput="_clmSetores['+si+'].nome=this.value" style="margin:0;flex:1;font-weight:600;text-transform:uppercase">'
+      +'<button class="btn d" style="font-size:11px;padding:4px 9px;flex-shrink:0" onclick="remSetorModelo('+si+')">✕</button>'
+      +'</div>'
+      +'<textarea placeholder="Cole as perguntas aqui, uma por linha..." style="width:100%;min-height:80px;padding:8px;border-radius:7px;border:1px solid #ddd;font-size:12px;resize:vertical;font-family:inherit" oninput="_clmSetores['+si+'].perguntas=this.value.split(\'\\n\').map(function(x){return x.trim();}).filter(Boolean)">'
+      +escHtml(s.perguntas.join('\n'))
+      +'</textarea>'
+      +'<div style="font-size:11px;color:#888;margin-top:3px">'+s.perguntas.length+' pergunta'+(s.perguntas.length!==1?'s':'')+' · <i>Uma pergunta por linha</i></div>'
+      +'</div>';
+  }).join('');
+}
+
+function remSetorModelo(i){if(!confirm('Remover este setor?'))return;_clmSetores.splice(i,1);renderSetoresModelo();}
+
+function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function salvarModelo(){
+  // sincroniza textareas
+  document.querySelectorAll('.clm-setor-nome').forEach(function(el,i){if(_clmSetores[i])_clmSetores[i].nome=el.value.toUpperCase().trim();});
+  document.querySelectorAll('#clm-setores-lista textarea').forEach(function(el,i){if(_clmSetores[i])_clmSetores[i].perguntas=el.value.split('\n').map(function(x){return x.trim();}).filter(Boolean);});
+  var tipo=document.getElementById('clm-tipo').value;
+  var nome=document.getElementById('clm-nome').value.trim();
+  if(!nome){alert('Informe o nome do checklist.');return;}
+  if(!_clmSetores.length||_clmSetores.every(function(s){return!s.perguntas.length;})){alert('Adicione ao menos um setor com perguntas.');return;}
+  carregarModelos();
+  var m={
+    id:_modeloEditId||Date.now()+'m',
+    tipo:tipo,nome:nome,
+    setores:JSON.parse(JSON.stringify(_clmSetores)),
+    optCorrecoes:document.getElementById('clm-opt-correcoes').checked,
+    optObs:document.getElementById('clm-opt-obs').checked
+  };
+  if(_modeloEditId){var idx=modelos.findIndex(function(x){return x.id===_modeloEditId;});if(idx>=0)modelos[idx]=m;else modelos.push(m);}
+  else modelos.push(m);
+  salvarModelosLocal();
+  alert('✓ Modelo salvo!');
+  ir('checklists');
+}
+
+function editarModelo(id){initCriarModelo(id);ir('cl-criar');}
+function excluirModelo(id){if(!confirm('Excluir este modelo?'))return;carregarModelos();modelos=modelos.filter(function(x){return x.id!==id;});salvarModelosLocal();renderModelos();}
+
+// ── IMPORTAR DOCX ──
+async function importarDocx(input){
+  var file=input.files[0];if(!file)return;
+  try{
+    var ab=await file.arrayBuffer();
+    var result=await mammoth.extractRawText({arrayBuffer:ab});
+    var txt=result.value;
+    document.getElementById('clm-bulk-all').value=txt;
+    ir('cl-criar');
+    setTimeout(function(){alert('Texto extraído! Clique em "Processar e montar setores".');},300);
+  }catch(e){alert('Não foi possível ler o arquivo. Tente copiar e colar o texto manualmente.');}
+  input.value='';
+}
+
+// ── PRÉ-VISITA ──
+function abrirPreVisita(id){
+  carregarModelos();
+  var m=modelos.find(function(x){return x.id===id;});
+  if(!m){alert('Modelo não encontrado.');return;}
+  _pvModelo=m;
+  _pvSetores=JSON.parse(JSON.stringify(m.setores||[]));
+  renderPreVisita();
+  ir('cl-previsita');
+}
+
+function renderPreVisita(){
+  var el=document.getElementById('pv-conteudo');
+  var m=_pvModelo;
+  var html='<div class="card" style="margin-bottom:9px">'
+    +'<div style="font-size:15px;font-weight:700;margin-bottom:3px">'+escHtml(m.nome)+'</div>'
+    +(m.tipo?'<span class="badge b-tipo">'+m.tipo+'</span>':'')
+    +'</div>';
+  _pvSetores.forEach(function(s,si){
+    html+='<div class="card" style="margin-bottom:9px">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">'
+      +'<div style="font-size:12px;font-weight:700;color:#185fa5;text-transform:uppercase;letter-spacing:.4px">'+escHtml(s.nome)+'</div>'
+      +'<button class="btn d" style="font-size:11px;padding:3px 9px" onclick="pvRemSetor('+si+')">✕ Remover setor</button>'
+      +'</div>'
+      +s.perguntas.map(function(p,pi){
+        return'<div style="display:flex;align-items:flex-start;gap:7px;padding:5px 0;border-bottom:1px solid #f0f0ee">'
+          +'<span style="font-size:12px;flex:1;line-height:1.5">'+escHtml(p)+'</span>'
+          +'<button onclick="pvRemPergunta('+si+','+pi+')" style="border:none;background:none;color:#dc2626;cursor:pointer;font-size:14px;padding:0;flex-shrink:0">✕</button>'
+          +'</div>';
+      }).join('')
+      +'<div style="font-size:11px;color:#aaa;margin-top:5px">'+s.perguntas.length+' pergunta'+(s.perguntas.length!==1?'s':'')+'</div>'
+      +'</div>';
+  });
+  if(m.optCorrecoes)html+='<div class="card" style="margin-bottom:9px;border-left:3px solid #16a34a"><div style="font-size:12px;font-weight:600;color:#16a34a">✓ Correções feitas na visita</div><div style="font-size:11px;color:#888;margin-top:3px">3 campos de texto incluídos</div></div>';
+  if(m.optObs)html+='<div class="card" style="margin-bottom:9px;border-left:3px solid #185fa5"><div style="font-size:12px;font-weight:600;color:#185fa5">📝 Observações e orientações gerais</div><div style="font-size:11px;color:#888;margin-top:3px">Campo aberto incluído</div></div>';
+  el.innerHTML=html;
+}
+
+function pvRemSetor(si){if(!confirm('Remover setor "'+_pvSetores[si].nome+'"?'))return;_pvSetores.splice(si,1);renderPreVisita();}
+function pvRemPergunta(si,pi){_pvSetores[si].perguntas.splice(pi,1);renderPreVisita();}
+
+function usarModeloComoChecklist(){
+  if(!_pvSetores.length||_pvSetores.every(function(s){return!s.perguntas.length;})){alert('Não há perguntas para iniciar a visita.');return;}
+  // monta itens no formato do sistema existente (com seção)
+  var itens=[];
+  _pvSetores.forEach(function(s){
+    s.perguntas.forEach(function(p){
+      itens.push({id:Date.now()+'_'+Math.random(),texto:p,secao:s.nome});
+    });
+    // outras observações (não obrigatório)
+    itens.push({id:Date.now()+'_obs_'+Math.random(),texto:'Outras observações do setor',secao:s.nome,opcional:true});
+  });
+  if(_pvModelo.optCorrecoes){
+    ['01','02','03'].forEach(function(n){itens.push({id:Date.now()+'c'+n,texto:'Correção feita na visita – '+n,secao:'CORREÇÕES FEITAS NA VISITA',opcional:true});});
+  }
+  if(_pvModelo.optObs){
+    itens.push({id:Date.now()+'ob',texto:'Observações e orientações gerais',secao:'OBSERVAÇÕES GERAIS',opcional:true});
+  }
+  var cl={id:'pv_'+Date.now(),tipo:_pvModelo.tipo||'Modelo',setor:'',tema:_pvModelo.nome,itens:itens};
+  // adiciona temporariamente à lista de cls e inicia visita
+  cls.push(cl);
+  salvar();badges();
+  ir('visita');
+  setTimeout(function(){
+    document.getElementById('v-cl').value=cls.length-1;
+    carregarCL();
+  },200);
+}
+
+// ═══ CHECKLISTS (base + manuais antigos) ═══
 var BASE=[
   {id:'base_rdc216',tipo:'Serviço de Alimentação',setor:'Boas Práticas',tema:'RDC 216/2004 — Avaliação Completa',itens:[{id:'r1',texto:'EDIFICAÇÃO: Acesso controlado, direto e independente, não comum a outros usos?'},{id:'r2',texto:'EDIFICAÇÃO: Fluxo ordenado e sem cruzamentos?'},{id:'r3',texto:'PISO: Revestimento liso, impermeável e lavável?'},{id:'r4',texto:'PISO: Em bom estado de conservação, livre de rachaduras?'},{id:'r5',texto:'PISO: Em bom estado de higienização?'},{id:'r6',texto:'PAREDE: Revestimento liso, impermeável e lavável?'},{id:'r7',texto:'PAREDE: Em bom estado de conservação?'},{id:'r8',texto:'PAREDE: Em bom estado de higienização?'},{id:'r9',texto:'TETO: Revestimento liso, impermeável e lavável?'},{id:'r10',texto:'TETO: Em bom estado de conservação?'},{id:'r11',texto:'TETO: Em bom estado de higienização?'},{id:'r12',texto:'PORTAS: Em bom estado e ajustadas ao batente?'},{id:'r13',texto:'PORTAS: Fechamento automático nas áreas de preparação?'},{id:'r14',texto:'JANELAS: Em bom estado com telas milimétricas removíveis?'},{id:'r15',texto:'ILUMINAÇÃO: Adequada sem sombras excessivas?'},{id:'r16',texto:'ILUMINAÇÃO: Luminárias protegidas contra queda acidental?'},{id:'r17',texto:'VENTILAÇÃO: Natural ou artificial adequada?'},{id:'r18',texto:'VENTILAÇÃO: Fluxo de ar não incide diretamente sobre alimentos?'},{id:'r19',texto:'ESGOTO: Ralo sifonado com tampa giratória?'},{id:'r20',texto:'INSTALAÇÕES SANITÁRIAS: Sem comunicação direta com área de preparação?'},{id:'r21',texto:'INSTALAÇÕES SANITÁRIAS: Em bom estado e higienizadas?'},{id:'r22',texto:'LAVATÓRIO: Em posição estratégica com sabonete antisséptico e lixeira com pedal?'},{id:'r23',texto:'EQUIPAMENTOS: Resistentes à corrosão, superfícies lisas e laváveis?'},{id:'r24',texto:'EQUIPAMENTOS: Registro de manutenção e calibração?'},{id:'r25',texto:'HIGIENIZAÇÃO: Instalações e equipamentos em condições adequadas?'},{id:'r26',texto:'HIGIENIZAÇÃO: Produtos saneantes regularizados pelo Ministério da Saúde?'},{id:'r27',texto:'HIGIENIZAÇÃO: Local adequado para depósito de material de limpeza?'},{id:'r28',texto:'PRAGAS: Edificação livre de vetores e pragas?'},{id:'r29',texto:'PRAGAS: Controle por empresa especializada registrada na VISA?'},{id:'r30',texto:'ÁGUA: Utiliza exclusivamente água potável?'},{id:'r31',texto:'ÁGUA: Reservatório tampado, conservado e higienizado a cada 6 meses?'},{id:'r32',texto:'RESÍDUOS: Recipientes identificados com tampas acionadas por pedal?'},{id:'r33',texto:'RESÍDUOS: Coletados frequentemente, evitando acúmulo?'},{id:'r34',texto:'MANIPULADORES: Controle de saúde registrado?'},{id:'r35',texto:'MANIPULADORES: Ausência de lesões ou enfermidades?'},{id:'r36',texto:'MANIPULADORES: Uniforme limpo, cabelos presos, unhas curtas sem esmalte?'},{id:'r37',texto:'MANIPULADORES: Lavagem adequada das mãos?'},{id:'r38',texto:'MANIPULADORES: Capacitação/treinamentos registrados?'},{id:'r39',texto:'MATÉRIAS-PRIMAS: Recepção com inspeção de temperatura, embalagem e validade?'},{id:'r40',texto:'MATÉRIAS-PRIMAS: Armazenamento adequado, sobre paletes, com validade respeitada?'},{id:'r41',texto:'PREPARO: Medidas para minimizar contaminação cruzada?'},{id:'r42',texto:'PREPARO: Perecíveis expostos à temp. ambiente apenas pelo tempo mínimo?'},{id:'r43',texto:'PREPARO: Tratamento térmico adequado?'},{id:'r44',texto:'PREPARO: Alimentos prontos mantidos acima de 60ºC por no máximo 6 horas?'},{id:'r45',texto:'PREPARO: Resfriamento de 60ºC para 10ºC em até 2 horas?'},{id:'r46',texto:'PREPARO: Temperatura dos equipamentos de frios monitorada?'},{id:'r47',texto:'EXPOSIÇÃO: Área organizada e em condições higiênicas?'},{id:'r48',texto:'EXPOSIÇÃO: Barreiras de proteção contra contaminação pelo consumidor?'},{id:'r49',texto:'DOCUMENTAÇÃO: Manual de Boas Práticas disponível?'},{id:'r50',texto:'DOCUMENTAÇÃO: POPs elaborados, atualizados e assinados?'}]},
   {id:'base_agua',tipo:'Serviço de Alimentação',setor:'Infraestrutura',tema:'Abastecimento de Água e Esgoto',itens:[{id:'ag1',texto:'ÁGUA: Utiliza exclusivamente água potável para manipulação?'},{id:'ag2',texto:'ÁGUA: Volume e pressão adequados?'},{id:'ag3',texto:'ÁGUA: Reservatório tampado e conservado?'},{id:'ag4',texto:'ÁGUA: Reservatório higienizado a cada 6 meses com registro?'},{id:'ag5',texto:'ÁGUA: Laudos de potabilidade semestrais?'},{id:'ag6',texto:'ESGOTO: Ralos sifonados com dispositivos de fechamento?'},{id:'ag7',texto:'ESGOTO: Caixa de gordura fora das áreas de manipulação e limpa periodicamente?'},{id:'ag8',texto:'ESGOTO: Resíduos de óleo não descartados na rede de esgoto?'}]},
@@ -841,7 +1134,7 @@ window.addEventListener('DOMContentLoaded',function(){
   carregarPrefs();
   initDark();
   var sess=getSessao();
-  if(sess&&getUs()[sess])iniciarApp(sess);
+  if(sess&&getUs()[sess]){iniciarApp(sess);}
 });
 </script>
 </body>
