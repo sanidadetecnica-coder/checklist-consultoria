@@ -560,13 +560,24 @@ body.dark .setor-chip{background:#2e2e32;border-color:#48484e;color:#e8e8e5}
       <div class="row"><div class="fg"><label>Nome da empresa</label><input type="text" id="m-nome" placeholder="Consultoria Silva" oninput="pvMarca()"></div><div class="fg"><label>Slogan</label><input type="text" id="m-slogan" placeholder="Especialista em Vigilância" oninput="pvMarca()"></div></div>
       <div class="row"><div class="fg"><label>E-mail profissional</label><input type="email" id="m-email" placeholder="contato@empresa.com.br"></div><div class="fg"><label>WhatsApp / Telefone</label><input type="text" id="m-fone" placeholder="(00) 00000-0000"></div></div>
       <div class="row">
-        <div class="fg"><label>Cor principal</label><input type="color" id="m-cor" value="#1a1a18" oninput="pvMarca()"></div>
+        <div class="fg">
+          <label>Cor principal</label>
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">
+            <input type="color" id="m-cor" value="#1a1a18" oninput="syncCorHex()" style="width:44px;margin:0;flex-shrink:0">
+            <input type="text" id="m-cor-hex" placeholder="#1a1a18" maxlength="7" style="margin:0;flex:1;font-family:monospace;font-size:13px" oninput="syncCorPicker()" onblur="validarHex()">
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:4px" id="cores-rapidas"></div>
+        </div>
         <div class="fg"><label>Logo</label>
           <div style="display:flex;align-items:center;gap:9px;margin-bottom:7px">
             <div id="logo-ph" class="logo-ph" onclick="document.getElementById('inp-logo').click()">+</div>
-            <img id="logo-pv" class="logo-pv" src="" alt="">
+            <img id="logo-pv" class="logo-pv" src="" alt="" onclick="document.getElementById('inp-logo').click()" style="cursor:pointer">
             <input type="file" id="inp-logo" accept="image/*" style="display:none" onchange="carregarLogo(this)">
-            <div style="font-size:12px;color:#888">Toque para adicionar<br><span style="font-size:11px;color:#bbb">PNG transparente ideal</span></div>
+            <div>
+              <div style="font-size:12px;color:#888;margin-bottom:5px">PNG transparente ideal</div>
+              <button class="btn" id="btn-trocar-logo" style="font-size:11px;padding:4px 9px;display:none" onclick="document.getElementById('inp-logo').click()">🔄 Trocar</button>
+              <button class="btn d" id="btn-remover-logo" style="font-size:11px;padding:4px 9px;display:none;margin-top:4px" onclick="removerLogo()">✕ Remover</button>
+            </div>
           </div>
         </div>
       </div>
@@ -771,8 +782,51 @@ function ir(s){
   window.scrollTo(0,0);
 }
 
-function carregarFormMarca(){if(marca.nome)document.getElementById('m-nome').value=marca.nome;if(marca.slogan)document.getElementById('m-slogan').value=marca.slogan;if(marca.email)document.getElementById('m-email').value=marca.email;if(marca.fone)document.getElementById('m-fone').value=marca.fone;if(marca.cor)document.getElementById('m-cor').value=marca.cor;if(marca.logo){document.getElementById('logo-pv').src=marca.logo;document.getElementById('logo-pv').style.display='block';document.getElementById('logo-ph').style.display='none';}}
-function carregarLogo(input){if(!input.files[0])return;var r=new FileReader();r.onload=function(e){document.getElementById('logo-pv').src=e.target.result;document.getElementById('logo-pv').style.display='block';document.getElementById('logo-ph').style.display='none';marca.logo=e.target.result;};r.readAsDataURL(input.files[0]);}
+var CORES_RAPIDAS=['#1a1a18','#185fa5','#16a34a','#dc2626','#d97706','#7c3aed','#db2777','#0891b2','#65a30d','#ea580c'];
+function carregarFormMarca(){
+  if(marca.nome)document.getElementById('m-nome').value=marca.nome;
+  if(marca.slogan)document.getElementById('m-slogan').value=marca.slogan;
+  if(marca.email)document.getElementById('m-email').value=marca.email;
+  if(marca.fone)document.getElementById('m-fone').value=marca.fone;
+  var cor=marca.cor||'#1a1a18';
+  document.getElementById('m-cor').value=cor;
+  document.getElementById('m-cor-hex').value=cor;
+  if(marca.logo)_mostrarLogo(marca.logo);
+  // cores rápidas
+  var cr=document.getElementById('cores-rapidas');
+  if(cr)cr.innerHTML=CORES_RAPIDAS.map(function(c){return'<div onclick="aplicarCorRapida(\''+c+'\')" style="width:22px;height:22px;border-radius:50%;background:'+c+';cursor:pointer;border:2px solid '+(cor===c?'#fff':'transparent')+';box-shadow:0 0 0 2px '+(cor===c?c:'#ddd')+'" title="'+c+'"></div>';}).join('');
+}
+function aplicarCorRapida(c){document.getElementById('m-cor').value=c;document.getElementById('m-cor-hex').value=c;pvMarca();carregarFormMarca();}
+function syncCorHex(){var c=document.getElementById('m-cor').value;document.getElementById('m-cor-hex').value=c;pvMarca();}
+function syncCorPicker(){
+  var v=document.getElementById('m-cor-hex').value.trim();
+  if(/^#[0-9a-fA-F]{6}$/.test(v)){document.getElementById('m-cor').value=v;pvMarca();}
+}
+function validarHex(){
+  var el=document.getElementById('m-cor-hex');var v=el.value.trim();
+  if(!v.startsWith('#'))v='#'+v;
+  if(/^#[0-9a-fA-F]{6}$/.test(v)){el.value=v;document.getElementById('m-cor').value=v;pvMarca();}
+  else{el.value=document.getElementById('m-cor').value;}
+}
+function _mostrarLogo(src){
+  var pv=document.getElementById('logo-pv');var ph=document.getElementById('logo-ph');
+  var bt=document.getElementById('btn-trocar-logo');var br=document.getElementById('btn-remover-logo');
+  pv.src=src;pv.style.display='block';ph.style.display='none';
+  if(bt)bt.style.display='inline-flex';if(br)br.style.display='inline-flex';
+}
+function removerLogo(){
+  if(!confirm('Remover a logo?'))return;
+  marca.logo='';
+  var pv=document.getElementById('logo-pv');var ph=document.getElementById('logo-ph');
+  var bt=document.getElementById('btn-trocar-logo');var br=document.getElementById('btn-remover-logo');
+  var hl=document.getElementById('header-logo');var hi=document.getElementById('header-logo-icon');
+  pv.src='';pv.style.display='none';ph.style.display='flex';
+  if(bt)bt.style.display='none';if(br)br.style.display='none';
+  if(hl){hl.src='';hl.style.display='none';}if(hi)hi.style.display='flex';
+  document.getElementById('inp-logo').value='';
+  salvar();
+}
+function carregarLogo(input){if(!input.files[0])return;var r=new FileReader();r.onload=function(e){marca.logo=e.target.result;_mostrarLogo(e.target.result);};r.readAsDataURL(input.files[0]);}
 function pvMarca(){document.getElementById('app-header').style.background=document.getElementById('m-cor').value;document.getElementById('header-nome').textContent=document.getElementById('m-nome').value||'SaniCheck';var sl=document.getElementById('m-slogan').value,el=document.getElementById('header-slogan');if(sl){el.textContent=sl;el.style.display='block';}else el.style.display='none';}
 function salvarMarca(){marca.nome=document.getElementById('m-nome').value;marca.slogan=document.getElementById('m-slogan').value;marca.email=document.getElementById('m-email').value;marca.fone=document.getElementById('m-fone').value;marca.cor=document.getElementById('m-cor').value;salvar();aplicarMarca();alert('Marca salva!');}
 function aplicarMarca(){if(marca.cor)document.getElementById('app-header').style.background=marca.cor;if(marca.nome)document.getElementById('header-nome').textContent=marca.nome;if(marca.slogan){document.getElementById('header-slogan').textContent=marca.slogan;document.getElementById('header-slogan').style.display='block';}if(marca.logo){var img=document.getElementById('header-logo');img.src=marca.logo;img.style.display='block';document.getElementById('header-logo-icon').style.display='none';}}
